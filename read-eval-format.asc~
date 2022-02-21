@@ -1,0 +1,8 @@
+in top.asc
+asc [read-eval-format]
+    components
+        [reader]
+	[eval]
+	[format]
+    end components
+end [read-eval-format]

@@ -1,0 +1,20 @@
+decl fetch (Address):
+decl get (Address):
+decl put(Address Any):
+decl atom? (Address) -> yes/no:
+decl null? (Address) -> yes/no:
+decl list? (Address) -> yes/no:
+decl putatombyte (Any):
+decl putatomcell (Any Address):
+decl bumplist:
+decl putlistcell (Any Address):
+decl putatom([char]):
+decl initialize-memory:
+decl $cons(Any Address) -> Cons:
+decl $car(Address) -> Any:
+decl $cdr(Address) -> Any:
+
+
+$NIL
+$assoc (e env)
+$eq

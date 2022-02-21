@@ -1,0 +1,21 @@
+NonNullAddress = { Base offset }
+Address = (NonNullAddress | NIL)
+Memory = { [cell] offset }
+Text = [ [char] offset }
+
+// like types
+Src == Text
+Buffer == Text
+Base == (Memory)
+Cons == cell
+Name == Text
+Found == yes/no
+Answer == Address
+
+// off-page
+offset = ?
+cell = ?
+char = ?
+yes/no = ?
+Any = ?
+NIL = ?

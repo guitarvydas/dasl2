@@ -1,0 +1,16 @@
+decl intern (String) >> Address:
+
+-- 
+
+inside cl-sector-lisp
+
+Name == Text
+
+def intern (Name) >> Address:
+    component Lookup (Name) >> (Found Answer)
+    component Insert If Not Found (Found) (Answer If Found) (Name) >> Answer
+
+    connect (Name) -> Lookup (Name), Insert If Not Found (Name)
+    connect Lookup (Found) -> Insert If Not Found (Found)
+    connect Lookup (Answer) -> Insert If Not Found (Answer If Found)
+    connect Insert If Not Found (Answer) -> (Answer)

@@ -1,0 +1,20 @@
+sc [reader] ()
+  $slot index
+  $wait
+  $return index
+
+  components
+    [$self]:
+        (answer): 
+            $set answer := $data
+	    $conclude
+    [lookup]:
+    [insert if not found]:
+  end components
+
+  connections
+      [lookup](found) -> [insert if not found](found)
+      [lookup](answer) -> [insert if not found](answer)
+      [insert if not found](answer) -> [$self](answer)
+  end connections
+end sc

@@ -1,0 +1,16 @@
+in top.asc
+asc [read] >> (index) (atoms)
+    $unless ?(lookahead lpar) $then
+        $inject [read atom](start) trigger
+    $else
+        $inject [read list](start) trigger
+    $end if
+    components
+	[read atom](start) >> (answer)
+	[read list](start) >> (answer)
+    end components
+
+    connections
+    end connections
+
+end [read]

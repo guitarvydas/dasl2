@@ -1,0 +1,4 @@
+asc [stack-memo](e)
+    $send (previous stack) *lru-list-pointer*
+    $send (e) e
+end [stack-memo]

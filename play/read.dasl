@@ -1,0 +1,11 @@
+decl Read (atoms cells NIL src) >> (atoms cells Address)
+
+decl mem-reset:
+decl eof? >> yes/no:
+decl atoms-end? (Address) >> yes/no:
+decl getc (Address) >> Cell:
+decl next-cell (Address):
+decl maxed-out? (Address) >> yes/no:
+decl advance-to-next-atom:
+decl current-atom-index? >> Address:
+decl string-matches? (Text) >> yes/no:
