@@ -1,0 +1,16 @@
+defsync [top] 
+.input0=("NIL" "atom space" "cons space" "src" "out")
+.output0=("out")
+.ancestor = ???
+.locals = []
+.input-queue = []
+.output-queue = []
+.before = fn()
+.handler = (lambda (message) ...)
+.after = fn(return self.locals."out")
+.children = [
+...
+]
+.connections = [
+...
+]

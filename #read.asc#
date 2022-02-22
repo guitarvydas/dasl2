@@ -1,10 +1,5 @@
-asc [read] >> (index (atom space modified))
-    import NIL (atom space) (cons space) (src)
-    $unless ?(lookahead lpar) $then
-        $inject $trigger >> [read atom](start)
-    $else
-        $inject $trigger >> [read list](start)
-    $end if
+asc [read](src) >> (index (atom space modified))
+    $inject (src) >> [trim leading spaces](src)
     $wait
     $return (index (atom space))
 

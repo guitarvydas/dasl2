@@ -1,0 +1,134 @@
+def
+  ~.name = "lookup"
+  ~.eventTag in "name" = (name)
+  ~.eventTag out "found" = (found)
+  ~.eventTag out "answer" = (answer)
+  ~.inputs = ["name"]
+  ~.outputs = ["found" "answer"]
+  ~.ancestor = none
+  ~.locals = []
+  ~.input-queue = []
+  ~.output-queue = []
+  ~.initially = %fn{%asc{%inject (name) >> [trim leading spaces](name)}}
+  ~.handler = %handler{%asc{
+    $case 
+      go >> $if (?match-string) $then 
+	 $Send $trigger >> ok
+      $else
+	 $Send $trigger >> mismatch
+    }}
+  ~.finally = %fn{%asc{%return found answer}}
+  ~.children = [
+        [$self](answer)(found) >> ()
+        [scroll through atoms](name)(advance) >> (EOF)(try 1 name match)
+        [match single atom name](go) >> (mismatch) (ok)
+        [unsuccessul](conclude) >> (found)
+        [successul](conclude) >> (found answer)
+  ]
+  ~.connections = [
+        [$self](name) >> [scroll through atoms](name)
+	[scroll through atoms](EOF) >> [unsuccessful](conclude)
+	[scroll through atoms](try 1 name match) >> [match single atom name](go)
+	[match single atom name](mismatch) >> [scroll through atoms](advance)
+	[match single atom name](ok) >> [successful](conclude)
+  ]
+
+def
+  ~.name = "scroll through atoms"
+  ~.eventTag in "name" = (name)
+  ~.eventTag in "advance" = (advance)
+  ~.eventTag out "EOF" = (EOF)
+  ~.eventTag out "try 1 name match" = (try 1 name match)
+  ~.inputs = ["name" "advance"]
+  ~.outputs = ["EOF" "try 1 name match"]
+  ~.ancestor = "lookup"
+  ~.locals = []
+  ~.input-queue = []
+  ~.output-queue = []
+  ~.initially = %fn{%asc{
+      $if ?no more atoms $then
+          $send $trigger >> EOF
+      $end if
+    }}
+  ~.handler = %handler{%asc{
+    ?[ 
+        | name: 
+            $send name >> (try 1 name match)
+	| advance: 
+            @advance to next atom
+	    $send name >> (try 1 name match)
+    ]?
+    }}
+  ~.finally = %fn{%asc{%return found answer}}
+  ~.children = []
+  ~.connections = []
+
+def
+  ~.name = "match single atom name"
+  ~.eventTag in "go" = (go)
+  ~.eventTag out "mismatch" = (mistmatch)
+  ~.eventTag out "ok" = (ok)
+  ~.inputs = ["go"]
+  ~.outputs = ["mistmatch" "ok"]
+  ~.ancestor = "lookup"
+  ~.locals = []
+  ~.input-queue = []
+  ~.output-queue = []
+  ~.initially = %fn{}
+  ~.handler = %handler{%asc{
+    ?[ 
+        | go: 
+            $if (?match-string) $then
+	      $send $trigger >> ok
+            $endif
+	| *: 
+            $send $trigger >> mismatch
+    ]?
+    }}
+  ~.finally = %fn{}
+  ~.children = []
+  ~.connections = []
+
+def
+  ~.name = "unsuccessful"
+  ~.eventTag in "conclude" = ()
+  ~.eventTag out "found" = (found)
+  ~.inputs = ["conclude"]
+  ~.outputs = ["found"]
+  ~.ancestor = "lookup"
+  ~.locals = []
+  ~.input-queue = []
+  ~.output-queue = []
+  ~.initially = %fn{}
+  ~.handler = %handler{%asc{
+    ?[ 
+        | conclude: 
+	    $send $no >> found
+    ]?
+    }}
+  ~.finally = %fn{}
+  ~.children = []
+  ~.connections = []
+
+def
+  ~.name = "successful"
+  ~.eventTag in "conclude" = (answer)
+  ~.eventTag out "found" = (found)
+  ~.eventTag out "answer" = (answer)
+  ~.inputs = ["conclude"]
+  ~.outputs = ["found" "answer"]
+  ~.ancestor = "lookup"
+  ~.locals = []
+  ~.input-queue = []
+  ~.output-queue = []
+  ~.initially = %fn{}
+  ~.handler = %handler{%asc{
+    ?[ 
+        | conclude: 
+	    $send $answer >> answer
+	    $send $yes >> found
+    ]?
+    }}
+  ~.finally = %fn{}
+  ~.children = []
+  ~.connections = []

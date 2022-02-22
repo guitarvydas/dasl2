@@ -1,0 +1,16 @@
+part = { name ancestor [local] [input] [output] input-queue output-queue [child] [connection] before handler after}
+
+name = ?string
+ancestor = part
+local = {name value}
+input = {name value}
+output = name
+input-queue = ?queue
+output-queue = ?queue
+child = {child-name port-name}
+connection = { sender [receiver] }
+before = ?lambda
+handler = message-handler
+after = ?lambda
+sender = { child-name port-name }
+receiver = { child-name port-name }

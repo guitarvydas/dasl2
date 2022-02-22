@@ -1,0 +1,27 @@
+def
+  ~.name = "lookup"
+  ~.tag "name" = (name)
+  ~.tag "return" = (index (atom space modified))
+  ~.inputs = ["src"]
+  ~.outputs = ["return"]
+  ~.ancestor = "read eval format"
+  ~.locals = []
+  ~.input-queue = []
+  ~.output-queue = []
+  ~.before = %fn{%asc{%inject (src) >> [trim leading spaces](src)}}
+  ~.handler = %handler{}
+  ~.after = %fn{%asc{%return index (atom space)}}
+  ~.children = [
+        [trim leading spaces](src) >> (text)
+	[$1](text) >> (no) (yes)
+	[read atom](start) >> (answer)
+	[read list](start) >> (answer)
+  ]
+  ~.connections = [
+        [$self](src) >> [trim leading spaces](src)
+	[trim leading spaces](text) >> [$1](text)
+	[$1](no) >> [read atom](start)
+	[$1](yes) >> [read list](start)
+        [read atom](answer) >> [$self](index)
+        [read list](answer) >> [$self](index)
+  ]
