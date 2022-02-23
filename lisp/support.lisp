@@ -65,12 +65,17 @@
   ;; return t if container moved any input to any child or any of its own outputs
   ;; i.e. t => container consumed one input and activated a child, or, produced an output
   ;; i.e. nil => container has no inputs, or, container dequeued an input and discarded it
+  ;; thought: maybe there can be connections to "pass" so that messages can be dropped explicitly instead of implicitly? 
   (let ((q ($get container-context 'input-queue)))
     (cond
       ((not (null q))
        (let ((message (pop q)))
-	 (let ((
-       )))))
+         (let ((connection-map ($get container-context 'connections)))
+           (let ((connection (find-connection-by-sender (get-port-from-message message) connection-map)))
+             (let ((receivers (get-receivers-from-connection connection)))
+               (foreach receiver-port in receivers
+                        do (route-single-message receiver-port message container-context))
+               t)))))
       (t nil))))
 
 (defun find-connection-by-sender (port connection-list)
@@ -123,7 +128,7 @@
 	(foreach receiver-port in receivers
 		 do (route-single-message receiver-port message container-context))))))
 
-(defun route-single-message (receiver-port message)
+(Defun route-single-message (receiver-port message)
   (let ((etag (get-etag-from-port receiver-port)))
     (let ((m (new-message etag (get-data-from-message message))))
       (enqueue-message receiver-port m container-context))))
