@@ -70,12 +70,12 @@
   ;; i.e. t => container consumed one input and activated a child, or, produced an output
   ;; i.e. nil => container has no inputs, or, container dequeued an input and discarded it
   ;; thought: maybe there can be connections to "pass" so that messages can be dropped explicitly instead of implicitly? 
-  (let ((q ($get container-context 'input-queue)))
+  (let ((q ($get-field container-context 'input-queue)))
     (cond
       ((not (null q))
        (let ((message (dequeue-input q)))
-         (let ((connection-map ($get container-context 'connections)))
-           (let ((connection (find-connection-by-sender (get-port-from-message message) connection-map)))
+         (let ((connection-map ($get-field container-context 'connections)))
+           (let ((connection (find-connection-by-sender (new-port ($get-field container-context 'name) (get-etag-from-message message) connection-map))))
              (let ((receivers (get-receivers-from-connection connection)))
                (foreach receiver-port in receivers
                         do (route-single-message receiver-port message container-context))
@@ -117,20 +117,23 @@
 
 
 (defun route-child-outputs (container-context child-context)
-  (route-child-outputs-recursively container-context ($get-field child-context 'output-queue)))
+  (route-child-outputs-recursively container-context
+                                   ($get-field child-context 'name)
+                                   ($get-field child-context 'output-queue)))
 
-(defun route-child-outputs-recursively (container-context output-messages)
+(defun route-child-outputs-recursively (container-context child-name output-messages)
   (cond
     ((null output-messages) nil)
     (t (let ((output-message (car output-messages)))
-	 (route-message container-context output-message)))))
+	 (route-message container-context output-message child-name)))))
 
-(defun route-message (container-context message)
+(defun route-message (container-context message component-name)
   (let ((connection-map ($get-field container-context 'connections)))
-    (let ((connection (find-connection-by-sender (get-sender-from-message message) connection-map)))
-      (let ((receivers (get-receivers-from-connection connection)))
-	(foreach receiver-port in receivers
-		 do (route-single-message receiver-port message container-context))))))
+    (let ((etag (get-etag-from-message message)))
+      (let ((connection (find-connection-by-sender (new-port component-name etag) connection-map)))
+        (let ((receivers (get-receivers-from-connection connection)))
+          (foreach receiver-port in receivers
+                   do (route-single-message receiver-port message container-context)))))))
 
 (Defun route-single-message (receiver-port message container-context)
   (let ((etag (get-etag-from-port receiver-port)))
@@ -149,13 +152,28 @@
   (list etag data (cons previous-message (third previous-message))))
 
 (defun enqueue-input (context message)
-  ($set-field context 'input-queue (append ($get context 'input-queue) (list message))))
+  ($set-field context 'input-queue (append ($get-field context 'input-queue) (list message))))
 
 (defun enqueue-output (context message)
-  ($set-field context 'output-queue (append ($get context 'output-queue) (list message))))
+  ($set-field context 'output-queue (append ($get-field context 'output-queue) (list message))))
 
 (defun dequeue-input (context)
-  (when ($get context 'input-queue)
-    (pop ($get context 'input-queue))))
+  (when ($get-field context 'input-queue)
+    (let ((q ($get-field context 'input-queue)))
+      (pop q))))
       
-    
+(defun get-etag-from-message (message)
+  (first message))
+
+(defun get-data-from-message (message)
+  (second message))
+
+(defun new-port (component-name etag)
+  (list component-name etag))
+
+(defun get-receivers-from-connection (connection)
+  (second connection))
+
+(defun error-cannot-find-sender (port connection-list)
+  (format *error-output* "internal error: can't find port ~a in connection list ~a~%" port connection-list)
+  (assert nil))
