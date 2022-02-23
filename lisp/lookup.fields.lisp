@@ -1,33 +1,27 @@
-    ;; input event "name" expects data block ("name")
-    ;; output event "found" sends data block ("found")
-    ;; output event "answer" sends data block ("answer")
-
 (defparameter *lookup* 
   `(
     (name . "lookup")
-    (signals . ("name" "found" "answer"))
+    (tags . ("name" "found" "answer"))
+    ;; input event "name" expects data block ("name")
+    ;; output event "found" sends data block ("found")
+    ;; output event "answer" sends data block ("answer")
     (inputs . ("name"))
     (outputs . ("found" "answer"))
     (ancestor . nil)
     (locals . nil)
     (input-queue . nil)
     (output-queue . nil)
-    (initially .
-	       (lambda (name $context)
-		 ($set $context "name" name)
-		 ($inject $context '("scroll through atoms" "name") name)))
-    (handler . 
-	     (lambda ($context $message)
-	       (cond
-		 ((string= "found" ($message-signal $message))
-		  ($set $context "found" ($message-data $message))
-		  ($conclude))
-		 ((string= "answer" ($message-signal $message))
-		  ($set $context "answer" ($message-data $message)))
-		 (t (%message-error $context "lookup" $message)))))
-    (finally .
-	     (lambda ($context)
-	       (values ($get $context "found") ($get $context "answer"))))
+    (initially . (%asc "{%inject (name) >> [scroll through atoms](name)}"))
+    (handler . (%asc "{
+    ?[
+      | found: 
+          set $.found = $message.data
+          $conclude
+      | answer:
+          set $.answer = $message.data
+    ]?
+    }"))
+    (finally . (%asc "{%return (found answer)}"))
     (children . ("$self" "scroll through atoms" "match single atom name" "unsuccessful" "successful"))
     (connections . (
 		    ("$self" "name") (("scroll through atoms" "name"))
@@ -51,21 +45,23 @@
     (locals . nil)
     (input-queue . nil)
     (output-queue . nil)
-    (initially .
-	       (lambda ($context)
-		 (cond 
-		   ((no-more-atoms? $context)
-		    ($send $context '("scroll through atoms" "EOF") t)))))
-    (handler .
-	     (lambda ($context $message)
-	       (cond
-		 ((string= "name" ($message-signal $message))
-		  ($send $context '("scroll through atoms" "try 1 name match") ($get $context "name")))
-		 ((string= "advance" ($message-signal $message))
-		  (advance-to-next-atom $context)
-		  ($send $context '("scroll through atoms" "try 1 name match") ($get $context "name")))
-		 (t (%message-error $context "scroll through atoms" $message)))))
-    (finally . nil)
+    (initially . (%asc "
+     {
+      $if ?no more atoms $then
+          $send $trigger >> EOF
+      $end if
+     }"))
+    (handler . (%asc "
+     {
+      ?[ 
+        | name: 
+            $send name >> (try 1 name match)
+	| advance: 
+            @advance to next atom
+	    $send name >> (try 1 name match)
+      ]?
+     }"))
+    (finally  . nil)
     (children . nil)
     (connections . nil)
     ))
@@ -73,9 +69,7 @@
 (defparameter *match-single-atom-name*
   `(
     (name . "match single atom name")
-    (eventTag in "go" ("go"))
-    (eventTag out "mismatch" ("mismatch"))
-    (eventTag out "ok" ("ok"))
+    (signals . ("go" "mismatch" "ok"))
     (inputs . ("go"))
     (outputs . ("mismatch" "ok"))
     (ancestor . "lookup")
@@ -83,13 +77,16 @@
     (input-queue . nil)
     (output-queue . nil)
     (initially . nil)
-    (handler . 
-	     (lambda ($context $message)
-	       (cond
-		 ((string= "go" ($message-signal $message))
-		  ($send $context '("match single atom name" "ok") ($get $context "answer")))
-		 (t 
-		  ($send $context '("match single atom name" "mismatch") t)))))
+    (handler . (%asc "{
+    ?[ 
+        | go: 
+            $if (?match-string) $then
+	      $send $trigger >> ok
+            $endif
+	| *: 
+            $send $trigger >> mismatch
+    ]?
+    }"))
     (finally . nil)
     (children . nil)
     (connections . nil)
@@ -98,8 +95,7 @@
 (defparameter *unsuccessful*
   `(
     (name . "unsuccessful")
-    (eventTag in "conclude" ())
-    (eventTag out "found" ("found"))
+    (signals . ("conclude" "found"))
     (inputs . ("conclude"))
     (outputs . ("found")
     (ancestor . "lookup")
@@ -121,9 +117,7 @@
 (defparameter *successful*
   `(
     (name . "successful")
-    (eventTag in "conclude" ())
-    (eventTag out "found" ("found"))
-    (eventTag out "answer" ("answer"))
+    (signals . ("conclude" "found" "answer"))
     (inputs . ("conclude"))
     (outputs . ("found" "answer")
     (ancestor . "lookup")
