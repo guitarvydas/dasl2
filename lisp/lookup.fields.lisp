@@ -1,12 +1,7 @@
 (defparameter *lookup* 
   `(
     (name . "lookup")
-    (tags . ("name" "found" "answer"))
-    ;; input event "name" expects data block ("name")
-    ;; output event "found" sends data block ("found")
-    ;; output event "answer" sends data block ("answer")
-    (inputs . ("name"))
-    (outputs . ("found" "answer"))
+    (signals . ("name" "found" "answer"))
     (ancestor . nil)
     (locals . nil)
     (input-queue . nil)
@@ -137,3 +132,47 @@
     (connections . nil)
     ))
   
+
+(defparameter *lookup-signature* 
+  `(
+    (name . "lookup")
+    ;; input event "name" expects data block with fields ("name")
+    ;; output event "found" sends data block ("found")
+    ;; output event "answer" sends data block ("answer")
+    (signals . (("name" ("name")) ("found" ("found")) ("answer" ("answer"))))
+    (inputs . ("name"))
+    (outputs . ("found" "answer"))
+    ))
+
+(defparameter *scroll-through-atoms-signature*
+  `(
+    (name . "scroll through atoms")
+    (signals . (("name" ("name")) ("advance" ("advance")) ("EOF" ("EOF")) ("try 1 name match" ("try 1 name match"))))
+    (inputs . ("name" "advance"))
+    (outputs . ("EOF" "try 1 name match"))
+))
+
+(defparameter *match-single-atom-name-signature*
+  `(
+    (name . "match single atom name")
+    (signals . (("go" ("go")) ("mismatch" ("mismatch")) ("ok" ("ok"))))
+    (inputs . ("go"))
+    (outputs . ("mismatch" "ok"))
+    ))
+
+(defparameter *unsuccessful-signature*
+  `(
+    (name . "unsuccessful")
+    (signals . (("conclude" ("conclude")) ("found" ("found"))))
+    (inputs . ("conclude"))
+    (outputs . ("found"))
+    ))
+
+(defparameter *successful-signature*
+  `(
+    (name . "unsuccessful")
+    (signals . (("conclude" ("conclude")) ("found" ("found")) ("answer" ("answer"))))
+    (inputs . ("conclude"))
+    (outputs . ("found"))
+    (outputs . ("answer"))
+    ))
