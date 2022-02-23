@@ -3,6 +3,9 @@
     (when v
       (second v))))      
 
+(defun $set-field ($context field-symbol v)
+  (setf (cdr ($get-field $context field-symbol)) v))
+
 (defun $dispatch-initially ($context &rest args)
   (let ((initially-function ($get-field $context 'initially)))
     (when initially-function
@@ -33,6 +36,7 @@
   (not *done*))
 
 (defun $dispatch-concurrently ($context &rest args)
+  (declare (ignore args))
   (loop
     while (continue $context)
     do (run-once $context)))
@@ -43,9 +47,9 @@
       (let ((list-had-outputs (dispatch-each-child children)))
 	(let ((any-child-outputs (any-child-had-outputs list-had-outputs)))
 	  (cond 
-	    ((any-child-outputs
+	    (any-child-outputs
 	      (route-child-outputs $context children)
-	      t))	     
+	      t)	     
 	    (t
 	     ;; attempt container dispatch only if all children are quiescent
 	     (dispatch-container $context))))))))
@@ -69,7 +73,7 @@
   (let ((q ($get container-context 'input-queue)))
     (cond
       ((not (null q))
-       (let ((message (pop q)))
+       (let ((message (dequeue-input q)))
          (let ((connection-map ($get container-context 'connections)))
            (let ((connection (find-connection-by-sender (get-port-from-message message) connection-map)))
              (let ((receivers (get-receivers-from-connection connection)))
@@ -81,7 +85,7 @@
 (defun find-connection-by-sender (port connection-list)
   (cond
     ((null connection-list)
-     (error-cannot-find-sender port connection-lis))
+     (error-cannot-find-sender port connection-list))
     ( t
       (cond ((port-same? port (get-sender-port (car connection-list)))
 	     connection-list)
@@ -128,9 +132,9 @@
 	(foreach receiver-port in receivers
 		 do (route-single-message receiver-port message container-context))))))
 
-(Defun route-single-message (receiver-port message)
+(Defun route-single-message (receiver-port message container-context)
   (let ((etag (get-etag-from-port receiver-port)))
-    (let ((m (new-message etag (get-data-from-message message))))
+    (let ((m (new-message etag (get-data-from-message message) message)))
       (enqueue-message receiver-port m container-context))))
 
 (defun enqueue-message (port message container-context)
@@ -139,4 +143,19 @@
       (cond
 	(input? (enqueue-input target-component message))
 	(t      (enqueue-output target-component message))))))
+    
+(defun new-message (etag data previous-message)
+  ;; etag data (trace ...)
+  (list etag data (cons previous-message (third previous-message))))
+
+(defun enqueue-input (context message)
+  ($set-field context 'input-queue (append ($get context 'input-queue) (list message))))
+
+(defun enqueue-output (context message)
+  ($set-field context 'output-queue (append ($get context 'output-queue) (list message))))
+
+(defun dequeue-input (context)
+  (when ($get context 'input-queue)
+    (pop ($get context 'input-queue))))
+      
     
