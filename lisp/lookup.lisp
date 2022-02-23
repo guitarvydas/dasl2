@@ -1,30 +1,25 @@
-    ;; input event "name" expects data block ("name")
-    ;; output event "found" sends data block ("found")
-    ;; output event "answer" sends data block ("answer")
-
 (defparameter *lookup* 
   `(
     (name . "lookup")
-    (signals . ("name" "found" "answer"))
-    (inputs . ("name"))
-    (outputs . ("found" "answer"))
+    (etags . ("name" "found" "answer"))
     (ancestor . nil)
     (locals . nil)
     (input-queue . nil)
     (output-queue . nil)
     (initially .
-	       (lambda ($context)
-		 ($set $context "name" ,name)
-		 ($inject $context '("scroll through atoms" "name") ,name)))
+	       (lambda ($context &rest args)
+		 (destructuring-bind (name) args
+		   ($set $context "name" name)
+		   ($inject $context '("scroll through atoms" "name") ,name))))
     (handler . 
 	     (lambda ($context $message)
 	       (cond
 		 ((string= "found" ($message-signal $message))
 		  ($set $context "found" ($message-data $message))
-		  ($conclude))
+		  ($dispatch-conclude))
 		 ((string= "answer" ($message-signal $message))
 		  ($set $context "answer" ($message-data $message)))
-		 (t (%message-error $context "lookup" $message)))))
+		 (t ($message-error $context "lookup" $message)))))
     (finally .
 	     (lambda ($context)
 	       (values ($get $context "found") ($get $context "answer"))))
@@ -44,9 +39,7 @@
 (defparameter *scroll-through-atoms*
   `(
     (name . "scroll through atoms")
-    (signals . ("name" "advance" "EOF" "try 1 name match"))
-    (inputs . ("name" "advance"))
-    (outputs . ("EOF" "try 1 name match"))
+    (etags . ("name" "advance" "EOF" "try 1 name match"))
     (ancestor . "lookup")
     (locals . nil)
     (input-queue . nil)
@@ -64,7 +57,7 @@
 		 ((string= "advance" ($message-signal $message))
 		  (advance-to-next-atom $context)
 		  ($send $context '("scroll through atoms" "try 1 name match") ($get $context "name")))
-		 (t (%message-error $context "scroll through atoms" $message)))))
+		 (t ($message-error $context "scroll through atoms" $message)))))
     (finally . nil)
     (children . nil)
     (connections . nil)
@@ -73,9 +66,7 @@
 (defparameter *match-single-atom-name*
   `(
     (name . "match single atom name")
-    (signals. ("go" "mismatch" "ok"))
-    (inputs . ("go"))
-    (outputs . ("mismatch" "ok"))
+    (etags. ("go" "mismatch" "ok"))
     (ancestor . "lookup")
     (locals . nil)
     (input-queue . nil)
@@ -96,9 +87,7 @@
 (defparameter *unsuccessful*
   `(
     (name . "unsuccessful")
-    (signals . ("conclude" "found"))
-    (inputs . ("conclude"))
-    (outputs . ("found")
+    (etags . ("conclude" "found"))
     (ancestor . "lookup")
     (locals . nil)
     (input-queue . nil)
@@ -109,7 +98,7 @@
 	       (cond
 		 ((string= "conclude" ($message-signal $message))
 		  ($send $context '("unsuccessful" "found") $no))
-		 (t (%message-error $context "unsuccessful" $message)))))
+		 (t ($message-error $context "unsuccessful" $message)))))
     (finally . nil)
     (children . nil)
     (connections . nil)
@@ -118,9 +107,7 @@
 (defparameter *successful*
   `(
     (name . "successful")
-    (signals . ("conclude" "found" "answer"))
-    (inputs . ("conclude"))
-    (outputs . ("found" "answer")
+    (etags . ("conclude" "found" "answer"))
     (ancestor . "lookup")
     (locals . nil)
     (input-queue . nil)
@@ -132,9 +119,16 @@
 		 ((string= "conclude" ($message-signal $message))
 		  ($send $context '("successful" "answer") ($message-data $message))
 		  ($send $context '("successful" "found") $no))
-		 (t (%message-error $context "successful" $message)))))
+		 (t ($message-error $context "successful" $message)))))
     (finally . nil)
     (children . nil)
     (connections . nil)
     ))
   
+
+  
+(defun lookup (name)
+  (let ((components (list *lookup* *scroll-through-atoms* *match-single-atom-name* *unsuccessful* *successful*)))
+    (let ((top-context *lookup*))
+      ($dispatch top-context components name))))
+    
