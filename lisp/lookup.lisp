@@ -23,7 +23,11 @@
     (finally .
 	     (lambda ($context)
 	       (values ($get $context "found") ($get $context "answer"))))
-    (children . ("$self" "scroll through atoms" "match single atom name" "unsuccessful" "successful"))
+    (children . (("$self" . nil)
+		 ("scroll through atoms"  . nil)
+		 ("match single atom name" . nil)
+		 ("unsuccessful" . nil)
+		 ("successful" . nil)))
     (connections . (
 		    ("$self" "name") (("scroll through atoms" "name"))
 		    ("scroll through atoms" "EOF") (("unsuccessful" "conclude"))
@@ -129,6 +133,6 @@
   
 (defun lookup (name)
   (let ((components (list *lookup* *scroll-through-atoms* *match-single-atom-name* *unsuccessful* *successful*)))
-    (let ((top-context *lookup*))
+    (let ((top-context niy))
       ($dispatch top-context components name))))
     

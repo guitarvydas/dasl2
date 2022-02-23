@@ -89,7 +89,7 @@
     ( t
       (cond ((port-same? port (get-sender-port (car connection-list)))
 	     connection-list)
-	    (t (find-sender port (cdr connection-list)))))))
+	    (t (find-connection-by-sender port (cdr connection-list)))))))
 
 (defun get-sender-port (connection)
   (car connection))
@@ -133,10 +133,10 @@
       (let ((connection (find-connection-by-sender (new-port component-name etag) connection-map)))
         (let ((receivers (get-receivers-from-connection connection)))
           (foreach receiver-port in receivers
-                   do (route-single-message receiver-port message container-context)))))))
+                   do (route-single-message receiver-instance receiver-port message container-context)))))))
 
-(Defun route-single-message (receiver-port message container-context)
-  (let ((etag (get-etag-from-port receiver-port)))
+(defun route-single-message (receiver-port message container-context)
+  (let ((etag (get-etag-from-message message)))
     (let ((m (new-message etag (get-data-from-message message) message)))
       (enqueue-message receiver-port m container-context))))
 
@@ -177,3 +177,22 @@
 (defun error-cannot-find-sender (port connection-list)
   (format *error-output* "internal error: can't find port ~a in connection list ~a~%" port connection-list)
   (assert nil))
+
+(defun error-cannot-find-child ($context child-name)
+  (format *error-output* "internal error: can't find child ~a in context ~a~%" child-name $context)
+  (assert nil))
+
+(defun lookup-child ($context child-name)
+  (lookup-child-recursive $context ($get-field $context 'children) child-name))
+
+(defun lookup-child-recursive ($context children-list child-name)
+  (cond
+   ((null children-list) (error-cannot-find-child $context child-name))
+   ((string= child-name (get-local-child-name (first children-list)))
+    (get-local-child-instance (first children-list)))
+   (t (lookup-child-recursive $context (rest children-list) child-name))))
+
+(defun get-local-child-name (pair)
+  (first pair))
+(defun get-local-child-instance (pair)
+  (second pair))
