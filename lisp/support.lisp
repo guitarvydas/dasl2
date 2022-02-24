@@ -229,7 +229,7 @@
       '(input-queue nil)
       '(output-queue nil)
       `(ancestor  ,parent)
-      (copy-prototype prototype))))))
+      (copy-prototype prototype)))))))
 
 (defun instantiate-children (prototype-bag parent children descriptor)
   (cond 
