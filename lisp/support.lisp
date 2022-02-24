@@ -133,20 +133,19 @@
       (let ((connection (find-connection-by-sender (new-port component-name etag) connection-map)))
         (let ((receivers (get-receivers-from-connection connection)))
           (foreach receiver-port in receivers
-                   do (route-single-message receiver-instance receiver-port message container-context)))))))
+                   do (route-single-message receiver-port message component-name container-context)))))))
 
-(defun route-single-message (receiver-port message container-context)
+(defun route-single-message (receiver-port message target-component-name container-context)
   (let ((etag (get-etag-from-message message)))
     (let ((m (new-message etag (get-data-from-message message) message)))
-      (enqueue-message receiver-port m container-context))))
+      (enqueue-message receiver-port m target-component-name container-context))))
 
-(defun enqueue-message (port message container-context)
-  (let ((target-component-name (get-component-from-message container-context message)))
-    (let ((target-instance (get-instance-from-name target-component-name container-context)))
-      (let ((direction (determine-port-direction port target-instance)))
-	(cond
-	  ((eq 'input direction) (enqueue-input target-instance message))
-	  (t      (enqueue-output target-instance message)))))))
+(defun enqueue-message (port message target-component-name container-context)
+  (let ((target-instance (get-instance-from-name target-component-name container-context)))
+    (let ((direction (determine-port-direction port target-instance)))
+      (cond
+       ((eq 'input direction) (enqueue-input target-instance message))
+       (t      (enqueue-output target-instance message))))))
     
 (defun new-message (etag data previous-message)
   ;; etag data (trace ...)
