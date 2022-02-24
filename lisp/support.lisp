@@ -141,11 +141,12 @@
       (enqueue-message receiver-port m container-context))))
 
 (defun enqueue-message (port message container-context)
-  (let ((target-component (get-component-from-message container-context message)))
-    (let ((input? (determine-port-direction port)))
-      (cond
-	(input? (enqueue-input target-component message))
-	(t      (enqueue-output target-component message))))))
+  (let ((target-component-name (get-component-from-message container-context message)))
+    (let ((target-instance (get-instance-from-name target-component-name container-context)))
+      (let ((direction (determine-port-direction port target-instance)))
+	(cond
+	  ((eq 'input direction) (enqueue-input target-instance message))
+	  (t      (enqueue-output target-instance message)))))))
     
 (defun new-message (etag data previous-message)
   ;; etag data (trace ...)
@@ -186,6 +187,11 @@
   (format *error-output* "internal error: can't find prototype ~a~%" prototype-name)
   (assert nil))
 
+(defun error-cannot-find-child (name container-context)
+  (format *error-output* "internal error: can't find child ~a in ~a~%" name container-context)
+  (assert nil))
+
+
 (defun lookup-child ($context child-name)
   (lookup-child-recursive $context ($get-field $context 'children) child-name))
 
@@ -204,19 +210,21 @@
 
 
 (defun instantiate (prototype parent prototype-bag)
-  (instantiate-children 
-   prototype-bag
-   parent
-   ($get-field prototype 'children)
-   (instantiate-locals
-    ($get-field prototype 'locals)
-    (cons 
-     '(input-queue . nil)
-     (cons
-      '(output-queue . nil)
+  (cons 
+   (cons 'prototype prototype)
+   (instantiate-children 
+    prototype-bag
+    parent
+    ($get-field prototype 'children)
+    (instantiate-locals
+     ($get-field prototype 'locals)
+     (cons 
+      '(input-queue . nil)
       (cons
-       `(ancestor . ,parent)
-       (copy-prototype prototype)))))))
+       '(output-queue . nil)
+       (cons
+	`(ancestor . ,parent)
+	(copy-prototype prototype))))))))
 
 (defun instantiate-children (prototype-bag parent children descriptor)
   (cond 
@@ -256,3 +264,34 @@
    ((string= prototype-name ($get-field (car prototype-bag) 'name))
     (car prototype-bag))
    (t (fetch-prototype-by-name prototype-name (cdr prototype-bag)))))
+
+(defun determine-port-direction (port component-context)
+  (cond
+    ((input? port (prototype-of component-context)) 'input)
+    ((ouput? port (prototype-of component-context)) 'output)
+    (t (errror-cannot-determine-port-direction port component-context))))
+
+(defun prototype-of (context)
+  ($get-field context 'prototype))
+
+(defun input? (port prototype)
+  (member (get-etag-of-port port) ($get-field prototype 'inputs)))
+
+(defun output? (port prototype)
+  (member (get-etag-of-port port) ($get-field prototype 'outputs)))
+
+(defun get-instance-from-name (name container-context)
+  (get-instance-from-children-by-name name ($get-field container-context 'children)))
+
+(defun get-instance-from-children-by-name (name children container-context)
+  (cond 
+    ((null children) (error-cannot-find-child name container-context))
+    ((string= name (get-child-name (car children)))
+     (get-instance (car children)))
+    (t (get-instance-from-children-by-name name (cdr children) container-context))))
+
+(defun get-child-name (pair)
+  (first pair))
+
+(defun get-instance (pair)
+  (second pair))
