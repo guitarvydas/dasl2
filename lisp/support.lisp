@@ -182,6 +182,10 @@
   (format *error-output* "internal error: can't find child ~a in context ~a~%" child-name $context)
   (assert nil))
 
+(defun error-cannot-find-prototype (prototype-name)
+  (format *error-output* "internal error: can't find prototype ~a~%" prototype-name)
+  (assert nil))
+
 (defun lookup-child ($context child-name)
   (lookup-child-recursive $context ($get-field $context 'children) child-name))
 
@@ -199,11 +203,13 @@
 
 
 
-(defun instantiate (prototype parent protype-bag)
+(defun instantiate (prototype parent prototype-bag)
   (instantiate-children 
    prototype-bag
+   parent
    ($get-field prototype 'children)
    (instantiate-locals
+    ($get-field prototype 'locals)
     (cons 
      '(input-queue . nil)
      (cons
@@ -217,7 +223,7 @@
     ((null children) descriptor)
     (t (cons 
 	(instantiate-child prototype-bag parent (car children))
-	(instantiate-children prototype-bag (cdr children) descriptor)))))
+	(instantiate-children prototype-bag parent (cdr children) descriptor)))))
 
 (defun copy-prototype (p)
   (cond
@@ -233,3 +239,20 @@
      (instantiate (fetch-prototype-by-name prototype-name prototype-bag)
 		  parent
 		  prototype-bag))))
+
+(defun instantiate-locals (locals descriptor)
+  (cond
+   ((null locals) descriptor)
+   (t (cons (instantiate-local (car locals))
+            (instantiate-locals (cdr locals) descriptor)))))
+
+(defun instantiate-local (pair)
+  (let ((name (car pair)))
+    (cons name nil))) ;; fresh CONS cell for each local, initialized to NIL
+
+(defun fetch-prototype-by-name (prototype-name prototype-bag)
+  (cond 
+   ((null prototype-bag) (error-cannot-find-prototype prototype-name))
+   ((string= prototype-name ($get-field (car prototype-bag) 'name))
+    (car prototype-bag))
+   (t (fetch-prototype-by-name prototype-name (cdr prototype-bag)))))
