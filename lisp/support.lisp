@@ -1,10 +1,10 @@
 (defun $get-field ($context field-symbol)
   (let ((v (assoc field-symbol $context)))
     (when v
-      (cdr v))))      
+      (second v))))      
 
 (defun $set-field ($context field-symbol v)
-  (setf (cdr ($get-field $context field-symbol)) v))
+  (setf (second ($get-field $context field-symbol)) v))
 
 (defun $dispatch-initially ($context &rest args)
   (let ((initially-function ($get-field $context 'initially)))
@@ -247,7 +247,7 @@
 
 (defun instantiate-child (prototype-bag parent child-pair)
   (let ((name (first child-pair))
-	(prototype-name (cdr child-pair)))
+	(prototype-name (second child-pair)))
     (cons
      name
      (instantiate (fetch-prototype-by-name prototype-name prototype-bag)
