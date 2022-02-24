@@ -191,6 +191,10 @@
   (format *error-output* "internal error: can't find child ~a in ~a~%" name container-context)
   (assert nil))
 
+(defun error-cannot-determine-port-direction (port component-context)
+  (format *error-output* "internal error: can't determine port direction ~a in ~a~%" port component-context)
+  (assert nil))
+
 
 (defun lookup-child ($context child-name)
   (lookup-child-recursive $context ($get-field $context 'children) child-name))
@@ -268,10 +272,10 @@
 (defun determine-port-direction (port component-context)
   (cond
     ((input? port (prototype-of component-context)) 'input)
-    ((ouput? port (prototype-of component-context)) 'output)
-    (t (errror-cannot-determine-port-direction port component-context))))
+    ((output? port (prototype-of component-context)) 'output)
+    (t (error-cannot-determine-port-direction port component-context))))
 
-(defun prototype-of (context)
+(Defun prototype-of (context)
   ($get-field context 'prototype))
 
 (defun input? (port prototype)
