@@ -283,7 +283,7 @@
   (member (get-etag-of-port port) ($get-field prototype 'outputs)))
 
 (defun get-instance-from-name (name container-context)
-  (get-instance-from-children-by-name name ($get-field container-context 'children)))
+  (get-instance-from-children-by-name name ($get-field container-context 'children) container-context))
 
 (defun get-instance-from-children-by-name (name children container-context)
   (cond 
