@@ -74,11 +74,13 @@
     (cond
       ((not (null q))
        (let ((message (dequeue-input q)))
-         (let ((connection-map ($get-field container-context 'connections)))
-           (let ((connection (find-connection-by-sender (new-port ($get-field container-context 'name) (get-etag-from-message message) connection-map))))
+         (let ((connection-map ($get-field container-context 'connections))) 
+           (let ((connection (find-connection-by-sender (new-port ($get-field container-context 'name)
+                                                                  (get-etag-from-message message))
+                                                        connection-map)))
              (let ((receivers (get-receivers-from-connection connection)))
-               (foreach receiver-port in receivers
-                        do (route-single-message receiver-port message container-context))
+               (foreach port in receivers
+                        do (route-single-message port message container-context))
                t)))))
       (t nil))))
 
@@ -132,17 +134,18 @@
     (let ((etag (get-etag-from-message message)))
       (let ((connection (find-connection-by-sender (new-port component-name etag) connection-map)))
         (let ((receivers (get-receivers-from-connection connection)))
-          (foreach receiver-port in receivers
-                   do (route-single-message receiver-port message component-name container-context)))))))
+          (foreach receiver in receivers
+                   do (route-single-message receiver message container-context)))))))
 
-(defun route-single-message (receiver-port message target-component-name container-context)
-  (let ((etag (get-etag-from-message message)))
-    (let ((m (new-message etag (get-data-from-message message) message)))
-      (enqueue-message receiver-port m target-component-name container-context))))
+(defun route-single-message (receiver message container-context)
+  (let ((target-component-name (get-component-from-receiver receiver)))
+    (let ((etag (get-etag-from-message message)))
+      (let ((m (new-message etag (get-data-from-message message) message)))
+        (enqueue-message receiver m target-component-name container-context)))))
 
-(defun enqueue-message (port message target-component-name container-context)
+(defun enqueue-message (receiver message target-component-name container-context)
   (let ((target-instance (get-instance-from-name target-component-name container-context)))
-    (let ((direction (determine-port-direction port target-instance)))
+    (let ((direction (determine-port-direction receiver target-instance)))
       (cond
        ((eq 'input direction) (enqueue-input target-instance message))
        (t      (enqueue-output target-instance message))))))
@@ -184,10 +187,6 @@
 
 (defun error-cannot-find-prototype (prototype-name)
   (format *error-output* "internal error: can't find prototype ~a~%" prototype-name)
-  (assert nil))
-
-(defun error-cannot-find-child (name container-context)
-  (format *error-output* "internal error: can't find child ~a in ~a~%" name container-context)
   (assert nil))
 
 (defun error-cannot-determine-port-direction (port component-context)
@@ -268,13 +267,13 @@
     (car prototype-bag))
    (t (fetch-prototype-by-name prototype-name (cdr prototype-bag)))))
 
-(defun determine-port-direction (port component-context)
+(defun determine-port-direction (receiver component-context)
   (cond
-    ((input? port (prototype-of component-context)) 'input)
-    ((output? port (prototype-of component-context)) 'output)
-    (t (error-cannot-determine-port-direction port component-context))))
+    ((input? receiver (prototype-of component-context)) 'input)
+    ((output? receiver (prototype-of component-context)) 'output)
+    (t (error-cannot-determine-port-direction receiver component-context))))
 
-(Defun prototype-of (context)
+(defun prototype-of (context)
   ($get-field context 'prototype))
 
 (defun input? (port prototype)
@@ -288,7 +287,7 @@
 
 (defun get-instance-from-children-by-name (name children container-context)
   (cond 
-    ((null children) (error-cannot-find-child name container-context))
+    ((null children) (error-cannot-find-child container-context name))
     ((string= name (get-child-name (car children)))
      (get-instance (car children)))
     (t (get-instance-from-children-by-name name (cdr children) container-context))))
@@ -298,3 +297,6 @@
 
 (defun get-instance (pair)
   (second pair))
+
+(defun get-component-from-receiver (receiver-port)
+  (first receiver-port))
