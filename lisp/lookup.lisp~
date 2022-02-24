@@ -1,4 +1,7 @@
-(name . "lookup")
-(eventTag in "name" ("name"))
-(eventTag out "found" ("found"))
-(eventTag out "answer" ("answer"))
+
+  
+(defun lookup (name)
+  (let ((components (list *lookup* *scroll-through-atoms* *match-single-atom-name* *unsuccessful* *successful*)))
+    (let ((top-context (instantiate *lookup* 'no-ancestor)))
+      ($dispatch top-context components name))))
+

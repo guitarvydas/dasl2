@@ -90,7 +90,7 @@
     (name . "unsuccessful")
     (signals . ("conclude" "found"))
     (inputs . ("conclude"))
-    (outputs . ("found")
+    (outputs . ("found"))
     (locals . nil)
     (initially . nil)
     (handler . (%asc "{
@@ -109,7 +109,7 @@
     (name . "successful")
     (signals . ("conclude" "found" "answer"))
     (inputs . ("conclude"))
-    (outputs . ("found" "answer")
+    (outputs . ("found" "answer"))
     (locals . nil)
     (initially . nil)
     (handler . (%asc "{

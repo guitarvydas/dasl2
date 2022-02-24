@@ -16,13 +16,7 @@
     (when finally-function
       (funcall finally-function $context args))))
 
-(defparameter *all-components* nil)
-
-(defun $dispatch-add-components (list-of-components)
-  (setf *all-components* (append *all-components* list-of-components)))
-
-(defun $dispatch ($context $components &rest args)
-  ($dispatch-add-components $components)
+(defun $dispatch ($context &rest args)
   ($dispatch-initially $context args)
   ($dispatch-concurrently $context args)
   ($dispatch-finally $context args))
