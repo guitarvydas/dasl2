@@ -216,27 +216,20 @@
 
 
 (defun instantiate (prototype parent prototype-bag)
-  (cons
-   (cons 'prototype prototype)
-   (cons 'children
-   (instantiate-children 
-    prototype-bag
-    parent
-    ($get-field prototype 'children)
-    (instantiate-locals
-     ($get-field prototype 'locals)
-     (list 
-      '(input-queue nil)
-      '(output-queue nil)
-      `(ancestor  ,parent)
-      (copy-prototype prototype)))))))
+  `((prototype . ,prototype)
+    (children . ,(instantiate-children prototype-bag parent ($get-field prototype 'children)))
+    (locals . ,(instantiate-locals ($get-field prototype 'locals)))
+    (input-queue . nil)
+    (output-queue . nil)
+    (ancestor . ,parent)
+    ,@(copy-prototype prototype)))
 
-(defun instantiate-children (prototype-bag parent children descriptor)
+(defun instantiate-children (prototype-bag parent children)
   (cond 
-    ((null children) descriptor)
+    ((null children) nil)
     (t (cons 
 	(instantiate-child prototype-bag parent (car children))
-	(instantiate-children prototype-bag parent (cdr children) descriptor)))))
+	(instantiate-children prototype-bag parent (cdr children))))))
 
 (defun copy-prototype (p)
   (cond
@@ -253,11 +246,11 @@
 		  parent
 		  prototype-bag))))
 
-(defun instantiate-locals (locals descriptor)
+(defun instantiate-locals (locals)
   (cond
-   ((null locals) descriptor)
+   ((null locals) nil)
    (t (cons (instantiate-local (car locals))
-            (instantiate-locals (cdr locals) descriptor)))))
+            (instantiate-locals (cdr locals))))))
 
 (defun instantiate-local (pair)
   (let ((name (car pair)))
