@@ -1,10 +1,10 @@
 (defun $get-field ($context field-symbol)
   (let ((v (assoc field-symbol $context)))
     (when v
-      (second v))))      
+      (cdr v))))      
 
 (defun $set-field ($context field-symbol v)
-  (setf (second ($get-field $context field-symbol)) v))
+  (setf (cdr ($get-field $context field-symbol)) v))
 
 (defun $dispatch-initially ($context &rest args)
   (let ((initially-function ($get-field $context 'initially)))
@@ -109,7 +109,7 @@
   (first p))
 
 (defun get-etag-of-port (p)
-  (second p))
+  (cdr p))
 
 
 (defun route-children-outputs (container-context children-contexts)
@@ -156,7 +156,7 @@
     
 (defun new-message (etag data previous-message)
   ;; etag data (trace ...)
-  (list etag data (cons previous-message (third previous-message))))
+  (cons etag (cons data (cons previous-message (third previous-message)))))
 
 (defun enqueue-input (context message)
   ($set-field context 'input-queue (append ($get-field context 'input-queue) (list message))))
@@ -173,13 +173,13 @@
   (first message))
 
 (defun get-data-from-message (message)
-  (second message))
+  (cdr message))
 
 (defun new-port (component-name etag)
-  (list component-name etag))
+  (cons component-name etag))
 
 (defun get-receivers-from-connection (connection)
-  (second connection))
+  (cdr connection))
 
 (defun error-cannot-find-sender (port connection-list)
   (format *error-output* "internal error: can't find port ~a in connection list ~a~%" port connection-list)
@@ -216,21 +216,20 @@
 
 
 (defun instantiate (prototype parent prototype-bag)
-  (cons 
+  (cons
    (cons 'prototype prototype)
+   (cons 'children
    (instantiate-children 
     prototype-bag
     parent
     ($get-field prototype 'children)
     (instantiate-locals
      ($get-field prototype 'locals)
-     (cons 
-      '(input-queue . nil)
-      (cons
-       '(output-queue . nil)
-       (cons
-	`(ancestor . ,parent)
-	(copy-prototype prototype))))))))
+     (list 
+      '(input-queue nil)
+      '(output-queue nil)
+      `(ancestor  ,parent)
+      (copy-prototype prototype))))))
 
 (defun instantiate-children (prototype-bag parent children descriptor)
   (cond 
@@ -262,7 +261,7 @@
 
 (defun instantiate-local (pair)
   (let ((name (car pair)))
-    (cons name nil))) ;; fresh CONS cell for each local, initialized to NIL
+    (cons name nil))) ;; fresh list for each local, initialized to NIL
 
 (defun fetch-prototype-by-name (prototype-name prototype-bag)
   (when prototype-name ;; protype-name is NIL for $self
