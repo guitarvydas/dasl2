@@ -5,7 +5,12 @@
     (name . "lookup")
     (etags . ("name" "found" "answer"))
     (locals . nil)
-    (initially . (%asc "{%inject (name) >> [scroll through atoms](name)}"))
+    ;; (initially . (%asc "{%inject (name) >> [scroll through atoms](name)}"))
+    (initially .
+               (lambda ($context &rest args)
+                 (destructuring-bind (name)
+                     args
+                   ($inject '("scroll through atoms" "name") name $context))))
     ;; (handler . (%asc "{
     ;; ?[
     ;;   | found: 
@@ -16,7 +21,7 @@
     ;; ]?
     ;; }"))
     (handler . 
-	     (lambda (message $context)
+	     (lambda ($context)
 	       (cond
 		 ((string= "found" (get-etag-from-message message))
 		  ($set-field $context 'found (get-data-from-message message))
@@ -26,7 +31,7 @@
 		 (t (error-unhandled-message message $context)))))
     ;; (finally . (%asc "{%return (found answer)}"))
     (finally .
-	     (lambda ($context)
+	     (lambda ($context &rest args) (declare (ignore args))
 	       (values ($get-field $context "answer")
 		       ($get-field $context "found"))))
                   ;; local name . name of proto
@@ -61,7 +66,7 @@
     ;;   $end if
     ;;  }"))
     (initially . 
-	       (lambda ($context)
+	       (lambda ($context &rest args) (declare (ignore args))
 		 (cond
 		   ((atoms-no-more-atoms?)
 		    ($send '("scroll through atoms" "EOF") $no $context))
@@ -169,7 +174,7 @@
 		 ((string= "conclude" (get-etag-from-message message))
 		  ($send '("successful" "answer") (atoms-current-index) $context))
 		  ($send '("successful" "found") $yes $context))
-		 (t (error-unhandled-message message $context)))))
+		 (t (error-unhandled-message message $context))))
     (finally . nil)
     (children . nil)
     (connections . nil)

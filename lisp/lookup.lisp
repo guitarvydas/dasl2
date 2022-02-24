@@ -5,3 +5,6 @@
     (let ((top-context (instantiate *lookup* 'no-ancestor prototypes)))
       ($dispatch top-context name))))
 
+(defun test ()
+  (lookup "QUOTE"))
+

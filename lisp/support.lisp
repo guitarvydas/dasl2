@@ -1,7 +1,7 @@
 (defun $get-field ($context field-symbol)
   (let ((v (assoc field-symbol $context)))
     (when v
-      (second v))))      
+      (third v))))      
 
 (defun $set-field ($context field-symbol v)
   (setf (cdr ($get-field $context field-symbol)) v))
