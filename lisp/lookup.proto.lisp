@@ -35,11 +35,11 @@
 	       (values ($get-field $context "answer")
 		       ($get-field $context "found"))))
                   ;; local name . name of proto
-    (children . (("$self" . nil)
-		 ("scroll through atoms" . "scroll through atoms")
-		 ("match single atom name" . "match single atom name")
-		 ("unsuccessful" . "unsuccessful")
-		 ("successful" . "successful")))
+    (children . (("$self"  nil)
+		 ("scroll through atoms"  "scroll through atoms")
+		 ("match single atom name"  "match single atom name")
+		 ("unsuccessful"  "unsuccessful")
+		 ("successful"  "successful")))
     (connections . (
 		    ("$self" "name") (("scroll through atoms" "name"))
 		    ("scroll through atoms" "EOF") (("unsuccessful" "conclude"))
