@@ -196,3 +196,40 @@
   (first pair))
 (defun get-local-child-instance (pair)
   (second pair))
+
+
+
+(defun instantiate (prototype parent protype-bag)
+  (instantiate-children 
+   prototype-bag
+   ($get-field prototype 'children)
+   (instantiate-locals
+    (cons 
+     '(input-queue . nil)
+     (cons
+      '(output-queue . nil)
+      (cons
+       `(ancestor . ,parent)
+       (copy-prototype prototype)))))))
+
+(defun instantiate-children (prototype-bag parent children descriptor)
+  (cond 
+    ((null children) descriptor)
+    (t (cons 
+	(instantiate-child prototype-bag parent (car children))
+	(instantiate-children prototype-bag (cdr children) descriptor)))))
+
+(defun copy-prototype (p)
+  (cond
+    ((null p) nil)
+    (t 
+     (cons (car p) (copy-prototype (cdr p))))))
+
+(defun instantiate-child (prototype-bag parent child-pair)
+  (let ((name (first child-pair))
+	(prototype-name (second child-pair)))
+    (cons
+     name
+     (instantiate (fetch-prototype-by-name prototype-name prototype-bag)
+		  parent
+		  prototype-bag))))
