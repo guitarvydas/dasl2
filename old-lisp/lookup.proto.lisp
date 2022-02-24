@@ -6,18 +6,16 @@
     (signals . ("name" "found" "answer"))
     (locals . nil)
     (initially . (%asc "{%inject (name) >> [scroll through atoms](name)}"))
-    ;; (handler . (%asc "{
-    ;; ?[
-    ;;   | found: 
-    ;;       set $.found = $message.data
-    ;;       $conclude
-    ;;   | answer:
-    ;;       set $.answer = $message.data
-    ;; ]?
-    ;; }"))
-    niy
-    ;; (finally . (%asc "{%return (found answer)}"))
-    niy
+    (handler . (%asc "{
+    ?[
+      | found: 
+          set $.found = $message.data
+          $conclude
+      | answer:
+          set $.answer = $message.data
+    ]?
+    }"))
+    (finally . (%asc "{%return (found answer)}"))
                   ;; local name . name of proto
     (children . (("$self" . nil)
 		 ("scroll through atoms" . "scroll through atoms")
@@ -43,24 +41,22 @@
     (inputs . ("name" "advance"))
     (outputs . ("EOF" "try 1 name match"))
     (locals . nil)
-    ;; (initially . (%asc "
-    ;;  {
-    ;;   $if ?no more atoms $then
-    ;;       $send $trigger >> EOF
-    ;;   $end if
-    ;;  }"))
-    niy
-    ;; (handler . (%asc "
-    ;;  {
-    ;;   ?[ 
-    ;;     | name: 
-    ;;         $send name >> (try 1 name match)
-    ;; 	| advance: 
-    ;;         @advance to next atom
-    ;; 	    $send name >> (try 1 name match)
-    ;;   ]?
-    ;;  }"))
-    niy
+    (initially . (%asc "
+     {
+      $if ?no more atoms $then
+          $send $trigger >> EOF
+      $end if
+     }"))
+    (handler . (%asc "
+     {
+      ?[ 
+        | name: 
+            $send name >> (try 1 name match)
+	| advance: 
+            @advance to next atom
+	    $send name >> (try 1 name match)
+      ]?
+     }"))
     (finally  . nil)
     (children . nil)
     (connections . nil)
@@ -74,17 +70,16 @@
     (outputs . ("mismatch" "ok"))
     (locals . nil)
     (initially . nil)
-    ;; (handler . (%asc "{
-    ;; ?[ 
-    ;;     | go: 
-    ;;         $if (?match-string) $then
-    ;; 	      $send $trigger >> ok
-    ;;         $endif
-    ;; 	| *: 
-    ;;         $send $trigger >> mismatch
-    ;; ]?
-    ;; }"))
-    niy
+    (handler . (%asc "{
+    ?[ 
+        | go: 
+            $if (?match-string) $then
+	      $send $trigger >> ok
+            $endif
+	| *: 
+            $send $trigger >> mismatch
+    ]?
+    }"))
     (finally . nil)
     (children . nil)
     (connections . nil)
@@ -98,13 +93,12 @@
     (outputs . ("found"))
     (locals . nil)
     (initially . nil)
-    ;; (handler . (%asc "{
-    ;; ?[ 
-    ;;     | conclude: 
-    ;; 	    $send $no >> found
-    ;; ]?
-    ;; }"))
-    niy
+    (handler . (%asc "{
+    ?[ 
+        | conclude: 
+	    $send $no >> found
+    ]?
+    }"))
     (finally . nil)
     (children . nil)
     (connections . nil)
@@ -118,14 +112,13 @@
     (outputs . ("found" "answer"))
     (locals . nil)
     (initially . nil)
-    ;; (handler . (%asc "{
-    ;; ?[ 
-    ;;     | conclude: 
-    ;; 	    $send $answer >> answer
-    ;; 	    $send $yes >> found
-    ;; ]?
-    ;; }"))
-    niy
+    (handler . (%asc "{
+    ?[ 
+        | conclude: 
+	    $send $answer >> answer
+	    $send $yes >> found
+    ]?
+    }"))
     (finally . nil)
     (children . nil)
     (connections . nil)

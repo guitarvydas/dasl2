@@ -43,10 +43,7 @@
 	  (cond 
 	    (any-child-outputs
 	      (route-child-outputs $context children)
-	      t)
-	    ((leaf? $context)
-	     (dispatch-leaf $context)
-	     (has-outputs? $context))
+	      t)	     
 	    (t
 	     ;; attempt container dispatch only if all children are quiescent
 	     (dispatch-container $context))))))))
@@ -61,13 +58,6 @@
 (defun dispatch-each-child (children-contexts)
   ;; return list of booleans, t if child produced output
   (mapcar #'run-once children-contexts))
-
-(defun dispatch-leaf (context)
-  (let ((handler ($get-field context 'handler)))
-    (let ((q ($get-field context 'input-queue)))
-      (when (and q handler)
-	(let ((message (dequeue-input q)))
-	  (funcall handler context message))))))
 
 (defun dispatch-container (container-context)
   ;; return t if container moved any input to any child or any of its own outputs
@@ -148,11 +138,11 @@
         (enqueue-message receiver m target-component-name container-context)))))
 
 (defun enqueue-message (receiver message target-component-name container-context)
-  (let ((target-context (get-context-from-name target-component-name container-context)))
-    (let ((direction (determine-port-direction receiver target-context)))
+  (let ((target-instance (get-instance-from-name target-component-name container-context)))
+    (let ((direction (determine-port-direction receiver target-instance)))
       (cond
-       ((eq 'input direction) (enqueue-input target-context message))
-       (t      (enqueue-output target-context message))))))
+       ((eq 'input direction) (enqueue-input target-instance message))
+       (t      (enqueue-output target-instance message))))))
     
 (defun new-message (etag data previous-message)
   ;; etag data (trace ...)
@@ -205,12 +195,12 @@
   (cond
    ((null children-list) (error-cannot-find-child $context child-name))
    ((string= child-name (get-local-child-name (first children-list)))
-    (get-local-child-context (first children-list)))
+    (get-local-child-instance (first children-list)))
    (t (lookup-child-recursive $context (rest children-list) child-name))))
 
 (defun get-local-child-name (pair)
   (first pair))
-(defun get-local-child-context (pair)
+(defun get-local-child-instance (pair)
   (second pair))
 
 
@@ -286,27 +276,21 @@
 (defun output? (port prototype)
   (member (get-etag-of-port port) ($get-field prototype 'outputs)))
 
-(defun get-context-from-name (name container-context)
-  (get-context-from-children-by-name name ($get-field container-context 'children) container-context))
+(defun get-instance-from-name (name container-context)
+  (get-instance-from-children-by-name name ($get-field container-context 'children) container-context))
 
-(defun get-context-from-children-by-name (name children container-context)
+(defun get-instance-from-children-by-name (name children container-context)
   (cond 
     ((null children) (error-cannot-find-child container-context name))
     ((string= name (get-child-name (car children)))
-     (get-context (car children)))
-    (t (get-context-from-children-by-name name (cdr children) container-context))))
+     (get-instance (car children)))
+    (t (get-instance-from-children-by-name name (cdr children) container-context))))
 
 (defun get-child-name (pair)
   (first pair))
 
-(defun get-context (pair)
+(defun get-instance (pair)
   (second pair))
 
 (defun get-component-from-receiver (receiver-port)
   (first receiver-port))
-
-(defun leaf? ($context)
-  (not (null ($get-field $context 'children))))
-  
-(defun has-outputs? ($context)
-  (not (null ($get-field $context 'output-queue))))

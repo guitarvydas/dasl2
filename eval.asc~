@@ -1,3 +1,0 @@
-asc [eval](e)
-    $send (result) $eval(e)
-end [eval]

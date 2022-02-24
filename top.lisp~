@@ -1,7 +1,0 @@
-(defun top (NIL atom-space cons-space src out)
-  (let (conclude)
-    (let ((conclude-predicate (lambda () conclude))
-	  (not-concluded (lambda () (setf conclude nil)))
-          (concluded (lambda () (setf conclude t))))
-
-  out)
