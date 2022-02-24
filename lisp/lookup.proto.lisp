@@ -3,7 +3,7 @@
 (defparameter *lookup* 
   `(
     (name . "lookup")
-    (signals . ("name" "found" "answer"))
+    (etags . ("name" "found" "answer"))
     (locals . nil)
     (initially . (%asc "{%inject (name) >> [scroll through atoms](name)}"))
     ;; (handler . (%asc "{
@@ -15,9 +15,20 @@
     ;;       set $.answer = $message.data
     ;; ]?
     ;; }"))
-    niy
+    (handler . 
+	     (lambda (message $context)
+	       (cond
+		 ((string= "found" (get-etag-from-message message))
+		  ($set-field $context 'found (get-data-from-message message))
+		  ($conclude))
+		 ((string= "answer" (get-etag-from-message message))
+		  ($set-field $context 'answer (get-data-from-message message)))
+		 (t (error-unhandled-message message $context)))))
     ;; (finally . (%asc "{%return (found answer)}"))
-    niy
+    (finally .
+	     (lambda ($context)
+	       (values ($get-field $context "answer")
+		       ($get-field $context "found"))))
                   ;; local name . name of proto
     (children . (("$self" . nil)
 		 ("scroll through atoms" . "scroll through atoms")
@@ -39,7 +50,7 @@
 (defparameter *scroll-through-atoms*
   `(
     (name . "scroll through atoms")
-    (signals . ("name" "advance" "EOF" "try 1 name match"))
+    (etags . ("name" "advance" "EOF" "try 1 name match"))
     (inputs . ("name" "advance"))
     (outputs . ("EOF" "try 1 name match"))
     (locals . nil)
@@ -49,7 +60,12 @@
     ;;       $send $trigger >> EOF
     ;;   $end if
     ;;  }"))
-    niy
+    (initially . 
+	       (lambda ($context)
+		 (cond
+		   ((atoms-no-more-atoms?)
+		    ($send '("scroll through atoms" "EOF") $no $context))
+		   (t nil))))
     ;; (handler . (%asc "
     ;;  {
     ;;   ?[ 
@@ -60,7 +76,19 @@
     ;; 	    $send name >> (try 1 name match)
     ;;   ]?
     ;;  }"))
-    niy
+    (handler .
+	     (lambda ($context $message)
+	       (cond
+		 ((string= "name" (get-etag-from-message $message))
+		  ($send '("scroll through atoms" "try 1 name match") (atoms-current-index) $context))
+		 ((string= "advance" (get-etag-from-message message))
+		  (atoms-advance-to-next-atom)
+		  (cond
+		    ((atoms-no-more-atoms?)
+		     ($send '("scroll through atoms" "EOF") $no $context))
+		    (t ($send '("scroll through atoms" "try 1 name match") (atoms-current-index) $context))))
+		 (t (error-unhandled-message message $context)))))
+
     (finally  . nil)
     (children . nil)
     (connections . nil)
@@ -69,7 +97,7 @@
 (defparameter *match-single-atom-name*
   `(
     (name . "match single atom name")
-    (signals . ("go" "mismatch" "ok"))
+    (etags . ("go" "mismatch" "ok"))
     (inputs . ("go"))
     (outputs . ("mismatch" "ok"))
     (locals . nil)
@@ -84,7 +112,12 @@
     ;;         $send $trigger >> mismatch
     ;; ]?
     ;; }"))
-    niy
+    (handler .
+	     (lambda ($context $message)
+	       (cond
+		 ((string= "go" (get-etag-from-message message))
+		  ($send '("match single atom name" "ok") (atoms-current-index) $context))
+		 (t ($send '("match single atom name" "mismatch") t $context)))))
     (finally . nil)
     (children . nil)
     (connections . nil)
@@ -93,7 +126,7 @@
 (defparameter *unsuccessful*
   `(
     (name . "unsuccessful")
-    (signals . ("conclude" "found"))
+    (etags . ("conclude" "found"))
     (inputs . ("conclude"))
     (outputs . ("found"))
     (locals . nil)
@@ -104,7 +137,12 @@
     ;; 	    $send $no >> found
     ;; ]?
     ;; }"))
-    niy
+    (handler .
+	     (lambda ($context $message)
+	       (cond
+		 ((string= "conclude" (get-etag-from-message message))
+		  ($send '("unsuccessful" "found") $no $context))
+		 (t (error-unhandled-message message $context)))))
     (finally . nil)
     (children . nil)
     (connections . nil)
@@ -113,7 +151,7 @@
 (defparameter *successful*
   `(
     (name . "successful")
-    (signals . ("conclude" "found" "answer"))
+    (etags . ("conclude" "found" "answer"))
     (inputs . ("conclude"))
     (outputs . ("found" "answer"))
     (locals . nil)
@@ -125,7 +163,13 @@
     ;; 	    $send $yes >> found
     ;; ]?
     ;; }"))
-    niy
+    (handler .
+	     (lambda ($context $message)
+	       (cond
+		 ((string= "conclude" (get-etag-from-message message))
+		  ($send '("successful" "answer") (atoms-current-index) $context))
+		  ($send '("successful" "found") $yes $context))
+		 (t (error-unhandled-message message $context)))))
     (finally . nil)
     (children . nil)
     (connections . nil)
@@ -138,7 +182,7 @@
     ;; input event "name" expects data block with fields ("name")
     ;; output event "found" sends data block ("found")
     ;; output event "answer" sends data block ("answer")
-    (signals . (("name" ("name")) ("found" ("found")) ("answer" ("answer"))))
+    (etags . (("name" ("name")) ("found" ("found")) ("answer" ("answer"))))
     (inputs . ("name"))
     (outputs . ("found" "answer"))
     ))
@@ -146,7 +190,7 @@
 (defparameter *scroll-through-atoms-signature*
   `(
     (name . "scroll through atoms")
-    (signals . (("name" ("name")) ("advance" ("advance")) ("EOF" ("EOF")) ("try 1 name match" ("try 1 name match"))))
+    (etags . (("name" ("name")) ("advance" ("advance")) ("EOF" ("EOF")) ("try 1 name match" ("try 1 name match"))))
     (inputs . ("name" "advance"))
     (outputs . ("EOF" "try 1 name match"))
 ))
@@ -154,7 +198,7 @@
 (defparameter *match-single-atom-name-signature*
   `(
     (name . "match single atom name")
-    (signals . (("go" ("go")) ("mismatch" ("mismatch")) ("ok" ("ok"))))
+    (etags . (("go" ("go")) ("mismatch" ("mismatch")) ("ok" ("ok"))))
     (inputs . ("go"))
     (outputs . ("mismatch" "ok"))
     ))
@@ -162,7 +206,7 @@
 (defparameter *unsuccessful-signature*
   `(
     (name . "unsuccessful")
-    (signals . (("conclude" ("conclude")) ("found" ("found"))))
+    (etags . (("conclude" ("conclude")) ("found" ("found"))))
     (inputs . ("conclude"))
     (outputs . ("found"))
     ))
@@ -170,7 +214,7 @@
 (defparameter *successful-signature*
   `(
     (name . "unsuccessful")
-    (signals . (("conclude" ("conclude")) ("found" ("found")) ("answer" ("answer"))))
+    (etags . (("conclude" ("conclude")) ("found" ("found")) ("answer" ("answer"))))
     (inputs . ("conclude"))
     (outputs . ("found"))
     (outputs . ("answer"))
