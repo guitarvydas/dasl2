@@ -8,7 +8,7 @@
     ;; (initially   (%asc "{%inject (name) >> [scroll through atoms](name)}"))
     (initially . 
                ,(lambda ($context)
-                  (format *standard-output* "lookup initially")
+                  (format *standard-output* "lookup initially~%")
                  (let ((name ($get-field ($get-field $context '$args) 'name)))
                    ($inject '("scroll through atoms" "name") name $context nil))))
     ;; (handler   (%asc "{
@@ -22,7 +22,7 @@
     ;; }"))
     (handler .  
 	     ,(lambda ($context $message)
-                  (format *standard-output* "lookup handler")
+                  (format *standard-output* "lookup handler~%")
 	       (cond
 		 ((string= "found" (get-etag-from-message $message))
 		  (let (($context ($set-field $context 'found (get-data-from-message $message))))
@@ -34,7 +34,7 @@
     ;; (finally . (%asc "{%return (found answer)}"))
     (finally  .
               ,(lambda ($context) (declare (ignore args))
-                  (format *standard-output* "lookup finally")
+                  (format *standard-output* "lookup finally~%")
                  (values ($get-field $context "answer")
                          ($get-field $context "found"))))
     ;; local name . name of proto
@@ -70,7 +70,7 @@
     ;;  }"))
     (initially   .
 	       (lambda ($context)
-                  (format *standard-output* "[scroll through atoms] initially")
+                  (format *standard-output* "[scroll through atoms] initially~%")
 		 (let ((atom-memory ($get-field ($get-field $context 'args) 'atom-memory)))
 		   (cond
 		     ((?eof atom-memory)
@@ -88,7 +88,7 @@
     ;;  }"))
     (handler . 
 	     ,(lambda ($context $message)
-                  (format *standard-output* "[scroll through atoms] handler")
+                  (format *standard-output* "[scroll through atoms] handler~%")
 		(let ((atom-memory ($get-field ($get-field $context 'args) 'atom-memory)))
                   (cond
                    ((string= "name" (get-etag-from-message $message))
@@ -127,7 +127,7 @@
     ;; }"))
     (handler . 
 	     ,(lambda ($context $message)
-                  (format *standard-output* "[match single atom] handler")
+                  (format *standard-output* "[match single atom] handler~%")
                 (let ((atom-memory ($get-field ($get-field $context 'args) 'atom-memory)))
                   (cond
                    ((string= "go" (get-etag-from-message $message))
@@ -154,7 +154,7 @@
     ;; }"))
     (handler . 
 	     ,(lambda ($context $message)
-                  (format *standard-output* "[unsuccessful] handler")
+                  (format *standard-output* "[unsuccessful] handler~%")
 	       (cond
 		 ((string= "conclude" (get-etag-from-message $message))
 		  ($send '("unsuccessful" "found") $no $context $message)
@@ -182,7 +182,7 @@
     ;; }"))
     (handler . 
 	     ,(lambda ($context $message)
-                  (format *standard-output* "[successful] handler")
+                  (format *standard-output* "[successful] handler~%")
                 (let ((atom-memory ($get-field ($get-field $context 'args) 'atom-memory)))
                   (cond
                    ((string= "conclude" (get-etag-from-message $message))
