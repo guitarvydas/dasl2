@@ -2,12 +2,14 @@
 (defparameter $yes t)
 
 (defun $get-field ($context field-symbol)
-  (let ((v (assoc field-symbol $context)))
-    (cond
-     (v (cdr v))
-     ((null ($get-field $context 'ancestor))
-      nil)
-     (t ($get-field ($get-field $context 'ancestor) field-symbol))))) ;; find field recursively in parent
+  (format *standard-output* "$get-field ~a~%" field-symbol)
+  (cond
+   ($context
+    (let ((v (assoc field-symbol $context)))
+      (cond
+       (v (cdr v))
+       (t ($get-field ($get-field $context 'ancestor) field-symbol))))) ;; find field recursively in parent
+   (t nil)))
 
 (defun $maybe-set-field ($context field-symbol v)
   (cond
@@ -62,10 +64,10 @@
   (loop
     while ($dispatch-continue? $context)
     do (progn
-	 (format *standard-output* "dispatch-concurrently a~%")
+	 (format *standard-output* "dispatch-concurrently (a)~%")
 	 (dump $context 0)
 	 (run-once $context)
-	 (format *standard-output* "dispatch-concurrently b~%")
+	 (format *standard-output* "dispatch-concurrently (b)~%")
 	 (dump $context 0)
          (car '(debug))
 	 )))

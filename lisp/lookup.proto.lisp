@@ -3,6 +3,7 @@
 (defparameter *lookup* 
   `(
     (name  . "lookup")
+    (args . nil)
     (etags  . ("name" "found" "answer"))
     (locals  . nil)
     ;; (initially   (%asc "{%inject (name) >> [scroll through atoms](name)}"))
@@ -58,6 +59,7 @@
 (defparameter *scroll-through-atoms*
   `(
     (name  . "scroll through atoms")
+    (args . nil)
     (etags  . ("name" "advance" "EOF" "try 1 name match"))
     (inputs .  ("name" "advance"))
     (outputs .  ("EOF" "try 1 name match"))
@@ -110,6 +112,7 @@
 (defparameter *match-single-atom-name*
   `(
     (name .  "match single atom name")
+    (args . nil)
     (etags .  ("go" "mismatch" "ok"))
     (inputs .  ("go"))
     (outputs .  ("mismatch" "ok"))
@@ -141,6 +144,7 @@
 (defparameter *unsuccessful*
   `(
     (name .  "unsuccessful")
+    (args . nil)
     (etags .  ("conclude" "found"))
     (inputs .  ("conclude"))
     (outputs .  ("found"))
@@ -168,6 +172,7 @@
 (defparameter *successful*
   `(
     (name .  "successful")
+    (args . nil)
     (etags .  ("conclude" "found" "answer"))
     (inputs .  ("conclude"))
     (outputs .  ("found" "answer"))
