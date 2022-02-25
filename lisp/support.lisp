@@ -13,20 +13,20 @@
    (t
     (setf (cdr ($get-field $context field-symbol)) v))))
 
-(defun $dispatch-initially ($context &rest args)
+(defun $dispatch-initially ($context)
   (let ((initially-function ($get-field $context 'initially)))
     (when initially-function
-      (funcall initially-function $context args))))
+      (funcall initially-function $context))))
 
-(defun $dispatch-finally ($context &rest args)
+(defun $dispatch-finally ($context)
   (let ((finally-function ($get-field $context 'finally)))
     (when finally-function
-      (funcall finally-function $context args))))
+      (funcall finally-function $context))))
 
-(defun $dispatch ($context &rest args)
-  ($dispatch-initially $context args)
-  ($dispatch-concurrently $context args)
-  ($dispatch-finally $context args))
+(defun $dispatch ($context)
+  ($dispatch-initially $context)
+  ($dispatch-concurrently $context)
+  ($dispatch-finally $context))
 
 (defparameter *done* nil)
 (defun $dispatch-conclude ($context)
