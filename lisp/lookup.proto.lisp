@@ -7,9 +7,8 @@
     (locals  . nil)
     ;; (initially   (%asc "{%inject (name) >> [scroll through atoms](name)}"))
     (initially . 
-               ,(lambda ($context &rest args)
-                 (destructuring-bind (name)
-                     args
+               ,(lambda ($context)
+                 (let ((name ($get-field ($get-field $context '$args) 'name)))
                    ($inject '("scroll through atoms" "name") name $context))))
     ;; (handler   (%asc "{
     ;; ?[
@@ -31,7 +30,7 @@
 		 (t (error-unhandled-message $message $context)))))
     ;; (finally . (%asc "{%return (found answer)}"))
     (finally  .
-              ,(lambda ($context &rest args) (declare (ignore args))
+              ,(lambda ($context) (declare (ignore args))
                  (values ($get-field $context "answer")
                          ($get-field $context "found"))))
     ;; local name . name of proto
@@ -66,11 +65,12 @@
     ;;   $end if
     ;;  }"))
     (initially   .
-	       (lambda ($context &rest args) (declare (ignore args))
-		 (cond
-		   ((atoms-no-more-atoms?)
-		    ($send '("scroll through atoms" "EOF") $no $context '("scroll-through-atoms" "initially")))
-		   (t nil))))
+	       (lambda ($context)
+		 (let ((atom-memory ($get-field ($get-field $context 'args) 'atom-memory)))
+		   (cond
+		     ((?eof atom-memory)
+		      ($send '("scroll through atoms" "EOF") $no $context '("scroll-through-atoms" "initially")))
+		     (t nil)))))
     ;; (handler . (%asc "
     ;;  {
     ;;   ?[ 
@@ -83,16 +83,18 @@
     ;;  }"))
     (handler . 
 	     ,(lambda ($context $message)
-                (cond
-		 ((string= "name" (get-etag-from-message $message))
-		  ($send '("scroll through atoms" "try 1 name match") (atoms-current-index) $context $message))
-		 ((string= "advance" (get-etag-from-message $message))
-		  (atoms-advance-to-next-atom)
-		  (cond
-                   ((atoms-no-more-atoms?)
-                    ($send '("scroll through atoms" "EOF") $no $context $message))
-                   (t ($send '("scroll through atoms" "try 1 name match") (atoms-current-index) $context $message))))
-		 (t (error-unhandled-message $message $context)))))
+		(let ((atom-memory ($get-field ($get-field $context 'args) 'atom-memory)))
+                  (cond
+                   ((string= "name" (get-etag-from-message $message))
+                    ($send '("scroll through atoms" "try 1 name match") (current-atom-index atom-memory) $context $message))
+                   ((string= "advance" (get-etag-from-message $message))
+                    (let ((atom-memory ($get-field ($get-field $context 'args) 'atom-memory)))
+                      (@advance-to-next-atom atom-memory)
+                      (cond
+                       ((?eof atom-memory)
+                        ($send '("scroll through atoms" "EOF") $no $context $message))
+			   (t ($send '("scroll through atoms" "try 1 name match") (current-atom-index atom-memory) $context $message)))))
+                   (t (error-unhandled-message $message $context))))))
     
     (finally  .  nil)
     (children .  nil)
@@ -119,10 +121,11 @@
     ;; }"))
     (handler . 
 	     ,(lambda ($context $message)
-                (cond
-		 ((string= "go" (get-etag-from-message $message))
-		  ($send '("match single atom name" "ok") (atoms-current-index) $context $message))
-		 (t ($send '("match single atom name" "mismatch") t $context $message)))))
+                (let ((atom-memory ($get-field ($get-field $context 'args) 'atom-memory)))
+                  (cond
+                   ((string= "go" (get-etag-from-message $message))
+                    ($send '("match single atom name" "ok") (current-atom-index atom-memory) $context $message))
+                   (t ($send '("match single atom name" "mismatch") t $context $message))))))
     (finally .  nil)
     (children .  nil)
     (connections .  nil)
@@ -170,11 +173,12 @@
     ;; }"))
     (handler . 
 	     ,(lambda ($context $message)
-	       (cond
-		 ((string= "conclude" (get-etag-from-message $message))
-		  ($send '("successful" "answer") (atoms-current-index) $context $message)
-		  ($send '("successful" "found") $yes $context $message))
-		 (t (error-unhandled-message $message $context)))))
+                (let ((atom-memory ($get-field ($get-field $context 'args) 'atom-memory)))
+                  (cond
+                   ((string= "conclude" (get-etag-from-message $message))
+                    ($send '("successful" "answer") (current-atom-index atom-memory) $context $message)
+                    ($send '("successful" "found") $yes $context $message))
+                   (t (error-unhandled-message $message $context))))))
     (finally .  nil)
     (children .  nil)
     (connections .  nil)
