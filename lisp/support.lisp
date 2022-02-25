@@ -9,7 +9,7 @@
 (defun $set-field ($context field-symbol v)
   (cond
    ((null ($get-field $context field-symbol))
-    `( (field-symbol . ,v) ,@$context))
+    `( (,field-symbol . ,v) ,@$context))
    (t
     (setf (cdr ($get-field $context field-symbol)) v))))
 
