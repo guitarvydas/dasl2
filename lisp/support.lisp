@@ -43,12 +43,12 @@
     do (run-once $context)))
 
 (defun run-once ($context)
-  (let ((children-names ($get-field $context 'children)))
-    (let ((children (map-child-names-to-contexts $context children-names)))
+  (let ((children-pairs ($get-field $context 'children)))
+    (let ((children (map-child-names-to-contexts $context children-pairs)))
       (let ((list-had-outputs (dispatch-each-child children)))
-	(let ((any-child-outputs (any-child-had-outputs list-had-outputs)))
+	(let ((any-child-outputs? (any-child-had-outputs? list-had-outputs)))
 	  (cond 
-	    (any-child-outputs
+	    (any-child-outputs?
 	      (route-child-outputs $context children)
 	      t)
 	    ((leaf? $context)
@@ -59,13 +59,15 @@
 	     (dispatch-container $context))))))))
 
 
-(defun map-child-names-to-contexts ($context children-names)
-  (mapcar #'(lambda (child-name) (lookup-child $context child-name)) children-names))
+(defun map-child-names-to-contexts ($context children-pairs)
+  (mapcar #'(lambda (child-pair) (lookup-child $context (child-name child-pair))) children-pairs))
 
-(defun any-child-had-outputs (booleans)
+(defun child-name (pair) (car pair))
+
+(defun any-child-had-outputs? (booleans)
   (mapc #'(lambda (x) 
 	    (cond
-	      (x (return-from any-child-had-outputs t))))
+	      (x (return-from any-child-had-outputs? t))))
 	booleans)
   nil)
 
@@ -261,7 +263,7 @@
 
 (defun instantiate-child (prototype-bag parent child-pair)
   (let ((name (first child-pair))
-	(prototype-name (second child-pair)))
+	(prototype-name (cdr child-pair)))
     (cons
      name
      (instantiate (fetch-prototype-by-name prototype-name prototype-bag)
