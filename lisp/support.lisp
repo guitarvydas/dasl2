@@ -59,7 +59,11 @@
   (mapcar #'(lambda (child-name) (lookup-child $context child-name)) children-names))
 
 (defun any-child-had-outputs (booleans)
-  (apply #'and booleans)) ;; fold all booleans into one big AND
+  (mapc #'(lambda (x) 
+	    (cond
+	      (x (return-from any-child-had-outputs t))))
+	booleans)
+  nil)
 
 (defun dispatch-each-child (children-contexts)
   ;; return list of booleans, t if child produced output

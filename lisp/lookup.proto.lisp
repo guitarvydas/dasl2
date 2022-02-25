@@ -9,7 +9,7 @@
     (initially . 
                ,(lambda ($context)
                  (let ((name ($get-field ($get-field $context '$args) 'name)))
-                   ($inject '("scroll through atoms" "name") name $context))))
+                   ($inject '("scroll through atoms" "name") name $context nil))))
     ;; (handler   (%asc "{
     ;; ?[
     ;;   | found: 
