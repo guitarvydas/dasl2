@@ -23,10 +23,11 @@
 	     ,(lambda ($context $message)
 	       (cond
 		 ((string= "found" (get-etag-from-message $message))
-		  ($set-field $context 'found (get-data-from-message $message))
-		  ($dispatch-conclude $context))
+		  (let (($context ($set-field $context 'found (get-data-from-message $message))))
+                    ($dispatch-conclude $context)))
 		 ((string= "answer" (get-etag-from-message $message))
-		  ($set-field $context 'answer (get-data-from-message $message)))
+		  (let (($context2 ($set-field $context 'answer (get-data-from-message $message))))
+                    (declare (ignore $context2))))
 		 (t (error-unhandled-message $message $context)))))
     ;; (finally . (%asc "{%return (found answer)}"))
     (finally  .

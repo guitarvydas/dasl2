@@ -7,7 +7,11 @@
       (cdr v))))      
 
 (defun $set-field ($context field-symbol v)
-  (setf (cdr ($get-field $context field-symbol)) v))
+  (cond
+   ((null ($get-field $context field-symbol))
+    `( (field-symbol . ,v) ,@$context))
+   (t
+    (setf (cdr ($get-field $context field-symbol)) v))))
 
 (defun $dispatch-initially ($context &rest args)
   (let ((initially-function ($get-field $context 'initially)))
