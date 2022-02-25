@@ -44,25 +44,19 @@
 
 (defun run-once ($context)
   (let ((children-pairs ($get-field $context 'children)))
-    (let ((children (map-child-names-to-contexts $context children-pairs)))
-      (let ((list-had-outputs (dispatch-each-child children)))
-	(let ((any-child-outputs? (any-child-had-outputs? list-had-outputs)))
-	  (cond 
-	    (any-child-outputs?
-	      (route-child-outputs $context children)
-	      t)
-	    ((leaf? $context)
-	     (dispatch-leaf $context)
-	     (has-outputs? $context))
-	    (t
-	     ;; attempt container dispatch only if all children are quiescent
-	     (dispatch-container $context))))))))
+    (let ((list-had-outputs (dispatch-each-child children-pairs)))
+      (let ((any-child-outputs? (any-child-had-outputs? list-had-outputs)))
+        (cond 
+         (any-child-outputs?
+          (route-child-outputs $context children-pairs)
+          t)
+         ((leaf? $context)
+          (dispatch-leaf $context)
+          (has-outputs? $context))
+         (t
+          ;; attempt container dispatch only if all children are quiescent
+          (dispatch-container $context)))))))
 
-
-(defun map-child-names-to-contexts ($context children-pairs)
-  (mapcar #'(lambda (child-pair) (lookup-child $context (child-name child-pair))) children-pairs))
-
-(defun child-name (pair) (car pair))
 
 (defun any-child-had-outputs? (booleans)
   (mapc #'(lambda (x) 
@@ -71,9 +65,12 @@
 	booleans)
   nil)
 
-(defun dispatch-each-child (children-contexts)
+(defun dispatch-each-child (children-name-context-pairs)
   ;; return list of booleans, t if child produced output
-  (mapcar #'run-once children-contexts))
+  (mapcar $'(lambda (name-context-pair)
+              (let ((child-context (cdr name-context-pair)))
+                (run-once child-context)))
+          children-name-context-pairs))
 
 (defun dispatch-leaf (context)
   (let ((handler ($get-field context 'handler)))
@@ -125,19 +122,21 @@
   (cdr p))
 
 
-(defun route-children-outputs (container-context children-contexts)
+(defun route-children-outputs (container-context children-name-context-pairs)
   ;; move all outputs from children to other children (or to self's output)
   ;; remap etags along the way (in general an output etag will not be the same as a target's etag, and, a target's etag will not be the same as another target's etag)
   (cond
-    ((null children-contexts) nil)
-    (t (let ((child (car children-contexts)))
-	 (route-child-outputs container-context child)
+    ((null children-name-context-pairs) nil)
+    (t (let ((child-name-context (first children-contexts)))
+	 (route-child-outputs container-context (get-child-context child-name-context))
 	 (route-children-outputs container-context (cdr children-contexts))))))
 
 
-(defun route-child-outputs (container-context child-context)
+(defun route-child-outputs (container-context child-name-context-pair)
+  (let ((child-name (get-child-name child-name-context-pair))
+	(child-context (get-child-context child-name-context-pair)))
   (route-child-outputs-recursively container-context
-                                   ($get-field child-context 'name)
+				   child-name
                                    ($get-field child-context 'output-queue)))
 
 (defun route-child-outputs-recursively (container-context child-name output-messages)
@@ -310,14 +309,8 @@
   (cond 
     ((null children) (error-cannot-find-child container-context name))
     ((string= name (get-child-name (car children)))
-     (get-context (car children)))
+     (get-child-context (car children)))
     (t (get-context-from-children-by-name name (cdr children) container-context))))
-
-(defun get-child-name (pair)
-  (first pair))
-
-(defun get-context (pair)
-  (second pair))
 
 (defun get-component-from-receiver (receiver-port)
   (first receiver-port))
@@ -342,3 +335,7 @@
     (let ((child-context (lookup-child container-context receiver-name)))
       (enqueue-input child-context (new-message receiver-port v debug)))))
 
+(defun get-child-name (name-context-pair)
+  (car name-context-pair))
+(defun get-child-context (name-context-pair)
+  (cdr name-context-pair))
