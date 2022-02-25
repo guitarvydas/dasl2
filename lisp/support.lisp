@@ -4,7 +4,7 @@
 (defun $get-field ($context field-symbol)
   (let ((v (assoc field-symbol $context)))
     (when v
-      (cdr v))))      
+      (cdr v))))
 
 (defun $set-field ($context field-symbol v)
   (cond
@@ -256,6 +256,7 @@
   (cond
     ((null p) nil)
     (t 
+(format *standard-output* "copy car=~a~%" (car p))
      (cons (car p) (copy-prototype (cdr p))))))
 
 (defun instantiate-child (prototype-bag parent child-pair)
