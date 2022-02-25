@@ -1,14 +1,17 @@
 (defparameter $no nil)
 (defparameter $yes t)
 
+(defun $get-kv ($context field-symbol)
+  (assoc field-symbol $context))
+
 (defun $get-field ($context field-symbol)
   (cond
    ((not (null $context))
-    (let ((v (assoc field-symbol $context)))
+    (let ((v ($get-kv $context field-symbol)))
       (cond
        (v (cdr v))
        (t
-        (let ((parent-pair (assoc 'ancestor $context)))
+        (let ((parent-pair ($get-kv $context 'ancestor)))
           (cond
            ((null parent-pair) nil)
            (t ($get-field (cdr parent-pair) field-symbol)))))))) ;; find field recursively in parent
@@ -16,24 +19,24 @@
 
 (defun $maybe-set-field ($context field-symbol v)
   (cond
-   ((null ($get-field $context field-symbol))
+   ((null ($get-kv $context field-symbol))
     `( (,field-symbol . ,v) ,@$context))
    (t
-    (setf (cdr ($get-field $context field-symbol)) v))))
+    (setf (cdr ($get-kv $context field-symbol)) v))))
 
 ;;; mutation - queues only
 (defun enqueue-input (context message)
-  (let ((newq (append ($get-field context 'input-queue) (list message))))
-    (let ((oldassoc (assoc 'input-queue context)))
+  (let ((newq (append ($get-kv context 'input-queue) (list message))))
+    (let ((oldassoc ($get-k context 'input-queue)))
       (setf (cdr oldassoc) newq))))
 
 (defun enqueue-output (context message)
-  (let ((newq (append ($get-field context 'output-queue) (list message))))
-    (let ((oldassoc (assoc 'output-queue context)))
+  (let ((newq (append ($get-kv context 'output-queue) (list message))))
+    (let ((oldassoc ($get-kv context 'output-queue)))
       (setf (cdr oldassoc) newq))))
 
 (defun dequeue-input (context)
-  (when ($get-field context 'input-queue)
+  (when ($get-kv context 'input-queue)
     (let ((q ($get-field context 'input-queue)))
       (pop q))))
 ;;;
