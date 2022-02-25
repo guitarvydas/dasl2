@@ -40,7 +40,13 @@
   (declare (ignore args))
   (loop
     while ($dispatch-continue? $context)
-    do (run-once $context)))
+    do (progn
+	 (format *standard-output* "dispatch-concurrently a~%")
+	 (dump $context 0)
+	 (run-once $context)
+	 (format *standard-output* "dispatch-concurrently b~%")
+	 (dump $context 0)
+	 )))
 
 (defun run-once ($context)
 (format *standard-output* "run-once ~a~%" ($get-field $context 'name))
@@ -337,3 +343,25 @@
   (car name-context-pair))
 (defun get-child-context (name-context-pair)
   (cdr name-context-pair))
+
+(defun dump ($context depth)
+  ;; for debugging at early stages
+  (mapc #'(lambda (pair)
+	    (dump (get-child-context pair) (+2 depth)))
+	($get-field $context 'children))
+  (dump-queues $context deptth))
+
+(defun spaces (depth)
+  (cond
+    ((zerop depth) nil)
+    (t 
+     (format *standard-output* " ")
+     (spaces (1- depth)))))
+  
+(defun dump-queues ($context depth)
+  (spaces depth)
+  (format *standard-output* "name=%a " ($get-field $context 'name))
+  (spaces depth)
+  (format *standard-output* "inq=%a " ($get-field $context 'input-queue))
+  (spaces depth)
+  (format *standard-output* "outq=%a " ($get-field $context 'output-queue)))
