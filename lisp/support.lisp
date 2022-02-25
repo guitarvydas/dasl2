@@ -127,18 +127,18 @@
   ;; remap etags along the way (in general an output etag will not be the same as a target's etag, and, a target's etag will not be the same as another target's etag)
   (cond
     ((null children-name-context-pairs) nil)
-    (t (let ((child-name-context (first children-contexts)))
+    (t (let ((child-name-context (first children-name-context-pairs)))
 	 (route-child-outputs container-context (get-child-context child-name-context))
-	 (route-children-outputs container-context (cdr children-contexts))))))
+	 (route-children-outputs container-context (cdr children-name-context-pairs))))))
 
 
 (defun route-child-outputs (container-context child-name-context-pair)
   (let ((child-name (get-child-name child-name-context-pair))
 	(child-context (get-child-context child-name-context-pair)))
-  (route-child-outputs-recursively container-context
-				   child-name
-                                   ($get-field child-context 'output-queue)))
-
+    (route-child-outputs-recursively container-context
+                                     child-name
+                                     ($get-field child-context 'output-queue))))
+  
 (defun route-child-outputs-recursively (container-context child-name output-messages)
   (cond
     ((null output-messages) nil)
