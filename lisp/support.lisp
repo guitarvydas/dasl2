@@ -3,15 +3,36 @@
 
 (defun $get-field ($context field-symbol)
   (let ((v (assoc field-symbol $context)))
-    (when v
-      (cdr v))))
+    (cond
+     (v (cdr v))
+     ((null ($get-field $context 'ancestor))
+      nil)
+     (t ($get-field ($get-field $context 'ancestor) field-symbol))))) ;; find field recursively in parent
 
-(defun $set-field ($context field-symbol v)
+(defun $maybe-set-field ($context field-symbol v)
   (cond
    ((null ($get-field $context field-symbol))
     `( (,field-symbol . ,v) ,@$context))
    (t
     (setf (cdr ($get-field $context field-symbol)) v))))
+
+;;; mutation - queues only
+(defun enqueue-input (context message)
+  (let ((newq (append ($get-field context 'input-queue) (list message))))
+    (let ((oldassoc (assoc 'input-queue context)))
+      (setf (cdr oldassoc) newq))))
+
+(defun enqueue-output (context message)
+  (let ((newq (append ($get-field context 'output-queue) (list message))))
+    (let ((oldassoc (assoc 'output-queue context)))
+      (setf (cdr oldassoc) newq))))
+
+(defun dequeue-input (context)
+  (when ($get-field context 'input-queue)
+    (let ((q ($get-field context 'input-queue)))
+      (pop q))))
+;;;
+
 
 (defun $dispatch-initially ($context)
   (let ((initially-function ($get-field $context 'initially)))
@@ -46,14 +67,13 @@
 	 (run-once $context)
 	 (format *standard-output* "dispatch-concurrently b~%")
 	 (dump $context 0)
+         (car '(debug))
 	 )))
 
 (defun run-once ($context)
-(format *standard-output* "run-once ~a~%" ($get-field $context 'name))
   (let ((children-pairs ($get-field $context 'children)))
     (let ((list-had-outputs (dispatch-each-child children-pairs)))
       (let ((any-child-outputs? (any-child-had-outputs? list-had-outputs)))
-(format *standard-output* "ran children ~a run-once ~a~%" any-child-outputs? ($get-field $context 'name))
         (cond 
          (any-child-outputs?
           (route-child-outputs $context children-pairs)
@@ -175,18 +195,6 @@
   ;; etag data (trace ...)
   (cons etag (cons data (cons previous-message (third previous-message)))))
 
-(defun enqueue-input (context message)
-  ($set-field context 'input-queue (append ($get-field context 'input-queue) (list message))))
-
-(defun enqueue-output (context message)
-  (cond
-   ((null ($get-field context 'ancestor)) (error-send message context))
-   (t ($set-field context 'output-queue (append ($get-field context 'output-queue) (list message))))))
-
-(defun dequeue-input (context)
-  (when ($get-field context 'input-queue)
-    (let ((q ($get-field context 'input-queue)))
-      (pop q))))
       
 (defun get-etag-from-message (message)
   (first message))
@@ -335,6 +343,7 @@
   `(,sender-port ,v ,debug))
 
 (defun $inject (receiver-port v container-context debug)
+  (assert v)
   (let ((receiver-name (car receiver-port)))
     (let ((child-context (lookup-child container-context receiver-name)))
       (enqueue-input child-context (new-message receiver-port v debug)))))
@@ -347,9 +356,9 @@
 (defun dump ($context depth)
   ;; for debugging at early stages
   (mapc #'(lambda (pair)
-	    (dump (get-child-context pair) (+2 depth)))
+	    (dump (get-child-context pair) (+ 2 depth)))
 	($get-field $context 'children))
-  (dump-queues $context deptth))
+  (dump-queues $context depth))
 
 (defun spaces (depth)
   (cond
@@ -360,8 +369,8 @@
   
 (defun dump-queues ($context depth)
   (spaces depth)
-  (format *standard-output* "name=%a " ($get-field $context 'name))
+  (format *standard-output* "name=~s " ($get-field $context 'name))
   (spaces depth)
-  (format *standard-output* "inq=%a " ($get-field $context 'input-queue))
+  (format *standard-output* "inq=~s " ($get-field $context 'input-queue))
   (spaces depth)
-  (format *standard-output* "outq=%a " ($get-field $context 'output-queue)))
+  (format *standard-output* "outq=~s~%" ($get-field $context 'output-queue)))

@@ -10,7 +10,7 @@
                ,(lambda ($context)
                   (format *standard-output* "lookup initially~%")
                  (let ((name ($get-field ($get-field $context '$args) 'name)))
-                   ($inject '("scroll through atoms" "name") name $context nil))))
+                   ($inject '("scroll through atoms" "name") ($get-field ($get-field $context 'args) 'name) $context nil))))
     ;; (handler   (%asc "{
     ;; ?[
     ;;   | found: 
@@ -25,10 +25,10 @@
                   (format *standard-output* "lookup handler~%")
 	       (cond
 		 ((string= "found" (get-etag-from-message $message))
-		  (let (($context ($set-field $context 'found (get-data-from-message $message))))
+		  (let (($context ($maybe-set-field $context 'found (get-data-from-message $message))))
                     ($dispatch-conclude $context)))
 		 ((string= "answer" (get-etag-from-message $message))
-		  (let (($context2 ($set-field $context 'answer (get-data-from-message $message))))
+		  (let (($context2 ($maybe-set-field $context 'answer (get-data-from-message $message))))
                     (declare (ignore $context2))))
 		 (t (error-unhandled-message $message $context)))))
     ;; (finally . (%asc "{%return (found answer)}"))
