@@ -67,8 +67,8 @@
 
 (defun dispatch-each-child (children-name-context-pairs)
   ;; return list of booleans, t if child produced output
-  (mapcar $'(lambda (name-context-pair)
-              (let ((child-context (cdr name-context-pair)))
+  (mapcar #'(lambda (name-context-pair)
+              (let ((child-context (get-child-context name-context-pair)))
                 (run-once child-context)))
           children-name-context-pairs))
 
@@ -257,7 +257,6 @@
   (cond
     ((null p) nil)
     (t 
-(format *standard-output* "copy car=~a~%" (car p))
      (cons (car p) (copy-prototype (cdr p))))))
 
 (defun instantiate-child (prototype-bag parent child-pair)
