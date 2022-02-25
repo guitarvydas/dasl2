@@ -59,11 +59,13 @@
 
 
 (defun any-child-had-outputs? (booleans)
-  (mapc #'(lambda (x) 
-	    (cond
-	      (x (return-from any-child-had-outputs? t))))
-	booleans)
-  nil)
+  (cond
+    (booleans
+     (mapcar #'(lambda (x) 
+	       (cond
+		 (x (return-from any-child-had-outputs? t))))
+	   booleans))
+    (t nil)))
 
 (defun dispatch-each-child (children-name-context-pairs)
   ;; return list of booleans, t if child produced output
