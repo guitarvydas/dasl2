@@ -39,7 +39,7 @@
 (defun $dispatch-concurrently ($context &rest args)
   (declare (ignore args))
   (loop
-    while (continue $context)
+    while ($dispatch-continue? $context)
     do (run-once $context)))
 
 (defun run-once ($context)
