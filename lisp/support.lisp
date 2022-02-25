@@ -314,7 +314,7 @@
   (first receiver-port))
 
 (defun leaf? ($context)
-  (not (null ($get-field $context 'children))))
+  (null ($get-field $context 'children)))
   
 (defun has-outputs? ($context)
   (not (null ($get-field $context 'output-queue))))
