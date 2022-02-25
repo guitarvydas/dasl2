@@ -2,13 +2,16 @@
 (defparameter $yes t)
 
 (defun $get-field ($context field-symbol)
-  (format *standard-output* "$get-field ~a~%" field-symbol)
   (cond
-   ($context
+   ((not (null $context))
     (let ((v (assoc field-symbol $context)))
       (cond
        (v (cdr v))
-       (t ($get-field ($get-field $context 'ancestor) field-symbol))))) ;; find field recursively in parent
+       (t
+        (let ((parent-pair (assoc 'ancestor $context)))
+          (cond
+           ((null parent-pair) nil)
+           (t ($get-field (cdr parent-pair) field-symbol)))))))) ;; find field recursively in parent
    (t nil)))
 
 (defun $maybe-set-field ($context field-symbol v)
