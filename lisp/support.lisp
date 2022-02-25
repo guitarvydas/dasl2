@@ -43,9 +43,11 @@
     do (run-once $context)))
 
 (defun run-once ($context)
+(format *standard-output* "run-once ~a~%" ($get-field $context 'name))
   (let ((children-pairs ($get-field $context 'children)))
     (let ((list-had-outputs (dispatch-each-child children-pairs)))
       (let ((any-child-outputs? (any-child-had-outputs? list-had-outputs)))
+(format *standard-output* "ran children ~a run-once ~a~%" any-child-outputs? ($get-field $context 'name))
         (cond 
          (any-child-outputs?
           (route-child-outputs $context children-pairs)
@@ -59,13 +61,7 @@
 
 
 (defun any-child-had-outputs? (booleans)
-  (cond
-    (booleans
-     (mapcar #'(lambda (x) 
-	       (cond
-		 (x (return-from any-child-had-outputs? t))))
-	   booleans))
-    (t nil)))
+  (and booleans))
 
 (defun dispatch-each-child (children-name-context-pairs)
   ;; return list of booleans, t if child produced output
@@ -162,6 +158,7 @@
         (enqueue-message receiver m target-component-name container-context)))))
 
 (defun enqueue-message (receiver message target-component-name container-context)
+(format *standard-output* "enqueuing ~a ~a~%" message target-component-name)
   (let ((target-context (get-context-from-name target-component-name container-context)))
     (let ((direction (determine-port-direction receiver target-context)))
       (cond
