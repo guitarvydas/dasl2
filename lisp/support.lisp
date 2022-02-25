@@ -27,7 +27,7 @@
 ;;; mutation - queues only
 (defun enqueue-input (context message)
   (let ((newq (append ($get-kv context 'input-queue) (list message))))
-    (let ((oldassoc ($get-k context 'input-queue)))
+    (let ((oldassoc ($get-kv context 'input-queue)))
       (setf (cdr oldassoc) newq))))
 
 (defun enqueue-output (context message)
@@ -39,6 +39,12 @@
   (when ($get-kv context 'input-queue)
     (let ((q ($get-field context 'input-queue)))
       (pop q))))
+
+(defun $get-input-queue (context)
+  ($get-kv 'input-queue context))
+
+(defun $non-empty-input-queue? (context)
+  (not (null ($get-input-queue context))))
 ;;;
 
 
@@ -106,9 +112,9 @@
 
 (defun dispatch-leaf (context)
   (let ((handler ($get-field context 'handler)))
-    (let ((q ($get-field context 'input-queue)))
-      (when (and q handler)
-	(let ((message (dequeue-input q)))
+    (let ((q? ($non-empty-input-queue? context)))
+      (when (and q? handler)
+	(let ((message (dequeue-input context)))
 	  (funcall handler context message))))))
 
 (defun dispatch-container (container-context)
