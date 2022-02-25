@@ -21,7 +21,7 @@
     ;; ]?
     ;; }"))
     (handler .  
-	     ,(lambda ($context $message)
+	     ,(lambda ($context $message &rest args)
 	       (cond
 		 ((string= "found" (get-etag-from-message $message))
 		  ($set-field $context 'found (get-data-from-message $message))
@@ -82,7 +82,7 @@
     ;;   ]?
     ;;  }"))
     (handler . 
-	     ,(lambda ($context $message)
+	     ,(lambda ($context $message &args)
                 (cond
 		 ((string= "name" (get-etag-from-message $message))
 		  ($send '("scroll through atoms" "try 1 name match") (atoms-current-index) $context $message))
@@ -118,7 +118,7 @@
     ;; ]?
     ;; }"))
     (handler . 
-	     ,(lambda ($context $message)
+	     ,(lambda ($context $message )
                 (cond
 		 ((string= "go" (get-etag-from-message $message))
 		  ($send '("match single atom name" "ok") (atoms-current-index) $context $message))

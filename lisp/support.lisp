@@ -1,3 +1,6 @@
+(defparameter $no nil)
+(defparameter $yes t)
+
 (defun $get-field ($context field-symbol)
   (let ((v (assoc field-symbol $context)))
     (when v
@@ -162,7 +165,9 @@
   ($set-field context 'input-queue (append ($get-field context 'input-queue) (list message))))
 
 (defun enqueue-output (context message)
-  ($set-field context 'output-queue (append ($get-field context 'output-queue) (list message))))
+  (cond
+   ((null ($get-field context 'ancestor)) (error-send message context))
+   (t ($set-field context 'output-queue (append ($get-field context 'output-queue) (list message))))))
 
 (defun dequeue-input (context)
   (when ($get-field context 'input-queue)
@@ -183,6 +188,14 @@
 
 (defun error-cannot-find-sender (port connection-list)
   (format *error-output* "internal error: can't find port ~a in connection list ~a~%" port connection-list)
+  (assert nil))
+
+(defun error-send (context message)
+  (format *error-output* "send message=~a invoked on component with no ancestor ~a~%" message context)
+  (assert nil))
+
+(defun error-unhandled-message (context message)
+  (format *error-output* "unhandled message=~a for component ~a~%" message context)
   (assert nil))
 
 (defun error-cannot-find-child ($context child-name)
@@ -303,3 +316,18 @@
   
 (defun has-outputs? ($context)
   (not (null ($get-field $context 'output-queue))))
+
+
+(defun $send (sender-port v container-context debug)
+  (let ((sender-name (car sender-port)))
+    (let ((child-context (lookup-child container-context sender-name)))
+      (enqueue-output child-context (new-output-message sender-port v debug)))))
+
+(defun new-output-message (sender-port v debug)
+  `(,sender-port ,v ,debug))
+
+(defun $inject (receiver-port v container-context debug)
+  (let ((receiver-name (car receiver-port)))
+    (let ((child-context (lookup-child container-context receiver-name)))
+      (enqueue-input child-context (new-message receiver-port v debug)))))
+
