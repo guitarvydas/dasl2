@@ -84,21 +84,6 @@
          (car '(debug))
 	 )))
 
-;; (defun run-once ($context)
-;;   (let ((children-pairs ($get-field $context 'children)))
-;;     (let ((list-had-outputs (dispatch-each-child children-pairs)))
-;;       (let ((any-child-outputs? (any-child-had-outputs? list-had-outputs)))
-;;         (cond 
-;;          (any-child-outputs?
-;;           (route-child-outputs $context children-pairs)
-;;           t)
-;;          ((leaf? $context)
-;;           (dispatch-leaf $context)
-;;           (has-outputs? $context))
-;;          (t
-;;           ;; attempt container dispatch only if all children are quiescent
-;;           (dispatch-container $context)))))))
-
 (defun try-all-components-once ($context)
   (try-component $context))
 
@@ -117,18 +102,20 @@
     (t (try-self $context))))
 
 (defun no-output () 'no-output)
-(defun no-output () 'output)
+(defun produced-output () 'output)
 (defun has-children? ($context) (not (null ($get-field $context 'children))))
 (defun child-produced-output? ($context)
   ;; ok to check $self, since it hasn't been run yet and, therefore has no outputs
   (produced-output? ($get-field $context 'children)))
 (defun self-produced-output? ($context)
   (produced-output? (list (get-self-context $context))))
+
 (defun produced-output? (children)
   (cond
     ((null children) nil)
     ((not (output-queue-empty? (car children))) t)
-    (t produced-output? (cdr children))))
+    (t (produced-output? (cdr children)))))
+
 (defun output-queue-empty? ($context)
   (null ($get-field $context 'output-queue)))
 (defun get-self-context ($context)
@@ -139,68 +126,36 @@
     (t (mapc #'try-container ($get-field $context 'children)))))
 (defun try-self ($context)
   (cond
-    ((leaf? $context) (run-leaf $context))
-    (t (run-container $context))))
+    ((leaf? $context) (try-leaf $context))
+    (t (try-container $context))))
 (defun try-leaf ($context)
-  (let (($message (dequeue-input-message $context)))
+  (let (($message (dequeue-input $context)))
     (when $message
       (let ((handler ($get-field $context 'handler)))
 	(unless handler (error-missing-handler $context $message)) ;; if fail => missing handler, yet there are messages <==> can't happen
 	(funcall handler $context $message)))))
+
 (defun try-container ($context)
-  (let (($message (dequeue-input-message $context)))
+  (let (($message (dequeue-input $context)))
     (when $message
       (let ((handler ($get-field $context 'handler)))
 	(when handler (error-container-cannot-have-handler $context $message)) ;; if fail => handler not allowed for Container, must always use default handler
-	(let ((port (make-port :component (self) :etag (get-etag-from-message $message))))
-	  (let ((connection (lookup-connection-by-sender port)))
-	    (let ((previous-message $message))
+	(let ((port (new-port (get-self) (get-etag-from-message $message))))
+	  (let ((connection (find-connection-by-sender port (get-connections $context))))
+            (let ((previous-message $message))
 	      (queue-input-foreach-receiver (get-receivers-from-connection connection) (get-data-from-message $message) $context previous-message))))))))
 
-(defun self () "$self")
+(defun get-self () "$self")
+
 (defun queue-input-foreach-receiver (receivers data $context previous-message)
   (when receivers
     (let ((receiver (first receivers)))
-      (let ((etag (get-etag-from-receiver receiver)))
+      (let ((etag (get-etag-from-receiver receiver))
+            (target-component-name (get-component-from-receiver receiver)))
 	(let ((message (new-message etag data previous-message)))
 	  (enqueue-message receiver message target-component-name $context)
-	  (queue-input-foreach-receiver (cdr receivers data)))))))
+	  (queue-input-foreach-receiver (cdr receivers) data $context previous-message))))))
 
-;; (defun any-child-had-outputs? (booleans)
-;;   (and booleans))
-
-;; (defun dispatch-each-child (children-name-context-pairs)
-;;   ;; return list of booleans, t if child produced output
-;;   (mapcar #'(lambda (name-context-pair)
-;;               (let ((child-context (get-child-context name-context-pair)))
-;;                 (run-once child-context)))
-;;           children-name-context-pairs))
-
-;; (defun dispatch-leaf (context)
-;;   (let ((handler ($get-field context 'handler)))
-;;     (let ((q? ($non-empty-input-queue? context)))
-;;       (when (and q? handler)
-;; 	(let ((message (dequeue-input context)))
-;; 	  (funcall handler context message))))))
-
-;; (defun dispatch-container (container-context)
-;;   ;; return t if container moved any input to any child or any of its own outputs
-;;   ;; i.e. t => container consumed one input and activated a child, or, produced an output
-;;   ;; i.e. nil => container has no inputs, or, container dequeued an input and discarded it
-;;   ;; thought: maybe there can be connections to "pass" so that messages can be dropped explicitly instead of implicitly? 
-;;   (let ((q ($get-field container-context 'input-queue)))
-;;     (cond
-;;       ((not (null q))
-;;        (let ((message (dequeue-input q)))
-;;          (let ((connection-map ($get-field container-context 'connections))) 
-;;            (let ((connection (find-connection-by-sender (new-port ($get-field container-context 'name)
-;;                                                                   (get-etag-from-message message))
-;;                                                         connection-map)))
-;;              (let ((receivers (get-receivers-from-connection connection)))
-;;                (foreach port in receivers
-;;                         do (route-single-message port message container-context))
-;;                t)))))
-;;       (t nil))))
 
 (defun find-connection-by-sender (port connection-list)
   (cond
@@ -225,6 +180,8 @@
 (defun get-etag-of-port (p)
   (cdr p))
 
+(defun get-etag-from-receiver (r)
+  (get-etag-of-port r))
 
 (defun route-children-outputs (container-context children-name-context-pairs)
   ;; move all outputs from children to other children (or to self's output)
@@ -310,6 +267,15 @@
 
 (defun error-cannot-determine-port-direction (port component-context)
   (format *error-output* "internal error: can't determine port direction ~a in ~a~%" port component-context)
+  (assert nil))
+
+(defun error-missing-handler ($context $message)
+  (format *error-output* "internal error: no handler for message ~a in ~a~%" $message $context)
+  (assert nil))
+
+(defun error-container-cannot-have-handler ($context $message)
+;; if fail => handler not allowed for Container, must always use default handler
+  (format *error-output* "internal error: container overspecified with handler for message ~a in ~a~%" $message $context)
   (assert nil))
 
 
@@ -432,6 +398,11 @@
   (car name-context-pair))
 (defun get-child-context (name-context-pair)
   (cdr name-context-pair))
+
+(defun get-connections ($context)
+  ($get-field $context 'connections))
+
+
 
 (defun dump ($context depth)
   ;; for debugging at early stages
