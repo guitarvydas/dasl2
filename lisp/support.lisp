@@ -128,10 +128,12 @@
   $context)
 
 (defun try-each-child ($context)
+;; must not invoke $self
   (cond
     ((leaf? $context) (try-leaf $context))
     (t (mapc #'(lambda (pair)
-                 (try-container (cdr pair)))
+                 (unless (is-self-name? (first pair))
+                   (try-component (cdr pair))))
              ($get-field $context 'children)))))
 
 (defun try-self ($context)
