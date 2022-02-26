@@ -257,38 +257,40 @@
   (cdr connection))
 
 (defun error-cannot-find-sender (port connection-list)
-  (format *error-output* "internal error: can't find port ~a in connection list ~a~%" port connection-list)
+  (format *error-output* "internal error: can't find port ~s in connection list ~s~%" port connection-list)
   (assert nil))
 
 (defun error-send (context message)
-  (format *error-output* "send message=~a invoked on component with no container ~a~%" message context)
+  (format *error-output* "send message=~s invoked on component with no container ~s~%" message (name-from-context context))
   (assert nil))
 
 (defun error-unhandled-message (context message)
-  (format *error-output* "unhandled message=~a for component ~a~%" message context)
+  (format *error-output* "unhandled message=~s for component ~s~%" message (name-from-context context))
   (assert nil))
 
 (defun error-cannot-find-child ($context child-name)
-  (format *error-output* "internal error: can't find child ~a in context ~a~%" child-name $context)
+  (format *error-output* "internal error: can't find child ~s in context ~s~%" child-name (name-from-context $context))
   (assert nil))
 
 (defun error-cannot-find-prototype (prototype-name)
-  (format *error-output* "internal error: can't find prototype ~a~%" prototype-name)
+  (format *error-output* "internal error: can't find prototype ~s~%" prototype-name)
   (assert nil))
 
 (defun error-cannot-determine-port-direction (port component-context)
-  (format *error-output* "internal error: can't determine port direction ~a in ~a~%" port component-context)
+  (format *error-output* "internal error: can't determine port direction ~s in ~s~%" port (name-from-context component-context))
   (assert nil))
 
 (defun error-missing-handler ($context $message)
-  (format *error-output* "internal error: no handler for message ~a in ~a~%" $message $context)
+  (format *error-output* "internal error: no handler for message ~s in ~s~%" $message (name-from-context $context))
   (assert nil))
 
 (defun error-container-cannot-have-handler ($context $message)
 ;; if fail => handler not allowed for Container, must always use default handler
-  (format *error-output* "internal error: container overspecified with handler for message ~a in ~a~%" $message $context)
+  (format *error-output* "internal error: container overspecified with handler for message ~s in ~s~%" $message (name-from-context $context))
   (assert nil))
 
+(defun name-from-context ($context)
+  ($get-field $context 'name))
 
 (defun lookup-child ($context child-name)
   (lookup-child-recursive $context ($get-field $context 'children) child-name))
@@ -393,10 +395,12 @@
   (not (null ($get-field $context 'output-queue))))
 
 
-(defun $send (sender-port v container-context debug)
-  (let ((sender-name (car sender-port)))
-    (let ((child-context (lookup-child container-context sender-name)))
-      (enqueue-output child-context (new-output-message sender-port v debug)))))
+(defun $send (sender-port v component-context debug)
+  (let ((container-context ($get-field component-context 'container)))
+    (assert container-context) ;; should not call send from top-level container (whose container is NIL)
+    (let ((sender-name (car sender-port)))
+      (let ((child-context (lookup-child container-context sender-name)))
+        (enqueue-output child-context (new-output-message sender-port v debug))))))
 
 (defun new-output-message (sender-port v debug)
   `(,sender-port ,v ,debug))
