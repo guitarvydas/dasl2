@@ -39,7 +39,7 @@
                  (values ($get-field $context "answer")
                          ($get-field $context "found"))))
     ;; local name . name of proto
-    (children .  (("$self". nil)
+    (children .  (("$self". "lookup")
                   ("scroll through atoms" . "scroll through atoms")
                   ("match single atom name" . "match single atom name")
                   ("unsuccessful" . "unsuccessful")

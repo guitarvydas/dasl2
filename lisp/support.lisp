@@ -338,12 +338,11 @@
     (cons name nil))) ;; fresh list for each local, initialized to NIL
 
 (defun fetch-prototype-by-name (prototype-name prototype-bag)
-  (when prototype-name ;; protype-name is NIL for $self
-    (cond 
-     ((null prototype-bag) (error-cannot-find-prototype prototype-name))
-     ((string= prototype-name ($get-field (car prototype-bag) 'name))
-      (car prototype-bag))
-     (t (fetch-prototype-by-name prototype-name (cdr prototype-bag))))))
+  (cond 
+    ((null prototype-bag) (error-cannot-find-prototype prototype-name))
+    ((string= prototype-name ($get-field (car prototype-bag) 'name))
+     (car prototype-bag))
+    (t (fetch-prototype-by-name prototype-name (cdr prototype-bag)))))
 
 (defun determine-port-direction (receiver component-context)
   (cond
