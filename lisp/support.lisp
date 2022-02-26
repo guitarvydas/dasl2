@@ -118,7 +118,7 @@
 (defun produced-output? (children)
   (cond
     ((null children) nil)
-    ((not (output-queue-empty? (car children))) t)
+    ((not (output-queue-empty? (get-local-child-context (car children)))) t)
     (t (produced-output? (cdr children)))))
 
 (defun output-queue-empty? ($context)
