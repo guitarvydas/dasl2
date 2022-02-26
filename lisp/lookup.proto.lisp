@@ -4,6 +4,7 @@
   `(
     (name  . "lookup")
     (etags  . ("name" "found" "answer"))
+    ($args . nil)
     (locals  . nil)
     ;; (initially   (%asc "{%inject (name) >> [scroll through atoms](name)}"))
     (initially . 
@@ -33,8 +34,8 @@
 		 (t (error-unhandled-message $message $context)))))
     ;; (finally . (%asc "{%return (found answer)}"))
     (finally  .
-              ,(lambda ($context) (declare (ignore args))
-                  (format *standard-output* "lookup finally~%")
+              ,(lambda ($context)
+                 (format *standard-output* "lookup finally~%")
                  (values ($get-field $context "answer")
                          ($get-field $context "found"))))
     ;; local name . name of proto
@@ -71,7 +72,7 @@
     (initially   .
 	       (lambda ($context)
                   (format *standard-output* "[scroll through atoms] initially~%")
-		 (let ((atom-memory ($get-field ($get-field $context 'args) 'atom-memory)))
+		 (let ((atom-memory ($get-field ($get-field $context '$args) 'atom-memory)))
 		   (cond
 		     ((?eof atom-memory)
 		      ($send '("scroll through atoms" "EOF") $no $context '("scroll-through-atoms" "initially")))
@@ -89,12 +90,12 @@
     (handler . 
 	     ,(lambda ($context $message)
                   (format *standard-output* "[scroll through atoms] handler~%")
-		(let ((atom-memory ($get-field ($get-field-recursive $context 'args) 'atom-memory)))
+		(let ((atom-memory ($get-field ($get-field-recursive $context '$args) 'atom-memory)))
                   (cond
                    ((string= "name" (get-etag-from-message $message))
                     ($send '("scroll through atoms" "try 1 name match") (current-atom-index atom-memory) $context $message))
                    ((string= "advance" (get-etag-from-message $message))
-                    (let ((atom-memory ($get-field ($get-field-recursive $context 'args) 'atom-memory)))
+                    (let ((atom-memory ($get-field ($get-field-recursive $context '$args) 'atom-memory)))
                       (@advance-to-next-atom atom-memory)
                       (cond
                        ((?eof atom-memory)
@@ -128,7 +129,7 @@
     (handler . 
 	     ,(lambda ($context $message)
                   (format *standard-output* "[match single atom] handler~%")
-                (let ((atom-memory ($get-field ($get-field-recursive $context 'args) 'atom-memory)))
+                (let ((atom-memory ($get-field ($get-field-recursive $context '$args) 'atom-memory)))
                   (cond
                    ((string= "go" (get-etag-from-message $message))
                     ($send '("match single atom name" "ok") (current-atom-index atom-memory) $context $message))
@@ -183,7 +184,7 @@
     (handler . 
 	     ,(lambda ($context $message)
                   (format *standard-output* "[successful] handler~%")
-                (let ((atom-memory ($get-field ($get-field-recursive $context 'args) 'atom-memory)))
+                (let ((atom-memory ($get-field ($get-field-recursive $context '$args) 'atom-memory)))
                   (cond
                    ((string= "conclude" (get-etag-from-message $message))
                     ($send '("successful" "answer") (current-atom-index atom-memory) $context $message)

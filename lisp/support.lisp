@@ -77,8 +77,7 @@
   (declare (ignore $context))
   (not *done*))
 
-(defun $dispatch-concurrently ($context &rest args)
-  (declare (ignore args))
+(defun $dispatch-concurrently ($context)
   (loop
     while ($dispatch-continue? $context)
     do (progn
