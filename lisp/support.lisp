@@ -126,10 +126,14 @@
   (null ($get-field $context 'output-queue)))
 (defun get-self-context ($context)
   $context)
+
 (defun try-each-child ($context)
   (cond
     ((leaf? $context) (try-leaf $context))
-    (t (mapc #'try-container ($get-field $context 'children)))))
+    (t (mapc #'(lambda (pair)
+                 (try-container (cdr pair)))
+             ($get-field $context 'children)))))
+
 (defun try-self ($context)
   (cond
     ((leaf? $context) (try-leaf $context))
