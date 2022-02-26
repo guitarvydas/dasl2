@@ -442,6 +442,6 @@
   (spaces depth)
   (format *standard-output* "name=~s " ($get-field $context 'name))
   (spaces depth)
-  (format *standard-output* "inq=~s " ($get-field $context 'input-queue))
+  (format *standard-output* "inq length=~a " (length ($get-field $context 'input-queue)))
   (spaces depth)
-  (format *standard-output* "outq=~s~%" ($get-field $context 'output-queue)))
+  (format *standard-output* "outq length=~a~%" (length ($get-field $context 'output-queue))))
