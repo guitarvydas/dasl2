@@ -78,63 +78,128 @@
     do (progn
 	 (format *standard-output* "dispatch-concurrently (a)~%")
 	 (dump $context 0)
-	 (run-once $context)
+	 (try-all-components-once $context)
 	 (format *standard-output* "dispatch-concurrently (b)~%")
 	 (dump $context 0)
          (car '(debug))
 	 )))
 
-(defun run-once ($context)
-  (let ((children-pairs ($get-field $context 'children)))
-    (let ((list-had-outputs (dispatch-each-child children-pairs)))
-      (let ((any-child-outputs? (any-child-had-outputs? list-had-outputs)))
-        (cond 
-         (any-child-outputs?
-          (route-child-outputs $context children-pairs)
-          t)
-         ((leaf? $context)
-          (dispatch-leaf $context)
-          (has-outputs? $context))
-         (t
-          ;; attempt container dispatch only if all children are quiescent
-          (dispatch-container $context)))))))
+;; (defun run-once ($context)
+;;   (let ((children-pairs ($get-field $context 'children)))
+;;     (let ((list-had-outputs (dispatch-each-child children-pairs)))
+;;       (let ((any-child-outputs? (any-child-had-outputs? list-had-outputs)))
+;;         (cond 
+;;          (any-child-outputs?
+;;           (route-child-outputs $context children-pairs)
+;;           t)
+;;          ((leaf? $context)
+;;           (dispatch-leaf $context)
+;;           (has-outputs? $context))
+;;          (t
+;;           ;; attempt container dispatch only if all children are quiescent
+;;           (dispatch-container $context)))))))
 
+(defun try-all-components-once ($context)
+  niy)
 
-(defun any-child-had-outputs? (booleans)
-  (and booleans))
+;; per Drakon diagram
+(defun run-component ($context)
+  (cond
+    ((has-children? $context)
+     (try-each-child $context)
+     (cond
+       ((child-produced-output? $context) (produced-output))
+       (t 
+	(try-self $context)
+	(cond
+	  ((self-produced-output? $context) (produced-output))
+	  (t (no-output))))))))
 
-(defun dispatch-each-child (children-name-context-pairs)
-  ;; return list of booleans, t if child produced output
-  (mapcar #'(lambda (name-context-pair)
-              (let ((child-context (get-child-context name-context-pair)))
-                (run-once child-context)))
-          children-name-context-pairs))
+(defun no-output () 'no-output)
+(defun no-output () 'output)
+(defun has-children? ($context) (not (null ($get-field $context 'children))))
+(defun child-produced-output? ($context)
+  ;; ok to check $self, since it hasn't been run yet and, therefore has no outputs
+  (produced-output? ($get-field $context 'children)))
+(defun self-produced-output? ($context)
+  (produced-output? (list (get-self-context $context))))
+(defun produced-output? (children)
+  (cond
+    ((null children) nil)
+    ((not (output-queue-empty? (car children))) t)
+    (t produced-output? (cdr children))))
+(defun output-queue-empty? ($context)
+  (null ($get-field $context 'output-queue)))
+(defun get-self-context ($context)
+  $context)
+(defun try-each-child ($context)
+  (cond
+    ((leaf? $context) (try-leaf $context))
+    (t (mapc #'try-container ($get-field $context 'children)))))
+(defun try-self ($context)
+  (cond
+    ((leaf? $context) (run-leaf $context))
+    (t (run-container $context))))
+(defun try-leaf ($context)
+  (let (($message (dequeue-input-message $context)))
+    (when $message
+      (let ((handler ($get-field $context 'handler)))
+	(unless handler (error-missing-handler $context $message)) ;; if fail => missing handler, yet there are messages <==> can't happen
+	(funcall handler $context $message)))))
+(defun try-container ($context)
+  (let (($message (dequeue-input-message $context)))
+    (when $message
+      (let ((handler ($get-field $context 'handler)))
+	(when handler (error-container-cannot-have-handler $context $message)) ;; if fail => handler not allowed for Container, must always use default handler
+	(let ((port (make-port :component (self) :etag (get-etag-from-message $message))))
+	  (let ((connection (lookup-connection-by-sender port)))
+	    (let ((previous-message $message))
+	      (queue-input-foreach-receiver (get-receivers-from-connection connection) (get-data-from-message $message) $context previous-message))))))))
 
-(defun dispatch-leaf (context)
-  (let ((handler ($get-field context 'handler)))
-    (let ((q? ($non-empty-input-queue? context)))
-      (when (and q? handler)
-	(let ((message (dequeue-input context)))
-	  (funcall handler context message))))))
+(defun self () "$self")
+(defun queue-input-foreach-receiver (receivers data $context previous-message)
+  (when receivers
+    (let ((receiver (first receivers)))
+      (let ((etag (get-etag-from-receiver receiver)))
+	(let ((message (new-message etag data previous-message)))
+	  (enqueue-message receiver message target-component-name $context)
+	  (queue-input-foreach-receiver (cdr receivers data)))))))
 
-(defun dispatch-container (container-context)
-  ;; return t if container moved any input to any child or any of its own outputs
-  ;; i.e. t => container consumed one input and activated a child, or, produced an output
-  ;; i.e. nil => container has no inputs, or, container dequeued an input and discarded it
-  ;; thought: maybe there can be connections to "pass" so that messages can be dropped explicitly instead of implicitly? 
-  (let ((q ($get-field container-context 'input-queue)))
-    (cond
-      ((not (null q))
-       (let ((message (dequeue-input q)))
-         (let ((connection-map ($get-field container-context 'connections))) 
-           (let ((connection (find-connection-by-sender (new-port ($get-field container-context 'name)
-                                                                  (get-etag-from-message message))
-                                                        connection-map)))
-             (let ((receivers (get-receivers-from-connection connection)))
-               (foreach port in receivers
-                        do (route-single-message port message container-context))
-               t)))))
-      (t nil))))
+;; (defun any-child-had-outputs? (booleans)
+;;   (and booleans))
+
+;; (defun dispatch-each-child (children-name-context-pairs)
+;;   ;; return list of booleans, t if child produced output
+;;   (mapcar #'(lambda (name-context-pair)
+;;               (let ((child-context (get-child-context name-context-pair)))
+;;                 (run-once child-context)))
+;;           children-name-context-pairs))
+
+;; (defun dispatch-leaf (context)
+;;   (let ((handler ($get-field context 'handler)))
+;;     (let ((q? ($non-empty-input-queue? context)))
+;;       (when (and q? handler)
+;; 	(let ((message (dequeue-input context)))
+;; 	  (funcall handler context message))))))
+
+;; (defun dispatch-container (container-context)
+;;   ;; return t if container moved any input to any child or any of its own outputs
+;;   ;; i.e. t => container consumed one input and activated a child, or, produced an output
+;;   ;; i.e. nil => container has no inputs, or, container dequeued an input and discarded it
+;;   ;; thought: maybe there can be connections to "pass" so that messages can be dropped explicitly instead of implicitly? 
+;;   (let ((q ($get-field container-context 'input-queue)))
+;;     (cond
+;;       ((not (null q))
+;;        (let ((message (dequeue-input q)))
+;;          (let ((connection-map ($get-field container-context 'connections))) 
+;;            (let ((connection (find-connection-by-sender (new-port ($get-field container-context 'name)
+;;                                                                   (get-etag-from-message message))
+;;                                                         connection-map)))
+;;              (let ((receivers (get-receivers-from-connection connection)))
+;;                (foreach port in receivers
+;;                         do (route-single-message port message container-context))
+;;                t)))))
+;;       (t nil))))
 
 (defun find-connection-by-sender (port connection-list)
   (cond
