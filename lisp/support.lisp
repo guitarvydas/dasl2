@@ -41,7 +41,7 @@
       (pop q))))
 
 (defun $get-input-queue (context)
-  ($get-kv 'input-queue context))
+  ($get-kv context 'input-queue))
 
 (defun $non-empty-input-queue? (context)
   (not (null ($get-input-queue context))))
