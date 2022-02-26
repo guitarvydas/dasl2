@@ -100,10 +100,10 @@
 ;;           (dispatch-container $context)))))))
 
 (defun try-all-components-once ($context)
-  niy)
+  (try-component $context))
 
 ;; per Drakon diagram
-(defun run-component ($context)
+(defun try-component ($context)
   (cond
     ((has-children? $context)
      (try-each-child $context)
@@ -113,7 +113,8 @@
 	(try-self $context)
 	(cond
 	  ((self-produced-output? $context) (produced-output))
-	  (t (no-output))))))))
+	  (t (no-output))))))
+    (t (try-self $context))))
 
 (defun no-output () 'no-output)
 (defun no-output () 'output)
