@@ -404,9 +404,10 @@
 
 (defun $inject (receiver-port v container-context debug)
   (assert v)
-  (let ((receiver-name (car receiver-port)))
+  (let ((receiver-name (get-component-from-receiver receiver-port))
+        (receiver-etag (get-etag-from-receiver receiver-port)))
     (let ((child-context (lookup-child container-context receiver-name)))
-      (enqueue-input child-context (new-message receiver-port v debug)))))
+      (enqueue-input child-context (new-message receiver-etag v debug)))))
 
 (defun get-child-name (name-context-pair)
   (car name-context-pair))

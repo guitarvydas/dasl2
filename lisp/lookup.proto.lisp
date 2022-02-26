@@ -11,7 +11,7 @@
                ,(lambda ($context)
                   (format *standard-output* "lookup initially~%")
                  (let ((name ($get-field ($get-field $context '$args) 'name)))
-                   ($inject '("scroll through atoms" "name") ($get-field ($get-field $context '$args) 'name) $context nil))))
+                   ($inject '("scroll through atoms" . "name") ($get-field ($get-field $context '$args) 'name) $context nil))))
     ;; (handler   (%asc "{
     ;; ?[
     ;;   | found: 
