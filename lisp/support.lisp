@@ -26,7 +26,7 @@
 
 ;;; mutation - queues only
 (defun enqueue-input (context message)
-  (let ((newq (append ($get-kv context 'input-queue) (list message))))
+  (let ((newq (append (cdr ($get-kv context 'input-queue)) (list message))))
     (let ((oldassoc ($get-kv context 'input-queue)))
       (setf (cdr oldassoc) newq))))
 
@@ -300,8 +300,8 @@
   `((prototype . ,prototype)
     (children . ,(instantiate-children prototype-bag parent ($get-field prototype 'children)))
     (locals . ,(instantiate-locals ($get-field prototype 'locals)))
-    (input-queue . nil)
-    (output-queue . nil)
+    ,(cons 'input-queue nil)
+    ,(cons 'output-queue nil)
     (ancestor . ,parent)
     ,@(copy-prototype prototype)))
 
