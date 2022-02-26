@@ -416,7 +416,8 @@
 (defun dump ($context depth)
   ;; for debugging at early stages
   (mapc #'(lambda (pair)
-	    (dump (get-child-context pair) (+ 2 depth)))
+            (unless (is-self-name? (get-child-name pair))
+              (dump (get-child-context pair) (+ 2 depth))))
 	($get-field $context 'children))
   (dump-queues $context depth))
 
