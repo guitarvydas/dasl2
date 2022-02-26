@@ -5,13 +5,18 @@
   (assoc field-symbol $context))
 
 (defun $get-field ($context field-symbol)
+  (let ((kv ($get-kv $context field-symbol)))
+    (when kv
+      (cdr kv))))
+            
+(defun $get-field-recursive ($context field-symbol)
   (cond
    ((not (null $context))
     (let ((v ($get-kv $context field-symbol)))
       (cond
        (v (cdr v))
        (t
-        (let ((parent-pair ($get-kv $context 'ancestor)))
+        (let ((parent-pair ($get-kv $context 'container)))
           (cond
            ((null parent-pair) nil)
            (t ($get-field (cdr parent-pair) field-symbol)))))))) ;; find field recursively in parent
@@ -22,7 +27,8 @@
    ((null ($get-kv $context field-symbol))
     `( (,field-symbol . ,v) ,@$context))
    (t
-    (setf (cdr ($get-kv $context field-symbol)) v))))
+    (setf (cdr ($get-kv $context field-symbol)) v)
+    $context)))
 
 ;;; mutation - queues only
 (defun enqueue-input (context message)
@@ -250,7 +256,7 @@
   (assert nil))
 
 (defun error-send (context message)
-  (format *error-output* "send message=~a invoked on component with no ancestor ~a~%" message context)
+  (format *error-output* "send message=~a invoked on component with no container ~a~%" message context)
   (assert nil))
 
 (defun error-unhandled-message (context message)
@@ -297,13 +303,14 @@
 
 
 (defun instantiate (prototype parent prototype-bag)
-  `((prototype . ,prototype)
-    (children . ,(instantiate-children prototype-bag parent ($get-field prototype 'children)))
-    (locals . ,(instantiate-locals ($get-field prototype 'locals)))
-    ,(cons 'input-queue nil)
-    ,(cons 'output-queue nil)
-    (ancestor . ,parent)
-    ,@(copy-prototype prototype)))
+  (let ((self `((prototype . ,prototype)
+		,(cons 'children nil)
+		(locals . ,(instantiate-locals ($get-field prototype 'locals)))
+		,(cons 'input-queue nil)
+		,(cons 'output-queue nil)
+		(container . ,parent)
+		,@(clone-prototype prototype))))
+    ($maybe-set-field self 'children (instantiate-children prototype-bag self ($get-field prototype 'children)))))
 
 (defun instantiate-children (prototype-bag parent children)
   (cond 
@@ -312,20 +319,22 @@
 	(instantiate-child prototype-bag parent (car children))
 	(instantiate-children prototype-bag parent (cdr children))))))
 
-(defun copy-prototype (p)
+(defun clone-prototype (p)
   (cond
     ((null p) nil)
     (t 
-     (cons (car p) (copy-prototype (cdr p))))))
+     (cons (car p) (clone-prototype (cdr p))))))
 
 (defun instantiate-child (prototype-bag parent child-pair)
   (let ((name (first child-pair))
 	(prototype-name (cdr child-pair)))
-    (cons
-     name
-     (instantiate (fetch-prototype-by-name prototype-name prototype-bag)
-		  parent
-		  prototype-bag))))
+    (cond
+      ((is-self-name? name) (let ((self parent))
+			      (cons name self)))
+      (t (cons name
+	       (instantiate (fetch-prototype-by-name prototype-name prototype-bag)
+			    parent
+			    prototype-bag))))))
 
 (defun instantiate-locals (locals)
   (cond
@@ -401,7 +410,8 @@
 (defun get-connections ($context)
   ($get-field $context 'connections))
 
-
+(defun is-self-name? (name)
+  (string= "$self" name))
 
 (defun dump ($context depth)
   ;; for debugging at early stages
