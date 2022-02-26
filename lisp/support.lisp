@@ -19,7 +19,7 @@
         (let ((parent-pair ($get-kv $context 'container)))
           (cond
            ((null parent-pair) nil)
-           (t ($get-field (cdr parent-pair) field-symbol)))))))) ;; find field recursively in parent
+           (t ($get-field-recursive (cdr parent-pair) field-symbol)))))))) ;; find field recursively in parent
    (t nil)))
 
 (defun $maybe-set-field ($context field-symbol v)
