@@ -26,7 +26,7 @@
     ;; }"))
     (handler .  
 	     ,(lambda ($context $message)
-                (format *error-output* "lookup handler ~s~%" (?message-elide $message))
+                ;(format *error-output* "lookup handler ~s~%" (?message-elide $message))
 	       (cond
 		 ((string= "found" (?etag-from-message $message))
                   ($!local $context "found" (?data-from-message $message))
@@ -37,7 +37,7 @@
     ;; (finally . (%asc "{%return (found answer)}"))
     (finally  .
               ,(lambda ($context)
-                 (format *error-output* "finally ~s~%" (?context-elide $context))
+                 ;(format *error-output* "finally ~s~%" (?context-elide $context))
                  ($debug "z" $context nil)
                  (values ($?local $context "answer")
                          ($?local $context "found"))))
@@ -91,7 +91,7 @@
     ;;  }"))
     (handler . 
 	     ,(lambda ($context $message)
-                (format *error-output* "handler ~s ~s~%" (?context-elide $context) (?message-elide $message))
+                ;(format *error-output* "handler ~s ~s~%" (?context-elide $context) (?message-elide $message))
 		(let ((atom-memory ($?field ($?field-recursive $context '$args) 'atom-memory)))
                   (cond
                    ((string= "name" (?etag-from-message $message))
@@ -133,7 +133,7 @@
     ;; }"))
     (handler . 
 	     ,(lambda ($context $message)
-                (format *error-output* "handler ~s ~s~%" (?context-elide $context) (?message-elide $message))
+                ;(format *error-output* "handler ~s ~s~%" (?context-elide $context) (?message-elide $message))
                 (let ((atom-memory ($?field ($?field-recursive $context '$args) 'atom-memory)))
                   (cond
                    ((string= "go" (?etag-from-message $message))
@@ -162,7 +162,7 @@
     ;; }"))
     (handler . 
 	     ,(lambda ($context $message)
-                (format *error-output* "handler ~s ~s~%" (?context-elide $context) (?message-elide $message))
+                ;(format *error-output* "handler ~s ~s~%" (?context-elide $context) (?message-elide $message))
 	       (cond
 		 ((string= "conclude" (?etag-from-message $message))
 		  ($send '("unsuccessful" . "found") $no $context $message))
@@ -189,7 +189,7 @@
     ;; }"))
     (handler . 
 	     ,(lambda ($context $message)
-                (format *error-output* "handler ~s ~s~%" (?context-elide $context) (?message-elide $message))
+                ;(format *error-output* "handler ~s ~s~%" (?context-elide $context) (?message-elide $message))
                 (let ((atom-memory ($?field ($?field-recursive $context '$args) 'atom-memory)))
                   (cond
                    ((string= "conclude" (?etag-from-message $message))

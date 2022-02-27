@@ -37,7 +37,7 @@
 
 ;;; mutation - queues only
 (defun enqueue-input (context message)
-  (format *error-output* "enqueue input ~s ~s~%" (?context-elide context) (?message-elide message))
+  ;(format *error-output* "enqueue input ~s ~s~%" (?context-elide context) (?message-elide message))
   (syn newq (append (cdr ($?kv context 'input-queue)) (list message))
     (syn oldassoc ($?kv context 'input-queue)
 	 (setf (cdr oldassoc) newq))))
@@ -443,8 +443,8 @@
        (syn sender-name (car sender-port)
 	    (syn child-context (lookup-child container-context sender-name)
               (syn m (new-output-message sender-port v debug)
-(format *error-output* "$send from ~s m=~s~%" sender-name (?message-elide m))              
-(enqueue-output child-context m))))))
+                ;(format *error-output* "$send from ~s m=~s~%" sender-name (?message-elide m))              
+                (enqueue-output child-context m))))))
 
 (defun new-output-message (sender-port v debug)
   (list sender-port v debug))
@@ -454,9 +454,9 @@
   (syn receiver-name (?component-from-receiver receiver-port)
        (syn receiver-etag (?etag-from-receiver receiver-port)
 	    (syn child-context (lookup-child container-context receiver-name)
-(syn m (new-message (new-port receiver-name receiver-etag) v debug)
-  (format *error-output* "$inject to ~s m=~s~%" receiver-name (?message-elide m))              
-  (enqueue-input child-context m))))))
+              (syn m (new-message (new-port receiver-name receiver-etag) v debug)
+                ;(format *error-output* "$inject to ~s m=~s~%" receiver-name (?message-elide m))              
+                (enqueue-input child-context m))))))
 
 (defun ?child-name (name-context-pair)
   (car name-context-pair))
@@ -512,5 +512,6 @@
   (format *error-output* "outq length=~a~%" (length ($?field $context 'output-queue))))
 
 (defun $debug (msg $context $message)
-  (format *error-output* "~a~%" msg)
+  (declare (ignorable msg))
+  ;(format *error-output* "~a~%" msg)
   (car (cons $context $message)))
