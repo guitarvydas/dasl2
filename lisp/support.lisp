@@ -473,7 +473,7 @@
   (let ((kv ($?kv $context 'locals)))
     (unless kv (error-no-locals $context key v))
     (let ((old-locals (cdr kv)))
-      (setf (cdr kv) (cons (list key v) old-locals)))))
+      (setf (cdr kv) (cons (cons key v) old-locals)))))
 
 (defun $?local ($context key)
   ;; get local variable at key
