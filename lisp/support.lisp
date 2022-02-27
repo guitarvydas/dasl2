@@ -385,10 +385,10 @@
   ($?field context 'prototype))
 
 (defun input? (port prototype)
-  (member (?etag-from-port port) ($?field prototype 'inputs)))
+  (member (?etag-from-port port) ($?field prototype 'inputs) :test 'string=))
 
 (defun output? (port prototype)
-  (member (?etag-from-port port) ($?field prototype 'outputs)))
+  (member (?etag-from-port port) ($?field prototype 'outputs) :text 'string=))
 
 (defun lookup-context-from-name (name container-context)
   (lookup-context-from-children-by-name name ($?field container-context 'children) container-context))
