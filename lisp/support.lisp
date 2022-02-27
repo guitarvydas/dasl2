@@ -41,10 +41,12 @@
     (let ((oldassoc ($get-kv context 'output-queue)))
       (setf (cdr oldassoc) newq))))
 
+, , , , , ;; need to mutate the queue
+, , , , , ;; where is dequeue output?
 (defun dequeue-input (context)
-  (when ($get-kv context 'input-queue)
-    (let ((q ($get-field context 'input-queue)))
-      (pop q))))
+  (let ((kv ($get-kv context 'input-queue)))
+    (when kv
+      (pop (cdr kv)))))
 
 (defun $get-input-queue (context)
   ($get-kv context 'input-queue))
