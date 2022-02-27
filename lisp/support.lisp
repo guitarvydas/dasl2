@@ -189,16 +189,16 @@
 (defun port-same? (portA portB)
   (and
    (string= (get-component-of-port portA) (get-component-of-port portB))
-   (string= (get-etag-of-port portA) (get-etag-of-port portB))))
+   (string= (get-etag-from-port portA) (get-etag-from-port portB))))
 
 (defun get-component-of-port (p)
   (first p))
 
-(defun get-etag-of-port (p)
+(defun get-etag-from-port (p)
   (cdr p))
 
 (defun get-etag-from-receiver (r)
-  (get-etag-of-port r))
+  (get-etag-from-port r))
 
 (defun route-children-outputs (container-context children-name-context-pairs)
   ;; move all outputs from children to other children (or to self's output)
@@ -207,9 +207,9 @@
     ((null children-name-context-pairs) nil)
     ((is-self-name? (get-child-name (first children-name-context-pairs)))
      (route-children-outputs container-context (cdr children-name-context-pairs)))
-    (t (let ((child-name-context (first children-name-context-pairs)))
-	 (route-child-outputs container-context (get-child-context child-name-context))
-	 (route-children-outputs container-context (cdr children-name-context-pairs))))))
+    (t (let ((child-name-context-pair (first children-name-context-pairs)))
+         (route-child-outputs container-context child-name-context-pair)
+         (route-children-outputs container-context (cdr children-name-context-pairs))))))
 
 
 (defun route-child-outputs (container-context child-name-context-pair)
@@ -253,10 +253,16 @@
 
       
 (defun get-etag-from-message (message)
-  (first message))
+  (get-etag-from-port (get-port-from-message message)))
+
+(defun get-port-from-message (message)
+  (car message))
 
 (defun get-data-from-message (message)
-  (cdr message))
+  (car (cdr message)))
+
+(defun get-debug-from-message (message)
+  (cdr (cdr message)))
 
 (defun new-port (component-name etag)
   (cons component-name etag))
@@ -378,10 +384,10 @@
   ($get-field context 'prototype))
 
 (defun input? (port prototype)
-  (member (get-etag-of-port port) ($get-field prototype 'inputs)))
+  (member (get-etag-from-port port) ($get-field prototype 'inputs)))
 
 (defun output? (port prototype)
-  (member (get-etag-of-port port) ($get-field prototype 'outputs)))
+  (member (get-etag-from-port port) ($get-field prototype 'outputs)))
 
 (defun get-context-from-name (name container-context)
   (get-context-from-children-by-name name ($get-field container-context 'children) container-context))
@@ -411,7 +417,7 @@
         (enqueue-output child-context (new-output-message sender-port v debug))))))
 
 (defun new-output-message (sender-port v debug)
-  `(,sender-port ,v ,debug))
+  `((,sender-port . ,v) . ,debug))
 
 (defun $inject (receiver-port v container-context debug)
   (assert v)
