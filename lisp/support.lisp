@@ -159,12 +159,16 @@
   (syn $message (dequeue-input $context)
     (when $message
       (syn handler ($?field $context 'handler)
-	   (when handler (error-container-cannot-have-handler $context $message)) ;; if fail => handler not allowed for Container, must always use default handler
-	   (syn port (new-port (?self) (?etag-from-message $message))
-		(syn connection (find-connection-by-sender port (?connections $context))
-            (syn previous-message $message
-		 (queue-input-foreach-receiver (?receivers-from-connection connection) (?data-from-message $message) $context previous-message))))))))
-
+	   (cond
+            ;; top level container has a handler
+            (handler (funcall handler $context $message))
+            ;; no other container should have a handle, handle input message by re-routing to children
+            (t             
+             (syn port (new-port (?self) (?etag-from-message $message))
+               (syn connection (find-connection-by-sender port (?connections $context))
+                 (syn previous-message $message
+                   (queue-input-foreach-receiver (?receivers-from-connection connection) (?data-from-message $message) $context previous-message))))))))))
+    
 (defun ?self () "$self")
 
 (defun queue-input-foreach-receiver (receivers data $context previous-message)
@@ -245,10 +249,14 @@
 
 (defun enqueue-message (receiver message target-component-name container-context)
   (syn target-context (lookup-context-from-name target-component-name container-context)
-       (syn direction (determine-port-direction receiver target-context)
-	    (cond
-	      ((eq 'input direction) (enqueue-input target-context message))
-	      (t      (enqueue-output target-context message))))))
+    (syn target-container ($?field target-context 'container)
+      (cond
+       ((null target-container) (enqueue-input target-context message))
+       (t
+        (syn direction (determine-port-direction receiver target-context)
+          (cond
+           ((eq 'input direction) (enqueue-input target-context message))
+           (t      (enqueue-output target-context message)))))))))
     
 (defun new-message (port data previous-message)
   ;; etag data (trace ...)
@@ -465,7 +473,7 @@
   (let ((kv ($?kv $context 'locals)))
     (unless kv (error-no-locals $context key v))
     (let ((old-locals (cdr kv)))
-      (setf (cdr kv) (cons `(,key . ,v) old-locals)))))
+      (setf (cdr kv) (cons (list key v) old-locals)))))
 
 (defun $?local ($context key)
   ;; get local variable at key
