@@ -42,7 +42,7 @@
       (setf (cdr oldassoc) newq))))
 
 (defun enqueue-output (context message)
-  (let ((newq (append ($get-kv context 'output-queue) (list message))))
+  (let ((newq (append (cdr ($get-kv context 'output-queue)) (list message))))
     (let ((oldassoc ($get-kv context 'output-queue)))
       (setf (cdr oldassoc) newq))))
 
@@ -92,9 +92,13 @@
 (defun try-all-components-once ($context)
   (try-component $context))
 
-;; per Drakon diagram
 (defun try-component ($context)
-  (format *standard-output* "trying component ~s~%" (name-from-context $context))
+  (try-component-without-routing $context)
+  (route-children-outputs $context ($get-field $context 'children)))
+
+;; per Drakon diagram
+;; recursively run each child, if any child produced output, don't run parent
+(defun try-component-without-routing ($context)
   (cond
     ((has-children? $context)
      (try-each-child $context)
@@ -201,6 +205,8 @@
   ;; remap etags along the way (in general an output etag will not be the same as a target's etag, and, a target's etag will not be the same as another target's etag)
   (cond
     ((null children-name-context-pairs) nil)
+    ((is-self-name? (get-child-name (first children-name-context-pairs)))
+     (route-children-outputs container-context (cdr children-name-context-pairs)))
     (t (let ((child-name-context (first children-name-context-pairs)))
 	 (route-child-outputs container-context (get-child-context child-name-context))
 	 (route-children-outputs container-context (cdr children-name-context-pairs))))))
