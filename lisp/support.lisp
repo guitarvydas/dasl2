@@ -70,11 +70,14 @@
 	 (funcall finally-function $context))))
 
 (defun $dispatch ($context)
+  ($dispatch-reset-conclude)
   ($dispatch-initially $context)
   ($dispatch-concurrently $context)
   ($dispatch-finally $context))
 
 (defparameter *done* nil)
+(defun $dispatch-reset-conclude ()
+  (setf *done* nil))
 (defun $dispatch-conclude ($context)
   (declare (ignore $context))
   (setf *done* t))
@@ -237,6 +240,7 @@
   (syn target-component-name (?component-from-receiver receiver)
        (syn etag (?etag-from-receiver receiver)
 	    (syn m (new-message (new-port target-component-name etag) (?data-from-message message) message)
+              ;(format *error-output* "route single message receiver=~s m=~s~%" receiver (?message-elide m))
 		 (enqueue-message receiver m target-component-name container-context)))))
 
 (defun enqueue-message (receiver message target-component-name container-context)
@@ -252,7 +256,10 @@
   (cons port (cons data (cons previous-message (cons (third previous-message) nil)))))
 
 (defun ?message-elide ($message)
-  (list (?port-from-message $message) (?etag-from-message $message) "..."))
+  (list (?port-from-message $message) (?data-from-message $message) "..."))
+
+(defun ?context-elide ($context)
+  (name-from-context $context))
 
       
 (defun ?etag-from-message (message)
@@ -278,11 +285,11 @@
   (assert nil))
 
 (defun error-send (context message)
-  (format *error-output* "send message=~s invoked on component with no container ~s~%" message (name-from-context context))
+  (format *error-output* "send message=~s invoked on component with no container ~s~%" (?message-elide message) (name-from-context context))
   (assert nil))
 
 (defun error-unhandled-message (context message)
-  (format *error-output* "unhandled message=~s for component ~s~%" message (name-from-context context))
+  (format *error-output* "unhandled message=~s for component ~s~%" (?message-elide message) (name-from-context context))
   (assert nil))
 
 (defun error-cannot-find-child ($context child-name)
@@ -298,20 +305,20 @@
   (assert nil))
 
 (defun error-missing-handler ($context $message)
-  (format *error-output* "internal error: no handler for message ~s in ~s~%" $message (name-from-context $context))
+  (format *error-output* "internal error: no handler for message ~s in ~s~%" (?message-elide $message) (name-from-context $context))
   (assert nil))
 
 (defun error-container-cannot-have-handler ($context $message)
 ;; if fail => handler not allowed for Container, must always use default handler
-  (format *error-output* "internal error: container overspecified with handler for message ~s in ~s~%" $message (name-from-context $context))
+  (format *error-output* "internal error: container overspecified with handler for message ~s in ~s~%" (?message-elide $message) (name-from-context $context))
   (assert nil))
 
 (defun error-no-locals ($context key v)
-  (format *error-output* "internal error: .locals not found at all ~s ~s ~s~%" $context key v)
+  (format *error-output* "internal error: .locals not found at all ~s ~s ~s~%" (?context-elide $context) key v)
   (assert nil))
 
 (defun error-local-not-found ($context key)
-  (format *error-output* "internal error: key .locals.~s not found ~s~%" key $context key)
+  (format *error-output* "internal error: key .locals.~s not found ~s~%" key (?context-elide $context))
   (assert nil))
 
 (defun name-from-context ($context)
@@ -425,7 +432,9 @@
        (assert container-context) ;; should not call send from top-level container (whose container is NIL)
        (syn sender-name (car sender-port)
 	    (syn child-context (lookup-child container-context sender-name)
-		 (enqueue-output child-context (new-output-message sender-port v debug))))))
+              (syn m (new-output-message sender-port v debug)
+(format *error-output* "$send from ~s m=~s~%" sender-name (?message-elide m))              
+(enqueue-output child-context m))))))
 
 (defun new-output-message (sender-port v debug)
   (list sender-port v debug))
@@ -435,7 +444,9 @@
   (syn receiver-name (?component-from-receiver receiver-port)
        (syn receiver-etag (?etag-from-receiver receiver-port)
 	    (syn child-context (lookup-child container-context receiver-name)
-		 (enqueue-input child-context (new-message (new-port receiver-name receiver-etag) v debug))))))
+(syn m (new-message (new-port receiver-name receiver-etag) v debug)
+  (format *error-output* "$inject to ~s m=~s~%" receiver-name (?message-elide m))              
+  (enqueue-input child-context m))))))
 
 (defun ?child-name (name-context-pair)
   (car name-context-pair))
@@ -460,7 +471,7 @@
   ;; get local variable at key
   (let ((kv ($?kv $context 'locals)))
     (let ((old-locals (cdr kv)))
-      (let ((lv (assoc key old-locals)))
+      (let ((lv (assoc key old-locals :test 'string=)))
         (if lv
             (cdr lv)
           (error-local-not-found $context key))))))
@@ -479,13 +490,13 @@
   (cond
     ((zerop depth) nil)
     (t 
-     (format *standard-output* " ")
+     (format *error-output* " ")
      (spaces (1- depth)))))
   
 (defun dump-queues ($context depth)
   (spaces depth)
-  (format *standard-output* "name=~s " ($?field $context 'name))
+  (format *error-output* "name=~s " ($?field $context 'name))
   (spaces depth)
-  (format *standard-output* "inq length=~a " (length ($?field $context 'input-queue)))
+  (format *error-output* "inq length=~a " (length ($?field $context 'input-queue)))
   (spaces depth)
-  (format *standard-output* "outq length=~a~%" (length ($?field $context 'output-queue))))
+  (format *error-output* "outq length=~a~%" (length ($?field $context 'output-queue))))
