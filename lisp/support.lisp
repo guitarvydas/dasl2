@@ -241,7 +241,7 @@
 
 (defun enqueue-message (receiver message target-component-name container-context)
   (format *standard-output* "enqueuing ~a ~a~%" message target-component-name)
-  (syn target-context (get-context-from-name target-component-name container-context)
+  (syn target-context (lookup-context-from-name target-component-name container-context)
        (syn direction (determine-port-direction receiver target-context)
 	    (cond
 	      ((eq 'input direction) (enqueue-input target-context message))
@@ -390,15 +390,15 @@
 (defun output? (port prototype)
   (member (get-etag-from-port port) ($get-field prototype 'outputs)))
 
-(defun get-context-from-name (name container-context)
-  (get-context-from-children-by-name name ($get-field container-context 'children) container-context))
+(defun lookup-context-from-name (name container-context)
+  (lookup-context-from-children-by-name name ($get-field container-context 'children) container-context))
 
-(defun get-context-from-children-by-name (name children container-context)
+(defun lookup-context-from-children-by-name (name children container-context)
   (cond 
     ((null children) (error-cannot-find-child container-context name))
     ((string= name (get-child-name (car children)))
      (get-child-context (car children)))
-    (t (get-context-from-children-by-name name (cdr children) container-context))))
+    (t (lookup-context-from-children-by-name name (cdr children) container-context))))
 
 (defun get-component-from-receiver (receiver-port)
   (first receiver-port))
