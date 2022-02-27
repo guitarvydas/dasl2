@@ -94,7 +94,6 @@
 
 ;; per Drakon diagram
 (defun try-component ($context)
-  (format *standard-output* "trying component ~s~%" (name-from-context $context))
   (cond
     ((has-children? $context)
      (try-each-child $context)
