@@ -31,7 +31,7 @@
 		 ((string= "answer" (?etag-from-message $message))
 		  (let (($context2 ($maybe-set-field $context 'answer (?data-from-message $message))))
                     (declare (ignore $context2))))
-		 (t (error-unhandled-message $message $context)))))
+		 (t (error-unhandled-message $context $message)))))
     ;; (finally . (%asc "{%return (found answer)}"))
     (finally  .
               ,(lambda ($context)
@@ -89,8 +89,9 @@
     ;;  }"))
     (handler . 
 	     ,(lambda ($context $message)
-                  (format *standard-output* "[scroll through atoms] handler~%")
+                  (format *standard-output* "[scroll through atoms] handler m=~s etag=~s~%" (?message-elide $message) (?etag-from-message $message))
 		(let ((atom-memory ($?field ($?field-recursive $context '$args) 'atom-memory)))
+(format *standard-output* "atom-memory ~s~%" atom-memory)
                   (cond
                    ((string= "name" (?etag-from-message $message))
                     ($send '("scroll through atoms"  ."try 1 name match") (current-atom-index atom-memory) $context $message))
@@ -100,8 +101,8 @@
                       (cond
                        ((?eof atom-memory)
                         ($send '("scroll through atoms" . "EOF") $no $context $message))
-			   (t ($send '("scroll through atoms" . "try 1 name match") (current-atom-index atom-memory) $context $message)))))
-                   (t (error-unhandled-message $message $context))))))
+                       (t ($send '("scroll through atoms" . "try 1 name match") (current-atom-index atom-memory) $context $message)))))
+                   (t (error-unhandled-message $context $message))))))
     
     (finally  .  nil)
     (children .  nil)
@@ -160,7 +161,7 @@
 		 ((string= "conclude" (?etag-from-message $message))
 		  ($send '("unsuccessful" . "found") $no $context $message)
                   ($dispatch-conclude $context))
-		 (t (error-unhandled-message $message $context)))))
+		 (t (error-unhandled-message $context $message)))))
     (finally .  nil)
     (children .  nil)
     (connections .  nil)
@@ -190,7 +191,7 @@
                     ($send '("successful" . "answer") (current-atom-index atom-memory) $context $message)
                     ($send '("successful" . "found") $yes $context $message)
                     ($dispatch-conclude $context))
-                   (t (error-unhandled-message $message $context))))))
+                   (t (error-unhandled-message $context $message))))))
     (finally .  nil)
     (children .  nil)
     (connections .  nil)

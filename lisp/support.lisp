@@ -240,7 +240,6 @@
 		 (enqueue-message receiver m target-component-name container-context)))))
 
 (defun enqueue-message (receiver message target-component-name container-context)
-  (format *standard-output* "enqueuing ~s ~s~%" message target-component-name)
   (syn target-context (lookup-context-from-name target-component-name container-context)
        (syn direction (determine-port-direction receiver target-context)
 	    (cond
@@ -251,6 +250,9 @@
   ;; etag data (trace ...)
   (assert (listp port))
   (cons port (cons data (cons previous-message (cons (third previous-message) nil)))))
+
+(defun ?message-elide ($message)
+  (list (?port-from-message $message) (?etag-from-message $message) "..."))
 
       
 (defun ?etag-from-message (message)
@@ -411,7 +413,7 @@
 
 
 (defun $send (sender-port v component-context debug)
-(format *standard-output* "$send ~a ~s~%"  sender-port v)
+(format *standard-output* "$send ~s ~s~%"  sender-port v)
   (syn container-context ($?field component-context 'container)
        (assert container-context) ;; should not call send from top-level container (whose container is NIL)
        (syn sender-name (car sender-port)
@@ -423,7 +425,7 @@
 
 (defun $inject (receiver-port v container-context debug)
   (assert v)
-(format *standard-output* "$inject ~a ~s~%"  receiver-port v)
+(format *standard-output* "$inject ~s ~s~%"  receiver-port v)
   (syn receiver-name (?component-from-receiver receiver-port)
        (syn receiver-etag (?etag-from-receiver receiver-port)
 	    (syn child-context (lookup-child container-context receiver-name)
