@@ -89,9 +89,8 @@
     ;;  }"))
     (handler . 
 	     ,(lambda ($context $message)
-                  (format *standard-output* "[scroll through atoms] handler m=~s etag=~s~%" (?message-elide $message) (?etag-from-message $message))
+                  (format *standard-output* "[scroll through atoms] handler m=~s~%" (?message-elide $message))
 		(let ((atom-memory ($?field ($?field-recursive $context '$args) 'atom-memory)))
-(format *standard-output* "atom-memory ~s~%" atom-memory)
                   (cond
                    ((string= "name" (?etag-from-message $message))
                     ($send '("scroll through atoms"  ."try 1 name match") (current-atom-index atom-memory) $context $message))
@@ -129,7 +128,7 @@
     ;; }"))
     (handler . 
 	     ,(lambda ($context $message)
-                  (format *standard-output* "[match single atom] handler~%")
+                  (format *standard-output* "[match single atom] handler ~s~%" (?message-elide $message))
                 (let ((atom-memory ($?field ($?field-recursive $context '$args) 'atom-memory)))
                   (cond
                    ((string= "go" (?etag-from-message $message))

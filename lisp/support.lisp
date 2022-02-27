@@ -235,7 +235,7 @@
 
 (defun route-single-message (receiver message container-context)
   (syn target-component-name (?component-from-receiver receiver)
-       (syn etag (?etag-from-message message)
+       (syn etag (?etag-from-receiver receiver)
 	    (syn m (new-message (new-port target-component-name etag) (?data-from-message message) message)
 		 (enqueue-message receiver m target-component-name container-context)))))
 
@@ -390,7 +390,7 @@
   (member (?etag-from-port port) ($?field prototype 'inputs) :test 'string=))
 
 (defun output? (port prototype)
-  (member (?etag-from-port port) ($?field prototype 'outputs) :text 'string=))
+  (member (?etag-from-port port) ($?field prototype 'outputs) :test 'string=))
 
 (defun lookup-context-from-name (name container-context)
   (lookup-context-from-children-by-name name ($?field container-context 'children) container-context))
