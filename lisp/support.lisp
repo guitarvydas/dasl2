@@ -168,9 +168,9 @@
   (when receivers
     (syn receiver (first receivers)
 	 (syn etag (?etag-from-receiver receiver)
-              (syn tar?component-name (?component-from-receiver receiver)
-		   (syn message (new-message (new-port tar?component-name etag) data previous-message)
-			(enqueue-message receiver message tar?component-name $context)
+              (syn target-component-name (?component-from-receiver receiver)
+		   (syn message (new-message (new-port target-component-name etag) data previous-message)
+			(enqueue-message receiver message target-component-name $context)
 			(queue-input-foreach-receiver (cdr receivers) data $context previous-message)))))))
 
 
@@ -180,7 +180,7 @@
      (error-cannot-find-sender port connection-list))
     ( t
       (cond ((port-same? port (?sender-port (car connection-list)))
-	     connection-list)
+	     (car connection-list))
 	    (t (find-connection-by-sender port (cdr connection-list)))))))
 
 (defun ?sender-port (connection)
@@ -234,18 +234,18 @@
 			       do (route-single-message receiver message container-context)))))))
 
 (defun route-single-message (receiver message container-context)
-  (syn tar?component-name (?component-from-receiver receiver)
+  (syn target-component-name (?component-from-receiver receiver)
        (syn etag (?etag-from-message message)
-	    (syn m (new-message (new-port tar?component-name etag) (?data-from-message message) message)
-		 (enqueue-message receiver m tar?component-name container-context)))))
+	    (syn m (new-message (new-port target-component-name etag) (?data-from-message message) message)
+		 (enqueue-message receiver m target-component-name container-context)))))
 
-(defun enqueue-message (receiver message tar?component-name container-context)
-  (format *standard-output* "enqueuing ~a ~a~%" message tar?component-name)
-  (syn tar?context (lookup-context-from-name tar?component-name container-context)
-       (syn direction (determine-port-direction receiver tar?context)
+(defun enqueue-message (receiver message target-component-name container-context)
+  (format *standard-output* "enqueuing ~s ~s~%" message target-component-name)
+  (syn target-context (lookup-context-from-name target-component-name container-context)
+       (syn direction (determine-port-direction receiver target-context)
 	    (cond
-	      ((eq 'input direction) (enqueue-input tar?context message))
-	      (t      (enqueue-output tar?context message))))))
+	      ((eq 'input direction) (enqueue-input target-context message))
+	      (t      (enqueue-output target-context message))))))
     
 (defun new-message (port data previous-message)
   ;; etag data (trace ...)
