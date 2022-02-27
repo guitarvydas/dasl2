@@ -37,6 +37,7 @@
 
 ;;; mutation - queues only
 (defun enqueue-input (context message)
+(format *error-output* "enqueue input ~s ~s~%" (?context-elide context) (?message-elide message))
   (syn newq (append (cdr ($?kv context 'input-queue)) (list message))
     (syn oldassoc ($?kv context 'input-queue)
 	 (setf (cdr oldassoc) newq))))
@@ -230,7 +231,8 @@
   (cond
     ((null output-messages) nil)
     (t (syn output-message (car output-messages)
-	    (route-message container-context output-message child-name)))))
+	    (route-message container-context output-message child-name)
+            (route-child-outputs-recursively container-context child-name (cdr output-messages))))))
 
 (defun route-message (container-context message component-name)
   (syn connection-map ($?field container-context 'connections)
@@ -508,3 +510,7 @@
   (format *error-output* "inq length=~a " (length ($?field $context 'input-queue)))
   (spaces depth)
   (format *error-output* "outq length=~a~%" (length ($?field $context 'output-queue))))
+
+(defun $debug (msg $context $message)
+  (format *error-output* "~a~%" msg)
+  (car (cons $context $message)))

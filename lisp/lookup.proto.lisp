@@ -29,10 +29,11 @@
                 (format *error-output* "lookup handler ~s~%" (?message-elide $message))
 	       (cond
 		 ((string= "found" (?etag-from-message $message))
-                  ($!local $context "found" (?data-from-message $message))
-                  ($dispatch-conclude $context))
+                  ($dispatch-conclude $context)
+                  ($debug "a" $context $message))
 		 ((string= "answer" (?etag-from-message $message))
-                  ($!local $context "answer" (?data-from-message $message)))
+                  ($!local $context "answer" (?data-from-message $message))
+                  ($debug "b" $context $message))
 		 (t (error-unhandled-message $context $message)))))
     ;; (finally . (%asc "{%return (found answer)}"))
     (finally  .
@@ -193,7 +194,8 @@
                   (cond
                    ((string= "conclude" (?etag-from-message $message))
                     ($send '("successful" . "answer") (?data-from-message $message) $context $message)
-                    ($send '("successful" . "found") $yes $context $message))
+                    ($send '("successful" . "found") $yes $context $message)
+                    ($debug "c" $context $message))
                    (t (error-unhandled-message $context $message))))))
     (finally .  nil)
     (children .  nil)
