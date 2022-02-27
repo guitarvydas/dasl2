@@ -306,6 +306,14 @@
   (format *error-output* "internal error: container overspecified with handler for message ~s in ~s~%" $message (name-from-context $context))
   (assert nil))
 
+(defun error-no-locals ($context key v)
+  (format *error-output* "internal error: .locals not found at all ~s ~s ~s~%" $context key v)
+  (assert nil))
+
+(defun error-local-not-found ($context key)
+  (format *error-output* "internal error: key .locals.~s not found ~s~%" key $context key)
+  (assert nil))
+
 (defun name-from-context ($context)
   ($?field $context 'name))
 
@@ -439,6 +447,25 @@
 
 (defun is-self-name? (name)
   (string= "$self" name))
+
+
+(defun $!local ($context key v)
+  ;; set local variable at key to value v
+  (let ((kv ($?kv $context 'locals)))
+    (unless kv (error-no-locals $context key v))
+    (let ((old-locals (cdr kv)))
+      (setf (cdr kv) (cons `(,key . ,v) old-locals)))))
+
+(defun $?local ($context key)
+  ;; get local variable at key
+  (let ((kv ($?kv $context 'locals)))
+    (let ((old-locals (cdr kv)))
+      (let ((lv (assoc key old-locals)))
+        (if lv
+            (cdr lv)
+          (error-local-not-found $context key))))))
+
+
 
 (defun dump ($context depth)
   ;; for debugging at early stages
