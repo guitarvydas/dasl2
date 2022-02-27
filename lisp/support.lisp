@@ -413,7 +413,6 @@
 
 
 (defun $send (sender-port v component-context debug)
-(format *standard-output* "$send ~s ~s~%"  sender-port v)
   (syn container-context ($?field component-context 'container)
        (assert container-context) ;; should not call send from top-level container (whose container is NIL)
        (syn sender-name (car sender-port)
@@ -425,7 +424,6 @@
 
 (defun $inject (receiver-port v container-context debug)
   (assert v)
-(format *standard-output* "$inject ~s ~s~%"  receiver-port v)
   (syn receiver-name (?component-from-receiver receiver-port)
        (syn receiver-etag (?etag-from-receiver receiver-port)
 	    (syn child-context (lookup-child container-context receiver-name)

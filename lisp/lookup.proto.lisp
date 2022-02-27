@@ -11,7 +11,6 @@
     ;; (initially   (%asc "{%inject (name) >> [scroll through atoms](name)}"))
     (initially . 
                ,(lambda ($context)
-                  (format *standard-output* "lookup initially~%")
                  (let ((name ($?field ($?field $context '$args) 'name)))
                    ($inject '("scroll through atoms" . "name") ($?field ($?field $context '$args) 'name) $context nil))))
     ;; (handler   (%asc "{
@@ -25,7 +24,6 @@
     ;; }"))
     (handler .  
 	     ,(lambda ($context $message)
-                  (format *standard-output* "lookup handler~%")
 	       (cond
 		 ((string= "found" (?etag-from-message $message))
 		  (let (($context ($maybe-set-field $context 'found (?data-from-message $message))))
@@ -37,7 +35,6 @@
     ;; (finally . (%asc "{%return (found answer)}"))
     (finally  .
               ,(lambda ($context)
-                 (format *standard-output* "lookup finally~%")
                  (values ($?field $context "answer")
                          ($?field $context "found"))))
     ;; local name . name of proto
@@ -73,7 +70,6 @@
     ;;  }"))
     (initially   .
 	       (lambda ($context)
-                  (format *standard-output* "[scroll through atoms] initially~%")
 		 (let ((atom-memory ($?field ($?field $context '$args) 'atom-memory)))
 		   (cond
 		     ((?eof atom-memory)
@@ -91,7 +87,6 @@
     ;;  }"))
     (handler . 
 	     ,(lambda ($context $message)
-                  (format *standard-output* "[scroll through atoms] handler m=~s~%" (?message-elide $message))
 		(let ((atom-memory ($?field ($?field-recursive $context '$args) 'atom-memory)))
                   (cond
                    ((string= "name" (?etag-from-message $message))
@@ -130,7 +125,6 @@
     ;; }"))
     (handler . 
 	     ,(lambda ($context $message)
-                  (format *standard-output* "[match single atom] handler ~s~%" (?message-elide $message))
                 (let ((atom-memory ($?field ($?field-recursive $context '$args) 'atom-memory)))
                   (cond
                    ((string= "go" (?etag-from-message $message))
@@ -157,7 +151,6 @@
     ;; }"))
     (handler . 
 	     ,(lambda ($context $message)
-                  (format *standard-output* "[unsuccessful] handler~%")
 	       (cond
 		 ((string= "conclude" (?etag-from-message $message))
 		  ($send '("unsuccessful" . "found") $no $context $message)
@@ -185,7 +178,6 @@
     ;; }"))
     (handler . 
 	     ,(lambda ($context $message)
-                  (format *standard-output* "[successful] handler~%")
                 (let ((atom-memory ($?field ($?field-recursive $context '$args) 'atom-memory)))
                   (cond
                    ((string= "conclude" (?etag-from-message $message))
