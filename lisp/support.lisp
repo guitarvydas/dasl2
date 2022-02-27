@@ -37,7 +37,7 @@
 
 ;;; mutation - queues only
 (defun enqueue-input (context message)
-(format *error-output* "enqueue input ~s ~s~%" (?context-elide context) (?message-elide message))
+  (format *error-output* "enqueue input ~s ~s~%" (?context-elide context) (?message-elide message))
   (syn newq (append (cdr ($?kv context 'input-queue)) (list message))
     (syn oldassoc ($?kv context 'input-queue)
 	 (setf (cdr oldassoc) newq))))

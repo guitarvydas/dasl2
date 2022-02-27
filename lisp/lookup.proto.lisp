@@ -29,16 +29,16 @@
                 (format *error-output* "lookup handler ~s~%" (?message-elide $message))
 	       (cond
 		 ((string= "found" (?etag-from-message $message))
-                  ($dispatch-conclude $context)
-                  ($debug "a" $context $message))
+                  ($!local $context "found" (?data-from-message $message))
+                  ($dispatch-conclude $context))
 		 ((string= "answer" (?etag-from-message $message))
-                  ($!local $context "answer" (?data-from-message $message))
-                  ($debug "b" $context $message))
+                  ($!local $context "answer" (?data-from-message $message)))
 		 (t (error-unhandled-message $context $message)))))
     ;; (finally . (%asc "{%return (found answer)}"))
     (finally  .
               ,(lambda ($context)
                  (format *error-output* "finally ~s~%" (?context-elide $context))
+                 ($debug "z" $context nil)
                  (values ($?local $context "answer")
                          ($?local $context "found"))))
     ;; local name . name of proto
