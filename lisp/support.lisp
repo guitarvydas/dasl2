@@ -419,7 +419,7 @@
 		 (enqueue-output child-context (new-output-message sender-port v debug))))))
 
 (defun new-output-message (sender-port v debug)
-  `((,sender-port . ,v) . ,debug))
+  (list sender-port v debug))
 
 (defun $inject (receiver-port v container-context debug)
   (assert v)
