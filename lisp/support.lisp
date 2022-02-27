@@ -250,7 +250,7 @@
 (defun new-message (port data previous-message)
   ;; etag data (trace ...)
   (assert (listp port))
-  (cons port (cons data (cons previous-message (third previous-message)))))
+  (cons port (cons data (cons previous-message (cons (third previous-message) nil)))))
 
       
 (defun ?etag-from-message (message)
