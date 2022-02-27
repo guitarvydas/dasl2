@@ -5,6 +5,8 @@
     (name  . "lookup")
     (etags  . ("name" "found" "answer"))
     ($args . nil)
+    (inputs . ("name"))
+    (outputs . ("found" "answer"))
     (locals  . nil)
     ;; (initially   (%asc "{%inject (name) >> [scroll through atoms](name)}"))
     (initially . 
