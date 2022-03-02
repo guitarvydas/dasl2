@@ -25,15 +25,15 @@
     ;; ]?
     ;; }"))
     (handler .  
-	     ,(lambda ($context $message)
+             ,(lambda ($context $message)
                 ;(format *error-output* "lookup handler ~s~%" (?message-elide $message))
-	       (cond
-		 ((string= "found" (?etag-from-message $message))
+               (cond
+                 ((string= "found" (?etag-from-message $message))
                   ($!local $context "found" (?data-from-message $message))
                   ($dispatch-conclude $context))
-		 ((string= "answer" (?etag-from-message $message))
+                 ((string= "answer" (?etag-from-message $message))
                   ($!local $context "answer" (?data-from-message $message)))
-		 (t (error-unhandled-message $context $message)))))
+                 (t (error-unhandled-message $context $message)))))
     ;; (finally . (%asc "{%return (found answer)}"))
     (finally  .
               ,(lambda ($context)
@@ -48,15 +48,15 @@
                   ("unsuccessful" . "unsuccessful")
                   ("successful" . "successful")))
     (connections .  (
-		    (("$self" . "name") . (("scroll through atoms" . "name")))
-		    (("scroll through atoms" . "EOF") . (("unsuccessful" . "conclude")))
-		    (("scroll through atoms" . "try 1 name match") . (("match single atom name" . "go")))
-		    (("match single atom name" . "mismatch") . (("scroll through atoms" . "advance")))
-		    (("match single atom name" . "ok") . (("successful" . "conclude")))
-		    (("unsuccessful" . "found") . (("$self" . "found")))
-		    (("successful" . "found") . (("$self" . "found")))
-		    (("successful" . "answer") . (("$self" . "answer")))
-		    ))
+                    (("$self" . "name") . (("scroll through atoms" . "name")))
+                    (("scroll through atoms" . "EOF") . (("unsuccessful" . "conclude")))
+                    (("scroll through atoms" . "try 1 name match") . (("match single atom name" . "go")))
+                    (("match single atom name" . "mismatch") . (("scroll through atoms" . "advance")))
+                    (("match single atom name" . "ok") . (("successful" . "conclude")))
+                    (("unsuccessful" . "found") . (("$self" . "found")))
+                    (("successful" . "found") . (("$self" . "found")))
+                    (("successful" . "answer") . (("$self" . "answer")))
+                    ))
     ))
 
 (defparameter *scroll-through-atoms*
@@ -73,26 +73,26 @@
     ;;   $end if
     ;;  }"))
     (initially   .
-	       (lambda ($context)
-		 (let ((atom-memory ($?field ($?field $context '$args) 'atom-memory)))
-		   (cond
-		     ((?eof atom-memory)
-		      ($send '("scroll through atoms" . "EOF") $no $context '("scroll-through-atoms". "initially")))
-		     (t nil)))))
+               (lambda ($context)
+                 (let ((atom-memory ($?field ($?field $context '$args) 'atom-memory)))
+                   (cond
+                     ((?eof atom-memory)
+                      ($send '("scroll through atoms" . "EOF") $no $context '("scroll-through-atoms". "initially")))
+                     (t nil)))))
     ;; (handler . (%asc "
     ;;  {
     ;;   ?[ 
     ;;     | name: 
     ;;         $send name >> (try 1 name match)
-    ;; 	| advance: 
+    ;;  | advance: 
     ;;         @advance to next atom
-    ;; 	    $send name >> (try 1 name match)
+    ;;      $send name >> (try 1 name match)
     ;;   ]?
     ;;  }"))
     (handler . 
-	     ,(lambda ($context $message)
+             ,(lambda ($context $message)
                 ;(format *error-output* "handler ~s ~s~%" (?context-elide $context) (?message-elide $message))
-		(let ((atom-memory ($?field ($?field-recursive $context '$args) 'atom-memory)))
+                (let ((atom-memory ($?field ($?field-recursive $context '$args) 'atom-memory)))
                   (cond
                    ((string= "name" (?etag-from-message $message))
                     (let ((buffer (?data-from-message $message)))
@@ -125,14 +125,14 @@
     ;; ?[ 
     ;;     | go: 
     ;;         $if (?match-string) $then
-    ;; 	      $send $trigger >> ok
+    ;;        $send $trigger >> ok
     ;;         $endif
-    ;; 	| *: 
+    ;;  | *: 
     ;;         $send $trigger >> mismatch
     ;; ]?
     ;; }"))
     (handler . 
-	     ,(lambda ($context $message)
+             ,(lambda ($context $message)
                 ;(format *error-output* "handler ~s ~s~%" (?context-elide $context) (?message-elide $message))
                 (let ((atom-memory ($?field ($?field-recursive $context '$args) 'atom-memory)))
                   (cond
@@ -157,16 +157,16 @@
     ;; (handler . (%asc "{
     ;; ?[ 
     ;;     | conclude: 
-    ;; 	    $send $no >> found
+    ;;      $send $no >> found
     ;; ]?
     ;; }"))
     (handler . 
-	     ,(lambda ($context $message)
+             ,(lambda ($context $message)
                 ;(format *error-output* "handler ~s ~s~%" (?context-elide $context) (?message-elide $message))
-	       (cond
-		 ((string= "conclude" (?etag-from-message $message))
-		  ($send '("unsuccessful" . "found") $no $context $message))
-		 (t (error-unhandled-message $context $message)))))
+               (cond
+                 ((string= "conclude" (?etag-from-message $message))
+                  ($send '("unsuccessful" . "found") $no $context $message))
+                 (t (error-unhandled-message $context $message)))))
     (finally .  nil)
     (children .  nil)
     (connections .  nil)
@@ -183,12 +183,12 @@
     ;; (handler . (%asc "{
     ;; ?[ 
     ;;     | conclude: 
-    ;; 	    $send $answer >> answer
-    ;; 	    $send $yes >> found
+    ;;      $send $answer >> answer
+    ;;      $send $yes >> found
     ;; ]?
     ;; }"))
     (handler . 
-	     ,(lambda ($context $message)
+             ,(lambda ($context $message)
                 ;(format *error-output* "handler ~s ~s~%" (?context-elide $context) (?message-elide $message))
                 (let ((atom-memory ($?field ($?field-recursive $context '$args) 'atom-memory)))
                   (cond

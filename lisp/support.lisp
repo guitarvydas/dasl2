@@ -7,7 +7,7 @@
 (defun $?field ($context field-symbol)
   (syn kv ($?kv $context field-symbol)
        (when kv
-	 (cdr kv))))
+         (cdr kv))))
             
 (defun $?field-recursive ($context field-symbol)
   (cond
@@ -40,17 +40,17 @@
   ;(format *error-output* "enqueue input ~s ~s~%" (?context-elide context) (?message-elide message))
   (syn newq (append (cdr ($?kv context 'input-queue)) (list message))
     (syn oldassoc ($?kv context 'input-queue)
-	 (setf (cdr oldassoc) newq))))
+         (setf (cdr oldassoc) newq))))
 
 (defun enqueue-output (context message)
   (syn newq (append (cdr ($?kv context 'output-queue)) (list message))
        (syn oldassoc ($?kv context 'output-queue)
-	    (setf (cdr oldassoc) newq))))
+            (setf (cdr oldassoc) newq))))
 
 (defun dequeue-input (context)
   (syn kv ($?kv context 'input-queue)
        (when kv
-	 (pop (cdr kv)))))
+         (pop (cdr kv)))))
 
 (defun $?input-queue (context)
   ($?kv context 'input-queue))
@@ -63,12 +63,12 @@
 (defun $dispatch-initially ($context)
   (syn initially-function ($?field $context 'initially)
        (when initially-function
-	 (funcall initially-function $context))))
+         (funcall initially-function $context))))
 
 (defun $dispatch-finally ($context)
   (syn finally-function ($?field $context 'finally)
        (when finally-function
-	 (funcall finally-function $context))))
+         (funcall finally-function $context))))
 
 (defun $dispatch ($context)
   ($dispatch-reset-conclude)
@@ -90,8 +90,8 @@
   (loop
     while ($dispatch-continue? $context)
     do (progn
-	 (try-all-components-once $context)
-	 )))
+         (try-all-components-once $context)
+         )))
 
 (defun try-all-components-once ($context)
   (try-component $context))
@@ -109,10 +109,10 @@
      (cond
        ((child-produced-output? $context) (produced-output))
        (t 
-	(try-self $context)
-	(cond
-	  ((self-produced-output? $context) (produced-output))
-	  (t (no-output))))))
+        (try-self $context)
+        (cond
+          ((self-produced-output? $context) (produced-output))
+          (t (no-output))))))
     (t (try-self $context))))
 
 (defun no-output () nil)
@@ -152,15 +152,15 @@
 (defun try-leaf ($context)
   (syn $message (dequeue-input $context)
        (when $message
-	 (syn handler ($?field $context 'handler)
-	      (unless handler (error-missing-handler $context $message)) ;; if fail => missing handler, yet there are messages <==> can't happen
-	      (funcall handler $context $message)))))
+         (syn handler ($?field $context 'handler)
+              (unless handler (error-missing-handler $context $message)) ;; if fail => missing handler, yet there are messages <==> can't happen
+              (funcall handler $context $message)))))
 
 (defun try-container ($context)
   (syn $message (dequeue-input $context)
     (when $message
       (syn handler ($?field $context 'handler)
-	   (cond
+           (cond
             ;; top level container has a handler
             (handler (funcall handler $context $message))
             ;; no other container should have a handle, handle input message by re-routing to children
@@ -175,11 +175,11 @@
 (defun queue-input-foreach-receiver (receivers data $context previous-message)
   (when receivers
     (syn receiver (first receivers)
-	 (syn etag (?etag-from-receiver receiver)
+         (syn etag (?etag-from-receiver receiver)
               (syn target-component-name (?component-from-receiver receiver)
-		   (syn message (new-message (new-port target-component-name etag) data previous-message)
-			(enqueue-message receiver message target-component-name $context)
-			(queue-input-foreach-receiver (cdr receivers) data $context previous-message)))))))
+                   (syn message (new-message (new-port target-component-name etag) data previous-message)
+                        (enqueue-message receiver message target-component-name $context)
+                        (queue-input-foreach-receiver (cdr receivers) data $context previous-message)))))))
 
 
 (defun find-connection-by-sender (port connection-list)
@@ -188,8 +188,8 @@
      (error-cannot-find-sender port connection-list))
     ( t
       (cond ((port-same? port (?sender-port (car connection-list)))
-	     (car connection-list))
-	    (t (find-connection-by-sender port (cdr connection-list)))))))
+             (car connection-list))
+            (t (find-connection-by-sender port (cdr connection-list)))))))
 
 (defun ?sender-port (connection)
   (car connection))
@@ -223,31 +223,31 @@
 (defun route-child-outputs (container-context child-name-context-pair)
   (syn child-name (?child-name child-name-context-pair)
        (syn child-context (?child-context child-name-context-pair)
-	    (syn message-list ($?field child-context 'output-queue)
-		 ($set-field child-context 'output-queue nil)          
-		 (route-child-outputs-recursively container-context child-name message-list)))))
+            (syn message-list ($?field child-context 'output-queue)
+                 ($set-field child-context 'output-queue nil)          
+                 (route-child-outputs-recursively container-context child-name message-list)))))
   
 (defun route-child-outputs-recursively (container-context child-name output-messages)
   (cond
     ((null output-messages) nil)
     (t (syn output-message (car output-messages)
-	    (route-message container-context output-message child-name)
+            (route-message container-context output-message child-name)
             (route-child-outputs-recursively container-context child-name (cdr output-messages))))))
 
 (defun route-message (container-context message component-name)
   (syn connection-map ($?field container-context 'connections)
        (syn etag (?etag-from-message message)
-	    (syn connection (find-connection-by-sender (new-port component-name etag) connection-map)
-		 (syn receivers (?receivers-from-connection connection)
-		      (foreach receiver in receivers
-			       do (route-single-message receiver message container-context)))))))
+            (syn connection (find-connection-by-sender (new-port component-name etag) connection-map)
+                 (syn receivers (?receivers-from-connection connection)
+                      (foreach receiver in receivers
+                               do (route-single-message receiver message container-context)))))))
 
 (defun route-single-message (receiver message container-context)
   (syn target-component-name (?component-from-receiver receiver)
        (syn etag (?etag-from-receiver receiver)
-	    (syn m (new-message (new-port target-component-name etag) (?data-from-message message) message)
+            (syn m (new-message (new-port target-component-name etag) (?data-from-message message) message)
               ;(format *error-output* "route single message receiver=~s m=~s~%" receiver (?message-elide m))
-		 (enqueue-message receiver m target-component-name container-context)))))
+                 (enqueue-message receiver m target-component-name container-context)))))
 
 (defun enqueue-message (receiver message target-component-name container-context)
   (syn target-context (lookup-context-from-name target-component-name container-context)
@@ -353,20 +353,20 @@
 
 (defun instantiate (prototype parent prototype-bag)
   (syn self `((prototype . ,prototype)
-	      ,(cons 'children nil)
-	      (locals . ,(instantiate-locals ($?field prototype 'locals)))
-	      ,(cons 'input-queue nil)
-	      ,(cons 'output-queue nil)
-	      (container . ,parent)
-	      ,@(clone-prototype prototype))
+              ,(cons 'children nil)
+              (locals . ,(instantiate-locals ($?field prototype 'locals)))
+              ,(cons 'input-queue nil)
+              ,(cons 'output-queue nil)
+              (container . ,parent)
+              ,@(clone-prototype prototype))
        ($maybe-set-field self 'children (instantiate-children prototype-bag self ($?field prototype 'children)))))
 
 (defun instantiate-children (prototype-bag parent children)
   (cond 
     ((null children) nil)
     (t (cons 
-	(instantiate-child prototype-bag parent (car children))
-	(instantiate-children prototype-bag parent (cdr children))))))
+        (instantiate-child prototype-bag parent (car children))
+        (instantiate-children prototype-bag parent (cdr children))))))
 
 (defun clone-prototype (p)
   (cond
@@ -377,13 +377,13 @@
 (defun instantiate-child (prototype-bag parent child-pair)
   (syn name (first child-pair)
        (syn prototype-name (cdr child-pair)
-	    (cond
-	      ((is-self-name? name) (let ((self parent))
-				      (cons name self)))
-	      (t (cons name
-		       (instantiate (fetch-prototype-by-name prototype-name prototype-bag)
-				    parent
-				    prototype-bag)))))))
+            (cond
+              ((is-self-name? name) (let ((self parent))
+                                      (cons name self)))
+              (t (cons name
+                       (instantiate (fetch-prototype-by-name prototype-name prototype-bag)
+                                    parent
+                                    prototype-bag)))))))
 
 (defun instantiate-locals (locals)
   (cond
@@ -441,7 +441,7 @@
   (syn container-context ($?field component-context 'container)
        (assert container-context) ;; should not call send from top-level container (whose container is NIL)
        (syn sender-name (car sender-port)
-	    (syn child-context (lookup-child container-context sender-name)
+            (syn child-context (lookup-child container-context sender-name)
               (syn m (new-output-message sender-port v debug)
                 ;(format *error-output* "$send from ~s m=~s~%" sender-name (?message-elide m))              
                 (enqueue-output child-context m))))))
@@ -453,7 +453,7 @@
   (assert v)
   (syn receiver-name (?component-from-receiver receiver-port)
        (syn receiver-etag (?etag-from-receiver receiver-port)
-	    (syn child-context (lookup-child container-context receiver-name)
+            (syn child-context (lookup-child container-context receiver-name)
               (syn m (new-message (new-port receiver-name receiver-etag) v debug)
                 ;(format *error-output* "$inject to ~s m=~s~%" receiver-name (?message-elide m))              
                 (enqueue-input child-context m))))))
@@ -493,7 +493,7 @@
   (mapc #'(lambda (pair)
             (unless (is-self-name? (?child-name pair))
               (dump (?child-context pair) (+ 2 depth))))
-	($?field $context 'children))
+        ($?field $context 'children))
   (dump-queues $context depth))
 
 (defun spaces (depth)
