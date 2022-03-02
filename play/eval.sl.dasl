@@ -1,0 +1,74 @@
+def @fetch (ix):
+    memory[ix]
+
+def @get (index):
+    @fetch(@adjust(index))
+
+def @put(index v):
+    memory[@adjust(index)] := v
+    index
+
+def @atom? (p): p >= @NIL
+def @null? (p): p == @NIL
+def @list? (p): p < @NIL
+def @putatombyte (v):
+    @put (:next-free-atom-pointer++ v)
+
+
+def @putatomcell (vcar vcdr):
+  let cellindex := :next-free-atom-pointer
+  @putatombyte(vcar)
+  @putatombyte(vcdr)
+  cellindex
+
+def bumplist():
+  :mru-list-pointer += 1
+
+def @putlistcell (vcar vcdr):
+    bumplist()
+    @put(:mru-list-pointer vcdr)
+    bumplist()
+    @put(:mru-list-pointer vcar)
+    :mru-list-pointer
+
+def @putatom(chars):
+    cond
+        [ null?(chars) @NIL]
+        [ else
+	    let atom-index = :next-free-atom-pointer
+	    @putatombyte(car(chars))
+	    let cdr-address = :next-free-atom-pointer
+	      :next-free-atom-pointer += 1
+	      let vcdr = @putatom(cdr(chars))
+	         @put(cdr-address vcdr)
+		 atom-index
+	]
+
+def initialize-memory():
+    memory = %array[memsize @NIL]
+    mru-list-pointer = 0
+    next-free-atom-pointer = 0
+    let i = $min-address
+      loop
+        exit when i < $max-address
+	@put(next-free-atom-pointer++ 0)
+	@put(next-free-atom-pointer++ 0)
+        i += 1
+    assert @NIL == @putatom('('N' 'I' 'L'))
+    kQuote := @putatom(['Q' 'U' 'O' 'T' 'E'])
+    kCond :=  @putatom(['C' 'O' 'N' 'D'])
+    kEq :=    @putatom(['E' 'Q'])
+    kCons :=  @putatom(['C' 'O' 'N' 'S'])
+    kAtom :=  @putatom(['A' 'T' 'O' 'M'])
+    kCar :=   @putatom(['C' 'A' 'R'])
+    kCdr :=   @putatom(['C' 'D' 'R'])
+
+def @cons(vcar vcdr):
+    @putlistcell(vcar vcdr)
+
+def @car(index):
+    @get(index)
+
+def @cdr(index):
+    @get(index + 1)
+

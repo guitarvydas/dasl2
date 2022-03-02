@@ -1,0 +1,31 @@
+asc lookup (s)
+  slot found
+  slot answer
+  slot name
+  %set name := s
+  %Send scroll through atoms t
+  %wait
+  %return { found answer }
+
+  components
+    %self:
+        answer: [...code in some language...]
+        found: [...code in some language... %conclude]
+    scroll through atoms:
+        start: [...]
+	advance: [...]
+    match single atom name:
+        go: %if (?match-string) then 
+	       %Send ok t
+            else
+	       %Send mismatch t
+    unsuccessul:
+        conclude: %Send found no
+    successul:
+        conclude: 
+	    %Send answer ?current-atom-index
+	    %Send found yes
+  end components
+  connections
+      
+  end connections

@@ -1,0 +1,4 @@
+def No/Yes (Yes/No) >> Trigger:
+    on Yes/No:
+        cond
+	    [ Yes/No Send(Trigger,yes) ]

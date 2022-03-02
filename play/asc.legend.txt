@@ -1,0 +1,16 @@
+
+? => call predicate in another language
+@fn => call procedure (no args) in another language
+@fn (arg) => call function (1 arg) in another language
+components ... end components
+connections ... end connections -- name [tag] -- sender -> receiver+
+%set
+%if ... %then ... %else
+%wait
+%return
+%data
+%yes
+%no
+{ ... } compound value (list of expressions) (no commas between expressions)
+[ ... ] block of code in some other language (deprecate? - should not mix implementation details into component specification)
+%slot name
