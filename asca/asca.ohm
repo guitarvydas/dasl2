@@ -1,0 +1,192 @@
+asca {
+Program = AscComponent+ Signature+
+AscComponent = kwDef ComponentDef Name Etags Inputs Outputs
+  Nets Locals Initially Handler Finally Children Connections
+Signature = kwSignature ComponentDef Name Etags Inputs Outputs
+
+  Name = "name" ComponentDef
+  Etags = "etags" PortDef+
+  Inputs = "inputs" PortRef*
+  Outputs = "outputs" PortRef*
+  Nets = "nets" NetDef*
+  Locals = "locals" LocalDef*
+  Initially = "initially" InitiallyCode?
+  Handler = "handler" HandlerCode
+  Finally = "finally" FinallyCode?
+  Children = "children" ChildDef?
+  Connections = "connections" ConnectionDef?
+
+ChildDef = ComponentRef HandlerRef
+HandlerRef
+  = "λ" FunctionRef          -- function
+  |     ExternalComponentRef -- component
+
+ConnectionDef
+  = Sender NetRef Receiver
+
+HandlerCode
+  = Code? EventHandler Code?
+
+InitiallyCode = Code
+FinallyCode = Code
+
+EventHandler = "[" EventClause+ "]"
+EventClause = "|" PortRef Code+
+
+/////
+
+Code
+  = SendStatement
+  | ConcludeStatement
+  | ConditionalStatement
+  | ReturnStatement
+  | InjectStatement
+  | PredicateQuery
+  | SynonymStatement
+  | ExternalCodeBlock
+
+
+/////
+
+SendStatement = "Send" PortRef Expr
+InjectStatement = "Inject" PortRef Expr
+ConcludeStatement = "Conclude"
+ReturnStatement = "Return" Expr*
+PredicateQuery = FunctionCall
+
+SynonymStatement = Lvalue "=" Rvalue
+ConditionalStatement = "[" PredicateQuery ConditionalBody "]"
+
+ConditionalBody
+  = ConstantConditionalBody
+  | NonConstantConditionalBody
+  
+ConstantConditionalBody = ConstantConditionalClause+
+NonConstantConditionalBody = ConditionalClause+
+
+ConstantConditionalClause  = "|" Constant ":" Code
+NonConstantConditionalClause  = "|" Expr ":" Code
+ConditionalClause = ConstantConditionalClause | NonConstantConditionalClause
+
+ExternalCodeBlock = "{" LanguageRef verbatim "}"
+
+/////
+
+Parameter = Expr
+
+/////
+
+Lvalue = EffectiveAddress
+Rvalue = Expr
+
+EffectiveAddress
+  = Expr // need to disallows constants (can this be done in pre-pass?)
+
+Expr
+  = FunctionCall
+  | FieldRef
+  | Primary
+
+FunctionCall = Expr "." Params
+Params = "(" Parameter+ ")"
+
+FieldRef
+  = Primary "." FieldRef
+  | Primary "∞" FieldRef
+  
+Primary
+  = "?data"         -- messageData
+  | "?etag"         -- messageTag
+  | "Yes"           -- yes
+  | "No"            -- no
+  | "Nil"           -- nil
+  | "Trigger"       -- trigger
+  | "Args"          -- args
+  | "(" Expr ")"    -- nested
+  | "(" ident+ ")"  -- longIdent
+  | LocalRef
+
+Constant
+  = "Yes"
+  | "No"
+  
+/////
+
+ComponentDef = ComponentName
+ComponentRef = ComponentName
+ExternalComponentRef = ComponentName
+FunctionRef = ident
+Sender = ComponentName
+Receiver = ComponentName
+NetDef = ident
+NetRef = ident
+PortDef = "«" ident "»"
+PortRef = "«" ident "»"
+LocalDef = ident
+LocalRef = ident
+LanguageRef = "lisp" | "python" | "py" | "javascript" | "js" | "wasm"
+
+/////
+
+keyword
+  = kwName | kwEtags | kwInputs | kwOutputs | kwNets
+  | kwLocals | kwInitially | kwHandler | kwFinally
+  | kwChildren | kwConnections | kwDef | kwSignature
+  | kwSelf
+  | kwYes | kwNo | kwNil | kwInject | kwSend | kwConclude | kwArgs
+  | kwMessageData | kwMessageTag
+  | lexical
+
+kwSelf = "self"
+kwName = "name"
+kwDef = "def"
+kwSignature = "signature"
+kwEtags = "etags"
+kwInputs = "inputs"
+kwOutputs = "outputs"
+kwNets = "nets"
+kwLocals = "locals"
+kwInitially = "initially"
+kwHandler = "handler"
+kwFinally = "finally"
+kwChildren = "children"
+kwConnections = "connections"
+kwYes = "Yes"
+kwNo = "No"
+kwNil = "Nil"
+kwInject = "Inject"
+kwSend = "Send"
+kwConclude = "Conclude"
+kwArgs = "Args"
+kwMessageData = "?data"
+kwMessageTag = "?tag"
+
+lexical = lexLambda | lexDot | lexLookup | lexlp | lexrp | lexlb | lexrb
+  | lexlport | lexrport
+
+lexLookup = "∞"
+lexLambda = "λ"
+lexDot = "."
+lexlp = "("
+lexrp = ")"
+lexlb = "["
+lexrb = "]"
+lexlport = "«"
+lexrport = "»"
+
+/////
+
+ComponentName 
+  = "[" "self" "]"
+  | "[" ident  "]"
+PortName = "«" ident "»"
+ident = identFirst identRest+
+identFirst = ~keyword identRest
+identRest = ~ keyword ~lexical any
+verbatim
+  = "{" verbatim* "}" -- nested
+  | ~"}" any          -- char
+}
+
+
+

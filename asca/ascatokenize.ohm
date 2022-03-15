@@ -1,0 +1,151 @@
+tokens {
+main = wsnl* token+
+  
+token
+  = def
+  | signature
+  | name
+  | etags
+  | inputs
+  | outputs
+  | nets
+  | locals
+  | initially
+  | handler
+  | finally
+  | children
+  | connections
+
+  | componentName
+  | portName
+
+  | yes
+  | no
+  | nil
+  | trigger
+  | conclude
+  | args
+  | return
+  | send
+  | inject
+  | messageData
+  | messageEtag
+
+  | externalCode
+  | ident
+  | wsRun
+  | nlRun
+  | char
+
+wsRun = ws+
+nlRun = eol+
+
+def = "def" &ws
+signature = "signature" &ws
+name = "name" &ws
+etags = "etags" &ws
+inputs = "inputs" &ws
+outputs = "outputs" &ws
+nets = "nets" &ws
+locals = "locals" &ws
+initially = "initially" &ws
+handler = "handler" &ws
+finally = "finally" &ws
+children = "children" &ws
+connections = "connections" &wsOrEnd
+
+yes = "Yes" &terminator
+no = "No" &terminator
+nil = "Nil" &terminator
+trigger = "Trigger" &terminator
+conclude = "Conclude" &terminator
+args = "Args" &terminator
+return = "Return" &terminator
+send = "Send" &terminator
+inject = "Inject" &terminator
+messageData = "?data" &terminator
+messageEtag = "?etag" &terminator
+
+componentName = "[" ident+ "]" 
+portName = "«" ident+ "»"
+
+externalCode = "{" externalCodeChar* "}"
+externalCodeChar
+  = "{" externalCode* "}" -- nested
+  | ~"}" any              -- char
+
+char = ~wsnl any
+
+ident = identFirst identRest* &terminatorOrWsnlOrEnd
+identFirst = ~keyword identRest
+identRest = ~lexical ~wsnl any
+
+string = dq stringChar* dq &terminatorOrWsnlOrEnd
+dq = "\""
+stringChar = ~dq any
+
+comment = "//" commentChar* eolOrEnd
+commentChar = ~eol any
+eol = "\n"
+ws = " " | "\t" | comment
+space := ws
+wsnl = ws | eol
+
+eolOrEnd = ws | eol | end
+terminator = lexical | ws
+terminatorOrWsnlOrEnd = terminator | eolOrEnd
+wsOrEnd = ws | end
+
+/////
+
+keyword = keywordIdent &terminatorOrWsnlOrEnd
+keywordIdent
+  = kwName | kwEtags | kwInputs | kwOutputs | kwNets
+  | kwLocals | kwInitially | kwHandler | kwFinally
+  | kwChildren | kwConnections | kwDef | kwSignature
+  | kwSelf
+  | kwYes | kwNo | kwNil | kwInject | kwSend | kwConclude | kwArgs
+  | kwMessageData | kwMessageEtag
+  | lexical
+
+kwSelf = "self"
+kwName = "name"
+kwDef = "def"
+kwSignature = "signature"
+kwEtags = "etags"
+kwInputs = "inputs"
+kwOutputs = "outputs"
+kwNets = "nets"
+kwLocals = "locals"
+kwInitially = "initially"
+kwHandler = "handler"
+kwFinally = "finally"
+kwChildren = "children"
+kwConnections = "connections"
+kwYes = "Yes"
+kwNo = "No"
+kwNil = "Nil"
+kwInject = "Inject"
+kwSend = "Send"
+kwConclude = "Conclude"
+kwArgs = "Args"
+kwMessageData = "?data"
+kwMessageEtag = "?etag"
+
+lexical = lexLambda | lexDot | lexLookup | lexlp | lexrp | lexlb | lexrb
+  | lexlport | lexrport
+
+lexLookup = "∞"
+lexLambda = "λ"
+lexDot = "."
+lexlp = "("
+lexrp = ")"
+lexlb = "["
+lexrb = "]"
+lexlport = "«"
+lexrport = "»"
+
+/////
+
+
+}

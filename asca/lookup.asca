@@ -1,0 +1,151 @@
+def [lookup]
+  name [lookup]
+  etags «name» «found» «answer»
+  inputs «name»
+  outputs «found» «answer»
+  nets ⇒₁ ⇒₂ ⇒₃ ⇒₄ ⇒₅ ⇒₆ ⇒₇ ⇒₈
+  locals found answer name
+  initially
+    name = Args.name
+    answer = Nil
+    found = No
+    Inject [scroll through atoms]«name» name
+  handler
+    [
+      | «found»
+          found = ?data
+	  Conclude
+      | «answer»
+          answer = ?data
+    ]
+  finally
+      Return found answer
+  children
+    [self] λlookup
+    [scroll through atoms] [scroll through atoms]
+    [match single atom name] [match single atom name]
+    [unsuccessful] [unsuccessful]
+    [successful] [successful]
+  connections
+    [self]«name» ⇒₁ [scroll through atoms]«name»
+    [scoll through atoms]«EOF» ⇒₂ [unsuccessful]«conclude»
+    [scoll through atoms]«try 1 name match» ⇒₃ [match single atom name]«go»
+    [match single atom name]«mismatch» ⇒₄ [scroll through atoms]«advance»
+    [match single atom name]«ok» ⇒₅ [successful]«conclude»
+    [unsuccessful]«found» ⇒₆ [self]«found»
+    [successful]«found» ⇒₇ [self]«found»
+    [successful]«answer» ⇒₈ [self]«answer»
+
+def [scroll through atoms]
+  name [scroll through atoms]
+  etags «name» «advance» «EOF» «try 1 name match»
+  inputs «name» «advance»
+  outputs «EOF» «try 1 name match»
+  nets
+  locals atom-memory
+  initially
+    atom-memory = Args.atom-memory
+    [ atom-memory.eof? ()
+      | Yes : Send «EOF» No
+      | No  : Pass
+    ]
+  handler
+    atom-memory = Args ∞ atom-memory
+  handler
+    [
+      | «name»
+          Send «try 1 name match» Trigger
+	  Conclude
+      | «advance»
+          atom-memory.advanceToNextAtom ()
+	  [ atom-memory.eof? ()
+	    | Yes : Send «EOF» No
+	    | No  : Send «try 1 name match» Trigger
+	  ]
+    ]
+  finally
+  children
+  connections
+
+def [match single atom name]
+  name [match single atom name]
+  etags «name» «advance» «EOF» «try 1 name match»
+  inputs «name» «advance»
+  outputs «EOF» «try 1 name match»
+  nets
+  locals atom-memory
+  initially
+  handler
+    [
+      | «go»
+          [ (match string)()
+	      | yes: Send «ok» Trigger
+	      | no : Send «mismatch» Trigger
+	  ]
+    ]
+  finally
+  children
+  connections
+
+
+def [unsuccessful]
+  name [unsuccessful]
+  etags «conclude» «found»
+  inputs «conclude»
+  outputs «found»
+  nets
+  locals
+  initially
+  handler
+    [
+      | «conclude»
+          Send «found» No
+    ]
+  finally
+  children
+  connections
+
+def [successful]
+  name [successful]
+  etags «conclude» «found» «answer»
+  inputs «conclude»
+  outputs «found» «answer»
+  nets
+  locals
+  initially
+  handler
+    [
+      | «conclude»
+          Send «answer» ?data
+          Send «found» Yes
+    ]
+  finally
+  children
+  connections
+
+
+signature [lookup]
+  name [lookup]
+  etags «name» «found» «answer»
+  inputs «name»
+  outputs «found» «answer»
+signature [scroll through atoms]
+  name [scroll through atoms]
+  etags «name» «advance» «EOF» «try 1 name match»
+  inputs «name» «advance»
+  outputs «EOF» «try 1 name match»
+signature [match single atom name]
+  name [match single atom name]
+  etags «name» «advance» «EOF» «try 1 name match»
+  inputs «name» «advance»
+  outputs «EOF» «try 1 name match»
+signature [unsuccessful]
+  name [unsuccessful]
+  etags «conclude» «found»
+  inputs «conclude»
+  outputs «found»
+signature [successful]
+  name [successful]
+  etags «conclude» «found» «answer»
+  inputs «conclude»
+  outputs «found» «answer»
