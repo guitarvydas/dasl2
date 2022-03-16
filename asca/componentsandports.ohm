@@ -1,4 +1,7 @@
 tokenfolding {
+
+// see tokenfolding.drawio
+
 Main = Token+
 Token = ComponentSequence | PortSequence | OtherToken
 
@@ -8,10 +11,10 @@ PortSequence = LportToken PortName RportToken
 ComponentName = IDstring
 PortName = IDstring
 
-IDString = (IdentToken | WSToken)+
+IDstring = (IdentToken | WSToken)+
 
-PortLToken = "{" LportKind "," TokenContent "}" optionalComma
-PortRToken = "{" RportKind "," TokenContent "}" optionalComma
+LportToken = "{" LportKind "," TokenContent "}" optionalComma
+RportToken = "{" RportKind "," TokenContent "}" optionalComma
 LbracketToken = "{" LbracketKind "," TokenContent "}" optionalComma
 RbracketToken = "{" RbracketKind "," TokenContent "}" optionalComma
 IdentToken = "{" IdentKind "," TokenContent "}" optionalComma
@@ -21,13 +24,14 @@ OtherToken = "{" TokenID "," TokenContent "}" optionalComma
 
 ////
 
-LportKind = dq "token" dq ":" dq "lport"
-RportKind = dq "token" dq ":" dq "rport"
-LbracketKind = dq "token" dq ":" dq "lbracket"
-RbracketKind = dq "token" dq ":" dq "rbracket"
-IdentKind = dq "token" dq ":" dq "ident"
-WSKind = dq "token" dq ":" dq "ws"
+LportKind = dq "token" dq ":" dq "lport" dq
+RportKind = dq "token" dq ":" dq "rport" dq
+LbracketKind = dq "token" dq ":" dq "lbracket" dq
+RbracketKind = dq "token" dq ":" dq "rbracket" dq
+IdentKind = dq "token" dq ":" dq "ident" dq
+WSKind = dq "token" dq ":" dq "ws" dq
 
+TokenID = dq "token" dq ":" string
 TokenContent = dq "content" dq ":" string
 
 ////

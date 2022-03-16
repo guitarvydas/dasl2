@@ -1,7 +1,7 @@
 devall: testkey testbuiltin testconnections testcomponents testlexical testcode testother testlookup
 dev: testmolecule
 
-testmolecule:
+testmolecule1:
 	@echo
 	@echo '*** ' testmolecule identity
 	#./identity-molecularize.bash <testconnections.asct
@@ -10,6 +10,17 @@ testmolecule:
 	@echo '*** ' molecularize
 	#./molecularize.bash <testconnections.asct >/tmp/temp.asct
 	./insertlinenumbers.bash <lookup.asct >/tmp/temp.asct
+	./rmnl.bash </tmp/temp.asct | ./rmws.bash >/tmp/temp-nowsnl.asct
+	wc -l /tmp/temp*.asct
+
+testmolecule:
+	@echo
+	@echo '*** ' testmolecule identity
+	./identity-molecularize.bash <testcomponents.asct 1>&2
+	@echo
+	@echo '*** ' molecularize
+	./componentsandports.bash <testcomponents.asct >/tmp/componentsandports.asct
+	./insertlinenumbers.bash </tmp/componentsandports.asct >/tmp/temp.asct
 	./rmnl.bash </tmp/temp.asct | ./rmws.bash >/tmp/temp-nowsnl.asct
 	wc -l /tmp/temp*.asct
 
@@ -53,13 +64,6 @@ testconnections:
 	@echo '*** ' tokenized
 	./tokenize.bash <testconnections.asca >testconnections.asct
 
-testconnections:
-	@echo
-	@echo '*** ' testconnections identity
-	./identity-tokenize.bash <testconnections.asca
-	@echo
-	@echo '*** ' tokenized
-	./tokenize.bash <testconnections.asca >testconnections.asct
 
 testlexical:
 	@echo

@@ -1,9 +1,8 @@
-
 Main [@Token] = [[${Token}]]
-Token [t] = [[${t}\n]]
+Token [t] = [[${t}]]
 
-ComponentSequence [lb name rb] = [[{"token":"component","content":"${name}"\},]]
-PortSequence [lb name rb] = [[{"token":"component","content":"${name}"]]
+ComponentSequence [lb name rb] = [[${name}]]
+PortSequence [lb name rb] = [[${name}]]
 
 ComponentName [s] = [[${s}]]
 PortName [s] = [[${s}]]
@@ -14,8 +13,8 @@ LportToken [klb kind kcomma content krb koptcomma] = [[${klb}${kind}${kcomma}${c
 RportToken [klb kind kcomma content krb koptcomma] = [[${klb}${kind}${kcomma}${content}${krb}${koptcomma}]]
 LbracketToken [klb kind kcomma content krb koptcomma] = [[${klb}${kind}${kcomma}${content}${krb}${koptcomma}]]
 RbracketToken [klb kind kcomma content krb koptcomma] = [[${klb}${kind}${kcomma}${content}${krb}${koptcomma}]]
-IdentToken [klb kind kcomma content krb koptcomma] = [[${content}]]
-WSToken [klb kind kcomma content krb koptcomma] = [[${content}]]
+IdentToken [klb kind kcomma content krb koptcomma] = [[${klb}${kind}${kcomma}${content}${krb}${koptcomma}]]
+WSToken [klb kind kcomma content krb koptcomma] = [[${klb}${kind}${kcomma}${content}${krb}${koptcomma}]]
 
 OtherToken [klb kind kcomma content krb koptcomma] = [[${klb}${kind}${kcomma}${content}${krb}${koptcomma}]]
 
@@ -29,10 +28,10 @@ WSKind [dq1 ktoken dq2 kcolon dq3 kind dq4] = [[${dq1}${ktoken}${dq2}${kcolon}${
 
 
 TokenID [dq1 k dq2 kcolon string] = [[${dq1}${k}${dq2}${kcolon}${string}]]
-TokenContent [dq1 k dq2 kcolon string] = [[${string}]]
+TokenContent [dq1 k dq2 kcolon string] = [[${dq1}${k}${dq2}${kcolon}${string}]]
 
 dq [c] = [[${c}]]
-string [dq1 @cs dq2] = [[${cs}]]
+string [dq1 @cs dq2] = [[${dq1}${cs}${dq2}]]
 optionalComma [@c] = [[${c}]]
 
 ident [@cs] = [[${cs}]]
