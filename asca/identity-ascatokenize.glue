@@ -8,12 +8,9 @@ token_other [twt] = [[${twt}]]
 wsRun [@ws] = [[${ws}]]
 nlRun [@eol] = [[${eol}]]
 
-componentName [klb @ident krb] = [[${klb}${ident}${krb}]]
-portName [kl @ident kr] = [[${kl}${ident}${kr}]]
-
 externalCode [klb @cs krb] = [[${klb}${cs}${krb}]]
-externalCodeChar_nested [klb @code krb] = [[${klb}${code}${krb}]]
-externalCodeChar_char [c] = [[${c}]]
+externalCodeStuff_nested [lb @code rb] = [[${lb}${code}${rb}]]
+externalCodeStuff_char [c] = [[${c}]]
 
 char [c] = [[${c}]]
 

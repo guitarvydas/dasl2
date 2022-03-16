@@ -3,18 +3,16 @@ main [@wsnl @token] = [[${wsnl}${token}]]
 token_key [key la] = [[{"token":"${key}"},\n]]
 token_builtin [builtin la] = [[{"token":"${builtin}"},\n]]
 token_connections [k la] = [[{"token":"${k}"},\n]]
-token_lexical [t la] = [[${t},\n]]
+token_lexical [t] = [[${t},\n]]
 token_other [twt] = [[${twt}]]
   
 wsRun [@ws] = [[{"token":"ws", "content":"${support.encode (ws)}"},\n]]
 nlRun [@eol] = [[{"token":"eol", "content":"${support.encode (eol)}"},\n]]
 
-componentName [klb @ident krb] = [[{"token":"componentName", "content":"${support.encode (ident)}"},\n]]
-portName [kl @ident kr] = [[{"token":"portName", "content":"${support.encode (ident)}"},\n]]
 
 externalCode [klb @cs krb] = [[${klb}${cs}${krb}]]
-externalCodeChar_nested [klb @code krb] = [[${klb}${code}${krb}]]
-externalCodeChar_char [c] = [[{"token":"char", "content":"${support.encode (c)}"},\n]]
+externalCodeStuff_nested [lb code rb] = [[{"token":"xcode", "content":"${support.encode (code)}"},\n]]
+externalCodeStuff_char [c] = [[${c}]]
 
 char [t] = [[{"token":"${t}", "content":"${support.encode (t)}"},\n]]
 

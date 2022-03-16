@@ -46,7 +46,7 @@ nlRun = eol+
 
 externalCode = "{" externalCodeStuff* "}"
 externalCodeStuff
-  = externalCode -- nested
+  = "{" externalCodeStuff* "}" -- nested
   | ~"}" any -- char
 
 char = ~wsnl any
