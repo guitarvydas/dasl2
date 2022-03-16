@@ -1,126 +1,54 @@
-tokens {
-main = wsnl* token+
+main [@wsnl @token] = [[${wsnl}${token}]]
   
-token 
-  = key &ws                 -- key
-  | builtin &terminator     -- builtin
-  | "connections" &wsOrEnd  -- connections
-  | tokenWithoutTerminator  -- other
+token_key [key la] = [[{"token":"${key}"},\n]]
+token_builtin [builtin la] = [[{"token":"${builtin}"},\n]]
+token_connections [k la] = [[{"token":"${k}"},\n]]
+token_lexical [t la] = [[${t},\n]]
+token_other [twt] = [[${twt}]]
   
-tokenWithoutTerminator
-  = componentName
-  | portName
+wsRun [@ws] = [[{"token":"ws", "content":"${support.encode (ws)}"},\n]]
+nlRun [@eol] = [[{"token":"eol", "content":"${support.encode (eol)}"},\n]]
 
-  | externalCode
-  | ident
-  | wsRun
-  | nlRun
-  | char
+componentName [klb @ident krb] = [[{"token":"componentName", "content":"${support.encode (ident)}"},\n]]
+portName [kl @ident kr] = [[{"token":"portName", "content":"${support.encode (ident)}"},\n]]
 
-key
-  = "def"
-  | "signature"
-  | "name"
-  | "etags"
-  | "inputs"
-  | "outputs"
-  | "nets"
-  | "locals"
-  | "initially"
-  | "handler"
-  | "finally"
-  | "children"
+externalCode [klb @cs krb] = [[${klb}${cs}${krb}]]
+externalCodeChar_nested [klb @code krb] = [[${klb}${code}${krb}]]
+externalCodeChar_char [c] = [[{"token":"char", "content":"${support.encode (c)}"},\n]]
 
-builtin =
-  | "Yes"
-  | "No"
-  | "Nil"
-  | "Trigger"
-  | "Conclude"
-  | "Args"
-  | "Return"
-  | "Send"
-  | "Inject"
-  | "?data"
-  | "?etag"
+char [t] = [[{"token":"${t}", "content":"${support.encode (t)}"},\n]]
 
+ident [identFirst @identRest la] = [[${identFirst}${identRest}]]
+identFirst [c] = [[${c}]]
+identRest [c] = [[${c}]]
 
+string [dql @cs dqr la] = [[${dql}${cs}${dqr}]]
+dq [c] = [[${c}]]
+stringChar [c] = [[${c}]]
 
-wsRun = ws+
-nlRun = eol+
+comment [kss @cs e] = [[${kss}${cs}${e}]]
+commentChar [c] = [[${c}]]
+eol [c] = [[${c}]]
+ws [c] = [[${c}]]
+space [ws] = [[${ws}]]
+wsnl [c] = [[${c}]]
 
-componentName = "[" ident+ "]" 
-portName = "«" ident+ "»"
+eolOrEnd [c] = [[${c}]]
+terminator [c] = [[${c}]]
+terminatorOrWsnlOrEnd [c] = [[${c}]]
 
-externalCode = "{" externalCodeChar* "}"
-externalCodeChar
-  = "{" externalCode* "}" -- nested
-  | ~"}" any              -- char
+keyword [kwid la] = [[${kwid}]]
 
-char = ~wsnl any
+keywordIdent [kw] = [[${kw}]]
 
-ident = identFirst identRest* &terminatorOrWsnlOrEnd
-identFirst = ~keyword identRest
-identRest = ~lexical ~wsnl any
+lexical [t] = [[{"token":"${t}", "content":"${support.encode (t)}"}]]
 
-string = dq stringChar* dq &terminatorOrWsnlOrEnd
-dq = "\""
-stringChar = ~dq any
-
-comment = "//" commentChar* eolOrEnd
-commentChar = ~eol any
-eol = "\n"
-ws = " " | "\t" | comment
-space := ws
-wsnl = ws | eol
-
-eolOrEnd = ws | eol | end
-terminator = lexical | ws
-terminatorOrWsnlOrEnd = terminator | eolOrEnd
-wsOrEnd = ws | end
-
-/////
-
-keyword = keywordIdent &terminatorOrWsnlOrEnd
-
-keywordIdent
-  = lexical
-  | "self"
-  | "name"
-  | "def"
-  | "signature"
-  | "etags"
-  | "inputs"
-  | "outputs"
-  | "nets"
-  | "locals"
-  | "initially"
-  | "handler"
-  | "finally"
-  | "children"
-  | "connections"
-  | "Yes"
-  | "No"
-  | "Nil"
-  | "Inject"
-  | "Send"
-  | "Conclude"
-  | "Args"
-  | "?data"
-  | "?etag"
-
-lexical 
-  = "∞"
-  | "λ"
-  | "."
-  | "("
-  | ")"
-  | "["
-  | "]"
-  | "«"
-  | "»"
-
-/////
-
-
-}
+lexLookup [c] = [[lookup]]
+lexLambda [c] = [[lambda]]
+lexDot [c] = [[dot]]
+lexLPAR [c] = [[lpar]]
+lexRPAR [c] = [[rpar]]
+lexLBracket [c] = [[lbracket]]
+lexRBracket [c] = [[rbracket]]
+lexLPort [c] = [[lport]]
+lexRPort [c] = [[rport]]

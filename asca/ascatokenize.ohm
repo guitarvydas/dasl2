@@ -2,9 +2,10 @@ tokens {
 main = wsnl* token+
   
 token 
-  = key &ws                 -- key
-  | builtin &terminator     -- builtin
-  | "connections" &wsOrEnd  -- connections
+  = key &wsnl                    -- key
+  | builtin &terminatorOrWsnlOrEnd -- builtin
+  | "connections" &terminatorOrWsnlOrEnd  -- connections
+  | lexical &terminatorOrWsnlOrEnd  -- lexical
   | tokenWithoutTerminator  -- other
   
 tokenWithoutTerminator
@@ -109,18 +110,21 @@ keywordIdent
   | "?data"
   | "?etag"
 
-lexical 
-  = "∞"
-  | "λ"
-  | "."
-  | "("
-  | ")"
-  | "["
-  | "]"
-  | "«"
-  | "»"
+lexical = lexLookup | lexLambda | lexDot | lexLPAR | lexRPAR | lexLBracket | lexRBracket
+  | lexLPort | lexRPort
+  
+ lexLookup = "∞"
+ lexLambda ="λ"
+ lexDot = "."
+ lexLPAR = "("
+ lexRPAR = ")"
+ lexLBracket ="["
+ lexRBracket = "]"
+ lexLPort = "«"
+ lexRPort = "»"
 
 /////
 
 
 }
+
