@@ -1,0 +1,16 @@
+Main [@Token] = {{support.resetlinenumber ();}} [[${Token}]]
+Token [t] = [[${t}]]
+EolToken [klb TokenID kcomma TokenContent krb optionalComma]
+  = [[${support.inclinenumber (TokenContent)}{${TokenID}${kcomma}${TokenContent},"line":${support.getlinenumber ()}\}\n]]
+OtherToken [klb TokenID kcomma TokenContent krb optionalComma]
+  = [[{${TokenID}${kcomma}${TokenContent},"line":${support.getlinenumber ()}\}\n]]
+EolID [dq1 k dq2 kcolon dq3 nstr dq4] = [[${dq1}${k}${dq2}${kcolon}${dq3}${nstr}${dq4}]]
+TokenID [dq1 k dq2 kcolon string] = [[${dq1}${k}${dq2}${kcolon}${string}]]
+TokenContent [dq1 k dq2 kcolon string] = [[${dq1}${k}${dq2}${kcolon}${string}]]
+
+dq [c] = [[${c}]]
+string [dq1 @cs dq2] = [[${dq1}${cs}${dq2}]]
+optionalComma [@c] = [[${c}]]
+
+ident [@cs] = [[${cs}]]
+identchar [c] = [[${c}]]

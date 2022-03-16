@@ -1,0 +1,41 @@
+tokenfolding {
+Main = Token+
+Token = ComponentSequence | PortSequence | OtherToken
+
+ComponentSequence = LbracketToken ComponentName RbracketToken
+PortSequence = LportToken PortName RportToken
+
+ComponentName = IDstring
+PortName = IDstring
+
+IDString = (IdentToken | WSToken)+
+
+PortLToken = "{" LportKind "," TokenContent "}" optionalComma
+PortRToken = "{" RportKind "," TokenContent "}" optionalComma
+LbracketToken = "{" LbracketKind "," TokenContent "}" optionalComma
+RbracketToken = "{" RbracketKind "," TokenContent "}" optionalComma
+IdentToken = "{" IdentKind "," TokenContent "}" optionalComma
+WSToken = "{" WSKind "," TokenContent "}" optionalComma
+
+OtherToken = "{" TokenID "," TokenContent "}" optionalComma
+
+////
+
+LportKind = dq "token" dq ":" dq "lport"
+RportKind = dq "token" dq ":" dq "rport"
+LbracketKind = dq "token" dq ":" dq "lbracket"
+RbracketKind = dq "token" dq ":" dq "rbracket"
+IdentKind = dq "token" dq ":" dq "ident"
+WSKind = dq "token" dq ":" dq "ws"
+
+TokenContent = dq "content" dq ":" string
+
+////
+
+dq = "\""
+string = dq (~dq any)* dq
+optionalComma = ","?
+
+ident = identchar+
+identchar = ~dq any
+}

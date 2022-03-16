@@ -1,0 +1,36 @@
+token("[") multipleids token("]")
+ --> token { "component" joincontent(multipleids) linenumberof(token("[")) }
+
+token(lport) multipleids token(rport)
+ --> token { "port" joincontent(multipleids) linenumberof(token(lport)) }
+
+
+multipleids = multiid+
+
+multiid = token(Ident) | token(WS)
+
+
+----
+
+match:
+componentsequence = {[ ...} @ids {] ...}
+portsequence = {« ...} @ids {» ...}
+other = { ... }
+
+ids = idOrSpace+
+idOrSpace = {id ...} | {ws ...}
+
+
+rewrite:
+componentsequence [t1 ids t2] -> {"component" ids.joincontent()}
+portsequence [t1 ids t2] -> {"port" ids.joincontent()}
+other [t] -> t
+
+synonym [ "lbrack"
+synonym ] "rbrack"
+synonym « lport"
+synonym » "rport"
+synonym id "ident"
+synonym ws "ws"
+
+token = {id content}
