@@ -99,51 +99,43 @@ wsOrEnd = ws | end
 /////
 
 keyword = keywordIdent &terminatorOrWsnlOrEnd
+
 keywordIdent
-  = kwName | kwEtags | kwInputs | kwOutputs | kwNets
-  | kwLocals | kwInitially | kwHandler | kwFinally
-  | kwChildren | kwConnections | kwDef | kwSignature
-  | kwSelf
-  | kwYes | kwNo | kwNil | kwInject | kwSend | kwConclude | kwArgs
-  | kwMessageData | kwMessageEtag
-  | lexical
+  = lexical
+  | "self"
+  | "name"
+  | "def"
+  | "signature"
+  | "etags"
+  | "inputs"
+  | "outputs"
+  | "nets"
+  | "locals"
+  | "initially"
+  | "handler"
+  | "finally"
+  | "children"
+  | "connections"
+  | "Yes"
+  | "No"
+  | "Nil"
+  | "Inject"
+  | "Send"
+  | "Conclude"
+  | "Args"
+  | "?data"
+  | "?etag"
 
-kwSelf = "self"
-kwName = "name"
-kwDef = "def"
-kwSignature = "signature"
-kwEtags = "etags"
-kwInputs = "inputs"
-kwOutputs = "outputs"
-kwNets = "nets"
-kwLocals = "locals"
-kwInitially = "initially"
-kwHandler = "handler"
-kwFinally = "finally"
-kwChildren = "children"
-kwConnections = "connections"
-kwYes = "Yes"
-kwNo = "No"
-kwNil = "Nil"
-kwInject = "Inject"
-kwSend = "Send"
-kwConclude = "Conclude"
-kwArgs = "Args"
-kwMessageData = "?data"
-kwMessageEtag = "?etag"
-
-lexical = lexLambda | lexDot | lexLookup | lexlp | lexrp | lexlb | lexrb
-  | lexlport | lexrport
-
-lexLookup = "∞"
-lexLambda = "λ"
-lexDot = "."
-lexlp = "("
-lexrp = ")"
-lexlb = "["
-lexrb = "]"
-lexlport = "«"
-lexrport = "»"
+lexical 
+  = "∞"
+  | "λ"
+  | "."
+  | "("
+  | ")"
+  | "["
+  | "]"
+  | "«"
+  | "»"
 
 /////
 
