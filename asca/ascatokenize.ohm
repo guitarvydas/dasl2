@@ -2,17 +2,15 @@ tokens {
 main = wsnl* token+
   
 token 
-  = key &wsnl                    -- key
+  = lexical -- lexical
+  | key &wsnl                    -- key
   | builtin &terminatorOrWsnlOrEnd -- builtin
   | "connections" &terminatorOrWsnlOrEnd  -- connections
-  | tokenWithoutTerminator  -- other
-  
-tokenWithoutTerminator
-  = externalCode
-  | ident
-  | wsRun
-  | nlRun
-  | char
+  | externalCode -- code
+  | wsRun -- wsRun
+  | nlRun -- nlRun
+  | ident -- ident
+  | char -- other
 
 key
   = "def"
@@ -46,10 +44,10 @@ builtin =
 wsRun = ws+
 nlRun = eol+
 
-externalCode = "{" externalCodeChar* "}"
-externalCodeChar
-  = "{" externalCode* "}" -- nested
-  | ~"}" any              -- char
+externalCode = "{" externalCodeStuff* "}"
+externalCodeStuff
+  = externalCode -- nested
+  | ~"}" any -- char
 
 char = ~wsnl any
 
@@ -120,4 +118,3 @@ lexical = lexLookup | lexLambda | lexDot | lexLPAR | lexRPAR | lexLBracket | lex
 
 
 }
-
