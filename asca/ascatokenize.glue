@@ -1,8 +1,8 @@
 main [@wsnl @token] = [[${wsnl}${token}]]
   
-token_key [key la] = [[{"token":"${key}"},\n]]
-token_builtin [builtin la] = [[{"token":"${builtin}"},\n]]
-token_connections [k la] = [[{"token":"${k}"},\n]]
+token_key [key la] = [[{"token":"${key}", "content":"${key}"},\n]]
+token_builtin [builtin la] = [[{"token":"${builtin}", "content":"${builtin}"},\n]]
+token_connections [k la] = [[{"token":"${k}", "content":"${k}"},\n]]
 token_lexical [t] = [[${t},\n]]
 token_other [twt] = [[${twt}]]
   
@@ -16,7 +16,7 @@ externalCodeStuff_char [c] = [[${c}]]
 
 char [t] = [[{"token":"${t}", "content":"${support.encode (t)}"},\n]]
 
-ident [identFirst @identRest la] = [[${identFirst}${identRest}]]
+ident [identFirst @identRest la] = [[{"token":"ident", "content":"${support.encode (identFirst + identRest)}"},\n]]
 identFirst [c] = [[${c}]]
 identRest [c] = [[${c}]]
 

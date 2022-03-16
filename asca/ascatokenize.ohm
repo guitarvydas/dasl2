@@ -52,7 +52,7 @@ externalCodeStuff
 char = ~wsnl any
 
 ident = identFirst identRest* &terminatorOrWsnlOrEnd
-identFirst = ~keyword identRest
+identFirst = identRest
 identRest = ~lexical ~wsnl any
 
 string = dq stringChar* dq &terminatorOrWsnlOrEnd
