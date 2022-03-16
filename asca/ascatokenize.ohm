@@ -5,14 +5,10 @@ token
   = key &wsnl                    -- key
   | builtin &terminatorOrWsnlOrEnd -- builtin
   | "connections" &terminatorOrWsnlOrEnd  -- connections
-  | lexical &terminatorOrWsnlOrEnd  -- lexical
   | tokenWithoutTerminator  -- other
   
 tokenWithoutTerminator
-  = componentName
-  | portName
-
-  | externalCode
+  = externalCode
   | ident
   | wsRun
   | nlRun
@@ -49,9 +45,6 @@ builtin =
 
 wsRun = ws+
 nlRun = eol+
-
-componentName = "[" ident+ "]" 
-portName = "«" ident+ "»"
 
 externalCode = "{" externalCodeChar* "}"
 externalCodeChar
