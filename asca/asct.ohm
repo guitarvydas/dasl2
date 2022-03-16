@@ -1,6 +1,9 @@
 asctokens {
 Main = Token+
-Token = "{" TokenID "," TokenContent "}" optionalComma
+Token = EolToken | OtherToken
+EolToken = "{" EolID "," TokenContent "}" optionalComma
+OtherToken = "{" TokenID "," TokenContent "}" optionalComma
+EolID = dq "token" dq ":" dq "eol" dq
 TokenID = dq "token" dq ":" string
 TokenContent = dq "content" dq ":" string
 

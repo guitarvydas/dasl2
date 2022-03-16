@@ -4,9 +4,11 @@ dev: testmolecule
 testmolecule:
 	@echo
 	@echo '*** ' testmolecule identity
-	./identity-molecularize.bash <testconnections.asct
+	#./identity-molecularize.bash <testconnections.asct
+	./identity-molecularize.bash <lookup.asct
 	@echo
 	@echo '*** ' molecularize
+	#./molecularize.bash <testconnections.asct
 	./molecularize.bash <lookup.asct
 
 testcode:

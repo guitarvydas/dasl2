@@ -1,6 +1,10 @@
 Main [@Token] = [[${Token}]]
-Token [klb TokenID kcomma TokenContent krb optionalComma]
+Token [t] = [[${t}\n]]
+EolToken [klb TokenID kcomma TokenContent krb optionalComma]
+  = [[{${TokenID}${kcomma}${TokenContent}\}]]
+OtherToken [klb TokenID kcomma TokenContent krb optionalComma]
   = [[${klb}${TokenID}${kcomma}${TokenContent}${krb}${optionalComma}]]
+EolID [dq1 k dq2 kcolon dq3 nstr dq4] = [[${dq1}${k}${dq2}${kcolon}${dq3}${nstr}${dq4}]]
 TokenID [dq1 k dq2 kcolon string] = [[${dq1}${k}${dq2}${kcolon}${string}]]
 TokenContent [dq1 k dq2 kcolon string] = [[${dq1}${k}${dq2}${kcolon}${string}]]
 
