@@ -1,0 +1,13 @@
+asctokens {
+Main = Token+
+Token = "{" TokenID "," TokenContent "}" optionalComma
+TokenID = dq "token" dq ":" string
+TokenContent = dq "content" dq ":" string
+
+dq = "\""
+string = dq (~dq any)* dq
+optionalComma = ","?
+
+ident = identchar+
+identchar = ~dq any
+}

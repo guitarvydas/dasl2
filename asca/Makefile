@@ -1,4 +1,4 @@
-devall: testkey testbuiltin testconnections testlexical testcode testother
+devall: testkey testbuiltin testconnections testlexical testcode testother testlookup
 dev: testother
 
 testcode:
@@ -48,3 +48,11 @@ testlexical:
 	@echo
 	@echo '*** ' tokenized
 	./tokenize.bash <testlexical.asca
+
+testlookup:
+	@echo
+	@echo '*** ' testlookup identity
+	./identity-tokenize.bash <lookup.asca
+	@echo
+	@echo '*** ' tokenized
+	./tokenize.bash <lookup.asca

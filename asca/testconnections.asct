@@ -1,0 +1,11 @@
+
+***  testconnections identity
+./identity-tokenize.bash <testconnections.asca
+connections
+
+
+***  tokenized
+./tokenize.bash <testconnections.asca
+{"token":"connections", "content":"connections"},
+{"token":"eol", "content":"%0A"},
+
