@@ -9,9 +9,9 @@ testmolecule:
 	@echo
 	@echo '*** ' molecularize
 	#./molecularize.bash <testconnections.asct >/tmp/temp.asct
-	./molecularize.bash <lookup.asct >/tmp/temp.asct
+	./insertlinenumbers.bash <lookup.asct >/tmp/temp.asct
 	./rmnl.bash </tmp/temp.asct | ./rmws.bash >/tmp/temp-nowsnl.asct
-	wc /tmp/temp*.asct
+	wc -l /tmp/temp*.asct
 
 testcode:
 	@echo
