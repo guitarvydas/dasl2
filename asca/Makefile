@@ -5,11 +5,13 @@ testmolecule:
 	@echo
 	@echo '*** ' testmolecule identity
 	#./identity-molecularize.bash <testconnections.asct
-	./identity-molecularize.bash <lookup.asct
+	./identity-molecularize.bash <lookup.asct 1>&2
 	@echo
 	@echo '*** ' molecularize
-	#./molecularize.bash <testconnections.asct
-	./molecularize.bash <lookup.asct
+	#./molecularize.bash <testconnections.asct >/tmp/temp.asct
+	./molecularize.bash <lookup.asct >/tmp/temp.asct
+	./rmnl.bash </tmp/temp.asct | ./rmws.bash >/tmp/temp-nowsnl.asct
+	wc /tmp/temp*.asct
 
 testcode:
 	@echo

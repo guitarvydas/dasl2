@@ -1,0 +1,16 @@
+asctokens {
+Main = Token+
+Token = EolToken | OtherToken
+EolToken = "{" EolID "," TokenContent "}" optionalComma
+OtherToken = "{" TokenID "," TokenContent "}" optionalComma
+EolID = dq "token" dq ":" dq "eol" dq
+TokenID = dq "token" dq ":" string
+TokenContent = dq "content" dq ":" string
+
+dq = "\""
+string = dq (~dq any)* dq
+optionalComma = ","?
+
+ident = identchar+
+identchar = ~dq any
+}
