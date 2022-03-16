@@ -1,0 +1,11 @@
+{"token":"lookup", "content":"%E2%88%9E"},
+{"token":"lambda", "content":"%CE%BB"},
+{"token":"dot", "content":"."},
+{"token":"lpar", "content":"("},
+{"token":"rpar", "content":")"},
+{"token":"lbracket", "content":"%5B"},
+{"token":"rbracket", "content":"%5D"},
+{"token":"lport", "content":"%C2%AB"},
+{"token":"rport", "content":"%C2%BB"},
+{"token":"eol", "content":"%0A"},
+

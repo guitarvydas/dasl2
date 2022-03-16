@@ -7,7 +7,7 @@ testmolecule:
 	./identity-molecularize.bash <testconnections.asct
 	@echo
 	@echo '*** ' molecularize
-	./molecularize.bash <testconnections.asct
+	./molecularize.bash <lookup.asct
 
 testcode:
 	@echo
@@ -15,7 +15,7 @@ testcode:
 	./identity-tokenize.bash <testcode.asca
 	@echo
 	@echo '*** ' tokenized
-	./tokenize.bash <testcode.asca
+	./tokenize.bash <testcode.asca >testcode.asct
 
 testother:
 	@echo
@@ -23,7 +23,7 @@ testother:
 	./identity-tokenize.bash <testother.asca
 	@echo
 	@echo '*** ' tokenized
-	./tokenize.bash <testother.asca
+	./tokenize.bash <testother.asca >testother.asct
 
 testkey:
 	@echo
@@ -31,7 +31,7 @@ testkey:
 	./identity-tokenize.bash <testkey.asca
 	@echo
 	@echo '*** ' tokenized
-	./tokenize.bash <testkey.asca
+	./tokenize.bash <testkey.asca >testkey.asct
 
 testbuiltin:
 	@echo
@@ -39,7 +39,7 @@ testbuiltin:
 	./identity-tokenize.bash <testbuiltin.asca
 	@echo
 	@echo '*** ' tokenized
-	./tokenize.bash <testbuiltin.asca
+	./tokenize.bash <testbuiltin.asca >testbuilting.asct
 
 testconnections:
 	@echo
@@ -47,7 +47,7 @@ testconnections:
 	./identity-tokenize.bash <testconnections.asca
 	@echo
 	@echo '*** ' tokenized
-	./tokenize.bash <testconnections.asca
+	./tokenize.bash <testconnections.asca >testconnections.asct
 
 testlexical:
 	@echo
@@ -55,7 +55,7 @@ testlexical:
 	./identity-tokenize.bash <testlexical.asca
 	@echo
 	@echo '*** ' tokenized
-	./tokenize.bash <testlexical.asca
+	./tokenize.bash <testlexical.asca >testlexical.asct
 
 testlookup:
 	@echo
@@ -63,4 +63,4 @@ testlookup:
 	./identity-tokenize.bash <lookup.asca
 	@echo
 	@echo '*** ' tokenized
-	./tokenize.bash <lookup.asca
+	./tokenize.bash <lookup.asca >lookup.asct
