@@ -1,5 +1,13 @@
 devall: testkey testbuiltin testconnections testlexical testcode testother testlookup
-dev: testother
+dev: testmolecule
+
+testmolecule:
+	@echo
+	@echo '*** ' testmolecule identity
+	./identity-molecularize.bash <testconnections.asct
+	@echo
+	@echo '*** ' molecularize
+	./molecularize.bash <testconnections.asct
 
 testcode:
 	@echo

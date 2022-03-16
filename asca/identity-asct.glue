@@ -1,0 +1,12 @@
+Main [@Token] = [[${Token}]]
+Token [klb TokenID kcomma TokenContent krb @optionalComma]
+  = [[${klb}${TokenID}${kcomma}${TokenConten}${krb}${optionalComma}]]
+TokenID [dq1 k dq2 kcolon string] = [[${dq1}${k}${dq2}${kcolon}${string}]]
+TokenContent [dq1 k dq2 kcolon string] = [[${dq1}${k}${dq2}${kcolon}${string}]]
+
+dq [c] = [[${c}]]
+string [dq1 @cs dq2] = [[${dq1}${cs}${dq2}]]
+optionalComma [c] = [[${c}]]
+
+ident [@cs] = [[${cs}]]
+identchar [c] = [[${c}]]
