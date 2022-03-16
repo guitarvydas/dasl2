@@ -8,7 +8,7 @@ token_other [twt] = [[${twt}]]
 wsRun [@ws] = [[${ws}]]
 nlRun [@eol] = [[${eol}]]
 
-componentName [klb @ident krb] = [[${klb}@{ident}${krb}]]
+componentName [klb @ident krb] = [[${klb}${ident}${krb}]]
 portName [kl @ident kr] = [[${kl}${ident}${kr}]]
 
 externalCode [klb @cs krb] = [[${klb}${cs}${krb}]]
