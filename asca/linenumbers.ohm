@@ -1,0 +1,14 @@
+linenumbers {
+
+// linenumbers <: basictoken {
+  Main = Token+
+
+// basic token
+  Token = "{" dq "token" dq ":" string "," dq "content" dq ":" string "}" ","?
+  string = dq stringChar* dq
+  dq = "\""
+  stringChar = ~dq any
+
+
+}
+

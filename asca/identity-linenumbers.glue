@@ -1,0 +1,7 @@
+Token [klb dq1 ktoken dq2 kcolon s1 kcomma dq3 kcontent dq4 kcolon2 s2 krb @optcomma]
+  = [[${klb}${dq1}${ktoken}${dq2}${kcolon}${kcomma}${dq3}${kcontent}${dq4}${kcolon2}${s2}${krb}${optcomma}\n]]
+string [dq1 @cs dq2] = [[${dq1}${cs}${dq2}]]
+dq [c] = [[${c}]]
+stringChar [c] = [[${c}]]
+Main [@Token] = [[${Token}]]
+
