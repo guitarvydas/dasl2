@@ -9,6 +9,14 @@ linenumbers:
 	@echo '*** ' line numbers
 	./linenumbers.bash <testkey.asct
 
+linenumbersbig:
+	@echo
+	@echo '*** 'big test line numbers identity
+	./identity-linenumbers.bash <lookup.asct 1>&2
+	@echo
+	@echo '*** 'big test line numbers
+	./linenumbers.bash <lookup.asct
+
 testcode:
 	@echo
 	@echo '*** ' testcode identity

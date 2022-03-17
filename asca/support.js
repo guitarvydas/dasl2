@@ -14,3 +14,7 @@ exports.inclinenumber = function (str) {
 exports.getlinenumber = function () {
     return linenumber.toString ();
 }
+
+exports.createToken = function (token, content) {
+    return `{"token":"${token}", "content":${content}}`;
+}
