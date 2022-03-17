@@ -1,5 +1,5 @@
 devall: testkey testbuiltin testconnections testcomponents testlexical testcode testother testlookup
-dev: testmolecule
+dev: testlookup
 
 testmolecule1:
 	@echo

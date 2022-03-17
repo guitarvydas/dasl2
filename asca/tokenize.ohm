@@ -1,0 +1,53 @@
+tokens {
+main = token+
+  
+token 
+  = lexical -- lexical
+  | externalCode -- code
+  | string -- string
+  | commentToEol -- commentToEol
+  | blockComment -- blockComment
+  | wsRun -- wsRun
+  | nlRun -- nlRun
+  | ident -- ident
+  | char -- other
+
+wsRun = ws+
+nlRun = eol+
+
+externalCode = "{" externalCodeStuff* "}"
+externalCodeStuff
+  = "{" externalCodeStuff* "}" -- nested
+  | ~"}" any -- char
+
+char = ~wsnl any
+
+ident = identFirst identRest* &terminatorOrWsnlOrEnd
+identFirst = identRest
+identRest = ~terminator ~wsnl any
+
+string = dq stringChar* dq &terminatorOrWsnlOrEnd
+dq = "\""
+stringChar = ~dq any
+
+comment = blockComment | commentToEol
+
+commentToEol = "//" commentChar* eolOrEnd
+commentChar = ~eol any
+
+blockComment = "/*" blockCommentChar* "*/"
+blockCommentChar = ~"*/" any
+
+eol = "\n"
+ws = " " | "\t"
+space := ws
+wsnl = ws | eol
+
+eolOrEnd = ws | eol | end
+terminator = lexical | ws
+terminatorOrWsnlOrEnd = terminator | eolOrEnd
+wsOrEnd = ws | end
+
+lexical = "∞" | "λ" | "." | "(" | ")" | "[" | "]" | "«" | "»"
+
+}

@@ -1,5 +1,5 @@
 #!/bin/bash
 prep=../../dscript/tools/prep
 cdir=`pwd`
-${prep} '.' '$' ascatokenize.ohm identity-ascatokenize.glue --stop=1
+${prep} '.' '$' tokenize.ohm identity-tokenize.glue --stop=1
 

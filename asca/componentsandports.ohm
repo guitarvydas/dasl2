@@ -13,21 +13,25 @@ PortName = IDstring
 
 IDstring = (IdentToken | WSToken)+
 
-LportToken = "{" LportKind "," TokenContent "}" optionalComma
-RportToken = "{" RportKind "," TokenContent "}" optionalComma
-LbracketToken = "{" LbracketKind "," TokenContent "}" optionalComma
-RbracketToken = "{" RbracketKind "," TokenContent "}" optionalComma
-IdentToken = "{" IdentKind "," TokenContent "}" optionalComma
-WSToken = "{" WSKind "," TokenContent "}" optionalComma
+LportToken = "{" LexClass "," LportKind "," TokenContent "}" optionalComma
+RportToken = "{" LexClass "," RportKind "," TokenContent "}" optionalComma
+LbracketToken = "{" LexClass "," LbracketKind "," TokenContent "}" optionalComma
+RbracketToken = "{" LexClass "," RbracketKind "," TokenContent "}" optionalComma
+IdentToken = "{" IdentClass "," TokenContent "}" optionalComma
+WSToken = "{" WSClass "," TokenContent "}" optionalComma
 
 OtherToken = "{" TokenID "," TokenContent "}" optionalComma
 
 ////
 
-LportKind = dq "token" dq ":" dq "lport" dq
-RportKind = dq "token" dq ":" dq "rport" dq
-LbracketKind = dq "token" dq ":" dq "lbracket" dq
-RbracketKind = dq "token" dq ":" dq "rbracket" dq
+LexClass = dq "class" dq ":" dq "lex" dq
+IdentClass = dq "class" dq ":" dq "ident" dq
+WSClass = dq "class" dq ":" dq "ws" dq
+
+LportKind = dq "token" dq ":" dq "«" dq
+RportKind = dq "token" dq ":" dq "»" dq
+LbracketKind = dq "token" dq ":" dq "[" dq
+RbracketKind = dq "token" dq ":" dq "]" dq
 IdentKind = dq "token" dq ":" dq "ident" dq
 WSKind = dq "token" dq ":" dq "ws" dq
 
