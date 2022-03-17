@@ -1,17 +1,5 @@
-devall: testkey testbuiltin testconnections testcomponents testlexical testcode testother teststring testeolcomment testblockcomment testlookup
+devall: testkey testbuiltin testconnections testcomponents testlexical testcode testother teststring testeolcomment testblockcomment testother testlookup
 dev: linenumbers
-
-testmolecule1:
-	@echo
-	@echo '*** ' testmolecule identity
-	#./identity-molecularize.bash <testconnections.asct
-	./identity-molecularize.bash <lookup.asct 1>&2
-	@echo
-	@echo '*** ' molecularize
-	#./molecularize.bash <testconnections.asct >/tmp/temp.asct
-	./insertlinenumbers.bash <lookup.asct >/tmp/temp.asct
-	./rmnl.bash </tmp/temp.asct | ./rmws.bash >/tmp/temp-nowsnl.asct
-	wc -l /tmp/temp*.asct
 
 linenumbers:
 	@echo
