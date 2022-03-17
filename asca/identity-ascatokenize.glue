@@ -1,8 +1,5 @@
 main [@wsnl @token] = [[${wsnl}${token}]]
   
-token_key [key la] = [[${key}]]
-token_builtin [builtin la] = [[${builtin}]]
-token_connections [k la] = [[${k}]]
 token_other [twt] = [[${twt}]]
   
 wsRun [@ws] = [[${ws}]]

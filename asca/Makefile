@@ -22,6 +22,7 @@ testmolecule:
 	./componentsandports.bash <testcomponents.asct >/tmp/componentsandports.asct
 	./insertlinenumbers.bash </tmp/componentsandports.asct >/tmp/temp.asct
 	./rmnl.bash </tmp/temp.asct | ./rmws.bash >/tmp/temp-nowsnl.asct
+	cat /tmp/temp-nowsnl.asct
 	wc -l /tmp/temp*.asct
 
 testcode:

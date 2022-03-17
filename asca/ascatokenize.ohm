@@ -3,42 +3,14 @@ main = wsnl* token+
   
 token 
   = lexical -- lexical
-  | key &wsnl                    -- key
-  | builtin &terminatorOrWsnlOrEnd -- builtin
-  | "connections" &terminatorOrWsnlOrEnd  -- connections
+  // | key &wsnl                    -- key
+  // | builtin &terminatorOrWsnlOrEnd -- builtin
+  // | "connections" &terminatorOrWsnlOrEnd  -- connections
   | externalCode -- code
   | wsRun -- wsRun
   | nlRun -- nlRun
   | ident -- ident
   | char -- other
-
-key
-  = "def"
-  | "signature"
-  | "name"
-  | "etags"
-  | "inputs"
-  | "outputs"
-  | "nets"
-  | "locals"
-  | "initially"
-  | "handler"
-  | "finally"
-  | "children"
-
-builtin =
-  | "Yes"
-  | "No"
-  | "Nil"
-  | "Trigger"
-  | "Conclude"
-  | "Args"
-  | "Return"
-  | "Send"
-  | "Inject"
-  | "?data"
-  | "?etag"
-
 
 
 wsRun = ws+

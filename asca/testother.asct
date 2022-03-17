@@ -12,7 +12,7 @@
 {"token":"ws", "content":"%20%20"},
 {"token":"ident", "content":"1"},
 {"token":"ws", "content":"%20%20%20"},
-{"token":"name", "content":"name"},
+{"token":"ident", "content":"name"},
 {"token":"ws", "content":"%20"},
 {"token":"ident", "content":"match"},
 {"token":"rport", "content":"%C2%BB"},
