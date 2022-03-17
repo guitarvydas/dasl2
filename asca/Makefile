@@ -1,5 +1,5 @@
-devall: testkey testbuiltin testconnections testcomponents testlexical testcode testother testlookup
-dev: testlookup
+devall: testkey testbuiltin testconnections testcomponents testlexical testcode testother teststring testeolcomment testblockcomment testlookup
+dev: linenumbers
 
 testmolecule1:
 	@echo
@@ -13,17 +13,13 @@ testmolecule1:
 	./rmnl.bash </tmp/temp.asct | ./rmws.bash >/tmp/temp-nowsnl.asct
 	wc -l /tmp/temp*.asct
 
-testmolecule:
+linenumbers:
 	@echo
-	@echo '*** ' testmolecule identity
-	./identity-molecularize.bash <testcomponents.asct 1>&2
+	@echo '*** ' line numbers identity
+	./identity-linenumbers.bash <testkey.asct 1>&2
 	@echo
-	@echo '*** ' molecularize
-	./componentsandports.bash <testcomponents.asct >/tmp/componentsandports.asct
-	./insertlinenumbers.bash </tmp/componentsandports.asct >/tmp/temp.asct
-	./rmnl.bash </tmp/temp.asct | ./rmws.bash >/tmp/temp-nowsnl.asct
-	cat /tmp/temp-nowsnl.asct
-	wc -l /tmp/temp*.asct
+	@echo '*** ' line numbers
+	./linenumbers.bash <testkey.asct
 
 testcode:
 	@echo
@@ -32,6 +28,30 @@ testcode:
 	@echo
 	@echo '*** ' tokenized
 	./tokenize.bash <testcode.asca >testcode.asct
+
+teststring:
+	@echo
+	@echo '*** ' test string identity
+	./identity-tokenize.bash <teststring.asca
+	@echo
+	@echo '*** ' tokenized
+	./tokenize.bash <teststring.asca >teststring.asct
+
+testeolcomment:
+	@echo
+	@echo '*** ' test eolcomment identity
+	./identity-tokenize.bash <testeolcomment.asca
+	@echo
+	@echo '*** ' tokenized
+	./tokenize.bash <testeolcomment.asca >testeolcomment.asct
+
+testblockcomment:
+	@echo
+	@echo '*** ' test blockcomment identity
+	./identity-tokenize.bash <testblockcomment.asca
+	@echo
+	@echo '*** ' tokenized
+	./tokenize.bash <testblockcomment.asca >testblockcomment.asct
 
 testother:
 	@echo
