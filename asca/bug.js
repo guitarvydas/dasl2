@@ -20,29 +20,11 @@ linenumbers <: basictoken {
 }
 `;
 
-const fatgrammar = String.raw `
-basictoken {
-// basic token
-  //BasicMain = Token+
-  Token = "{" dq "token" dq ":" string "," dq "content" dq ":" string "}" ","?
-  string = dq stringChar* dq
-  dq = "\""
-  stringChar = ~dq any
-
-
-}
-
-linenumbers <: basictoken {
-
-  Default = LineNumberingToken+
-
-  LineNumberingToken = NLToken | Token
-  NLToken = "{" dq "token" dq ":" dq "nl" dq "," dq "content" dq ":" string "}" ","?
-
-}
-`;
-
 const text = String.raw `
+a
+b
+`;
+const temptext = String.raw `
 {"token":"ident","content":"def"},
 {"token":"nl","content":"%0A"},
 `;
