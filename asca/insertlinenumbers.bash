@@ -1,5 +1,5 @@
 #!/bin/bash
-prep=../../dscript/tools/prep
+prep=~/tools/prep/prep
 cdir=`pwd`
 ${prep} '.' '$' asct.ohm asct.glue --stop=1 --support=${cdir}/support.js
 

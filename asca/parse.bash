@@ -1,4 +1,4 @@
 #!/bin/bash
-prep=../../dscript/tools/prep
+prep=~/tools/prep/prep
 ${prep} '.' '$' ascatokenize.ohm identity-ascatokenize.glue --stop=1
 

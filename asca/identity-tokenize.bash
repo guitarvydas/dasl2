@@ -1,5 +1,5 @@
 #!/bin/bash
-prep=../../dscript/tools/prep
+prep=~/tools/prep/prep
 cdir=`pwd`
 ${prep} '.' '$' tokenize.ohm identity-tokenize.glue --stop=1
 
