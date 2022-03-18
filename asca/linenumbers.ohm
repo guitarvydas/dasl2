@@ -1,13 +1,6 @@
 basictoken {
-
-//linenumbers <: basictoken {
-  Main = LineNumberingToken+
-
-  LineNumberingToken = NLToken | Token
-  NLToken = "{" dq "token" dq ":" dq "nl" dq "," dq "content" dq ":" string "}" ","?
-//}
-
 // basic token
+  Main = Token+
   Token = "{" dq "token" dq ":" string "," dq "content" dq ":" string "}" ","?
   string = dq stringChar* dq
   dq = "\""
@@ -16,4 +9,11 @@ basictoken {
 
 }
 
+linenumbers <: basictoken {
 
+  Main := LineNumberingToken+
+
+  LineNumberingToken = NLToken | Token
+  NLToken = "{" dq "token" dq ":" dq "nl" dq "," dq "content" dq ":" string "}" ","?
+
+}
