@@ -1,5 +1,5 @@
 #!/bin/bash
-prep=~/tools/prep/prep
+prep=~/tools/pre/pre
 cdir=`pwd`
 ${prep} '.' '$' linenumbers.ohm linenumbers.glue --stop=1 --support=${cdir}/support.js
 
