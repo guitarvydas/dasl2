@@ -1,5 +1,5 @@
 devall: testkey testbuiltin testconnections testcomponents testlexical testcode testother teststring testeolcomment testblockcomment testother testlookup
-dev: linenumbers
+dev: rmws
 
 linenumbers:
 	@echo
@@ -16,6 +16,17 @@ linenumbersbig:
 	@echo
 	@echo '*** 'big test line numbers
 	./linenumbers.bash <lookup.asct
+
+rmws:
+	@echo
+	@echo '*** 'remove whitespace big test line numbers identity
+	./identity-linenumbers.bash <lookup.asct 1>&2
+	@echo
+	@echo '*** 'remove whitespace big test line numbers
+	./linenumbers.bash <lookup.asct >/tmp/lookup.asctlines
+	./rmws.bash </tmp/lookup.asctlines >/tmp/lookup.ascnows
+	cat /tmp/lookup.ascnows
+	wc -l /tmp/lookup.asctlines /tmp/lookup.ascnows
 
 testcode:
 	@echo
