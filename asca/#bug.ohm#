@@ -1,0 +1,7 @@
+atomic {
+Item = alnum
+}
+
+molecular <: atomic {
+  Main = Item+
+}
