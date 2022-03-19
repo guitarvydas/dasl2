@@ -22,3 +22,20 @@ basictoken {
 
 linenumbers <: basictoken {
 }
+
+brackets <: basictoken {
+  LbracketToken = "{" dq "token" dq ":" dq "lex" dq "," dq "content" dq ":" dq "%5B" dq "}" ","?
+  RbracketToken = "{" dq "token" dq ":" dq "lex" dq "," dq "content" dq ":" dq  "%5D" dq "}" ","?
+  LportToken = "{" dq "token" dq ":" dq "lex" dq "," dq "content" dq ":" dq "%C2%AB" dq "}" ","?
+  RportToken = "{" dq "token" dq ":" dq "lex" dq "," dq "content" dq ":" dq "%C2%BB" dq "}" ","?
+}
+
+compoundidents <: brackets {
+  Main := CompoundIdentToken+
+  CompoundIdentToken = Component | Port | Token
+  Component = LbracketToken CompoundName+ RbracketToken
+  Port = LportToken CompoundName+ RportToken
+  CompoundName = SubIdentToken | SubWSToken
+  SubIdentToken = "{" dq "token" dq ":" dq "ident" dq "," dq "content" dq ":" string "}" ","?
+  SubWSToken = "{" dq "token" dq ":" dq "ws" dq "," dq "content" dq ":" string "}" ","?
+}
