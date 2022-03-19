@@ -11,9 +11,8 @@ basictoken {
 
 linenumbers <: basictoken {
 
-  Main := LineNumberingToken+
+  Main := NLToken | ...
 
-  LineNumberingToken = NLToken | Token
   NLToken = "{" dq "token" dq ":" dq "nl" dq "," dq "content" dq ":" string "}" ","?
 
 }
