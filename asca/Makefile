@@ -2,16 +2,17 @@ devall: testkey testbuiltin testconnections testcomponents testlexical testcode 
 old_dev: rmws
 dev: tr
 
+target=testbuiltin
 tr:
 	@echo
-	@echo '*** ' compound idents
-	./linenumbers.bash <lookup.asct >/tmp/lookup.asct-lines
-	./compoundidents.bash </tmp/lookup.asct-lines >/tmp/lookup.asct-ci
-	./trlex.bash </tmp/lookup.asct-ci >/tmp/lookup.asct-lex
-	./trkw.bash </tmp/lookup.asct-lex
-	./rmws.bash </tmp/lookup.asct-lex >/tmp/lookup.asc-no-ws
-	cat /tmp/lookup.asc-no-ws
-	wc -l /tmp/lookup.asct-lines /tmp/lookup.asc-no-ws
+	@echo '*** ' tr
+	./linenumbers.bash <$(target).asct >/tmp/$(target).asct-lines
+	./compoundidents.bash </tmp/$(target).asct-lines >/tmp/$(target).asct-ci
+	./trlex.bash </tmp/$(target).asct-ci >/tmp/$(target).asct-lex
+	./trkw.bash </tmp/$(target).asct-lex
+	./rmws.bash </tmp/$(target).asct-lex >/tmp/$(target).asc-no-ws
+	cat /tmp/$(target).asc-no-ws
+	wc -l /tmp/$(target).asct-lines /tmp/$(target).asc-no-ws
 
 compoundidents:
 	@echo
@@ -107,7 +108,8 @@ testbuiltin:
 	./identity-tokenize.bash <testbuiltin.asca
 	@echo
 	@echo '*** ' tokenized
-	./tokenize.bash <testbuiltin.asca >testbuilting.asct
+	./tokenize.bash <testbuiltin.asca >testbuiltin.asct
+	python3 tr.py <testbuiltin.asct
 
 testconnections:
 	@echo

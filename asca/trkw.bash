@@ -14,6 +14,8 @@ sed -E \
     -e '/"content":"finally"/s/"token":"ident"/"token":"finally"/' \
     -e '/"content":"children"/s/"token":"ident"/"token":"children"/' \
     -e '/"content":"connections"/s/"token":"ident"/"token":"connections"/' \
+                          {"token":"ident","content":"Yes"},
+         "content":"Yes"},
     -e '/"content":"Yes"/s/"token":"ident"/"token":"Yes"/' \
     -e '/"content":"No"/s/"token":"ident"/"token":"No"/' \
     -e '/"content":"Nil"/s/"token":"ident"/"token":"Nil"/' \
