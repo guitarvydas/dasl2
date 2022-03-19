@@ -9,9 +9,10 @@ tr:
 	./linenumbers.bash <$(target).asct >/tmp/$(target).asct-lines
 	./compoundidents.bash </tmp/$(target).asct-lines >/tmp/$(target).asct-ci
 	./trlex.bash </tmp/$(target).asct-ci >/tmp/$(target).asct-lex
-	python3 tr.py </tmp/$(target).asct-lex >/tmp/$(target).asc-no-ws
+	python3 tr.py </tmp/$(target).asct-lex >/tmp/$(target).asc-tr
+	./rmws.bash </tmp/$(target).asc-tr >/tmp/$(target).asc-no-ws
 	cat /tmp/$(target).asc-no-ws
-	wc -l /tmp/$(target).asct-lines /tmp/$(target).asc-no-ws
+	wc /tmp/$(target).asct-lines /tmp/$(target).asc-no-ws
 
 compoundidents:
 	@echo
