@@ -1,5 +1,17 @@
 devall: testkey testbuiltin testconnections testcomponents testlexical testcode testother teststring testeolcomment testblockcomment testother testlookup
-dev: rmws
+old_dev: rmws
+dev: compoundidents
+
+compoundidents:
+	@echo
+	@echo '*** ' compound idents
+	./compoundidents.bash <testkey.asct
+
+
+ilinenumbers:
+	@echo
+	@echo '*** ' line numbers identity
+	./identity-linenumbers.bash <testkey.asct 1>&2
 
 linenumbers:
 	@echo
@@ -18,6 +30,8 @@ linenumbersbig:
 	./linenumbers.bash <lookup.asct
 
 rmws:
+# remove ws tokens...
+# but, don't remove ws tokens until multi-token idents have been recognized and taken care of
 	@echo
 	@echo '*** 'remove whitespace big test line numbers identity
 	./identity-linenumbers.bash <lookup.asct 1>&2
