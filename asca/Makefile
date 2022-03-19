@@ -1,6 +1,11 @@
 devall: testkey testbuiltin testconnections testcomponents testlexical testcode testother teststring testeolcomment testblockcomment testother testlookup
 dev: rmws
 
+ilinenumbers:
+	@echo
+	@echo '*** ' line numbers identity
+	./identity-linenumbers.bash <testkey.asct 1>&2
+
 linenumbers:
 	@echo
 	@echo '*** ' line numbers identity

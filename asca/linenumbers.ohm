@@ -1,7 +1,18 @@
 basictoken {
 // basic token
   Main = Token+
-  Token = "{" dq "token" dq ":" string "," dq "content" dq ":" string "}" ","?
+
+  Token = NLToken | WSToken | LexToken | TextToken | IdentToken | CompoundToken | EndCompoundToken
+  GenericToken = "{" dq "token" dq ":" string "," dq "content" dq ":" string "}" ","?
+
+  NLToken = "{" dq "token" dq ":" dq "nl" dq "," dq "content" dq ":" string "}" ","?
+  WSToken = "{" dq "token" dq ":" dq "ws" dq "," dq "content" dq ":" string "}" ","?
+  LexToken = "{" dq "token" dq ":" dq "lex" dq "," dq "content" dq ":" string "}" ","?
+  TextToken = "{" dq "token" dq ":" dq "text" dq "," dq "content" dq ":" string "}" ","?
+  IdentToken = "{" dq "token" dq ":" dq "ident" dq "," dq "content" dq ":" string "}" ","?
+  CompoundToken = "{" dq "token" dq ":" dq "compound" dq "," dq "content" dq ":" string "}" ","?
+  EndCompoundToken = "{" dq "token" dq ":" dq "endcompound" dq "," dq "content" dq ":" string "}" ","?
+
   string = dq stringChar* dq
   dq = "\""
   stringChar = ~dq any
@@ -11,8 +22,5 @@ basictoken {
 
 linenumbers <: basictoken {
 
-  Main := NLToken | ...
-
-  NLToken = "{" dq "token" dq ":" dq "nl" dq "," dq "content" dq ":" string "}" ","?
 
 }
