@@ -20,20 +20,14 @@ linenumbers <: basictoken {
 }
 `;
 
-const text = String.raw `
-a
-b
-`;
-const temptext = String.raw `
-{"token":"ident","content":"def"},
-{"token":"nl","content":"%0A"},
-`;
+const NOKtext = String.raw `ab`;
+const OKtext = String.raw `a`;
 
 var ohm = require ('ohm-js');
 
 grammars = ohm.grammars (OKgrammar);
 parser = grammars ["linenumbers"];
-var cst = parser.match (text);
+var cst = parser.match (NOKtext);
 if (cst.succeeded ()) {
     console.log ('OK');
 } else {
@@ -42,7 +36,7 @@ if (cst.succeeded ()) {
 
 grammars = ohm.grammars (NOKgrammar);
 parser = grammars ["linenumbers"];
-var cst = parser.match (text);
+var cst = parser.match (NOKtext);
 if (cst.succeeded ()) {
     console.log ('OK');
 } else {
