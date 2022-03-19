@@ -5,7 +5,7 @@ dev: compoundidents
 compoundidents:
 	@echo
 	@echo '*** ' compound idents
-	./compoundidents.bash <testkey.asct
+	./compoundidents.bash <testother.asct
 
 
 ilinenumbers:
