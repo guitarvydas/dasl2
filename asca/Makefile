@@ -1,6 +1,17 @@
 devall: testkey testbuiltin testconnections testcomponents testlexical testcode testother teststring testeolcomment testblockcomment testother testlookup
 old_dev: rmws
-dev: compoundidents
+dev: tr
+
+tr:
+	@echo
+	@echo '*** ' compound idents
+	./linenumbers.bash <lookup.asct >/tmp/lookup.asct-lines
+	./compoundidents.bash </tmp/lookup.asct-lines >/tmp/lookup.asct-ci
+	./trlex.bash </tmp/lookup.asct-ci >/tmp/lookup.asct-lex
+	./trkw.bash </tmp/lookup.asct-lex
+	./rmws.bash </tmp/lookup.asct-lex >/tmp/lookup.asc-no-ws
+	cat /tmp/lookup.asc-no-ws
+	wc -l /tmp/lookup.asct-lines /tmp/lookup.asc-no-ws
 
 compoundidents:
 	@echo
