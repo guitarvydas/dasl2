@@ -21,6 +21,4 @@ basictoken {
 }
 
 linenumbers <: basictoken {
-
-
 }
