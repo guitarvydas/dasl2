@@ -1,16 +1,15 @@
 devall: testkey testbuiltin testconnections testcomponents testlexical testcode testother teststring testeolcomment testblockcomment testother testlookup
 old_dev: rmws
-dev: testkey
+dev: tr
 
-target=testbuiltin
+target=lookup
 tr:
 	@echo
 	@echo '*** ' tr
 	./linenumbers.bash <$(target).asct >/tmp/$(target).asct-lines
 	./compoundidents.bash </tmp/$(target).asct-lines >/tmp/$(target).asct-ci
 	./trlex.bash </tmp/$(target).asct-ci >/tmp/$(target).asct-lex
-	./trkw.bash </tmp/$(target).asct-lex
-	./rmws.bash </tmp/$(target).asct-lex >/tmp/$(target).asc-no-ws
+	python3 tr.py </tmp/$(target).asct-lex >/tmp/$(target).asc-no-ws
 	cat /tmp/$(target).asc-no-ws
 	wc -l /tmp/$(target).asct-lines /tmp/$(target).asc-no-ws
 
