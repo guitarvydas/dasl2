@@ -11,8 +11,6 @@ for line in sys.stdin:
         printkw ("yes", line)
     elif (re.search (r'"content":"No"',line)):
         printkw ("no", line)
-    elif (re.search (r'"content":"%E2%88%9E"',line)):
-        printkw ("lookup", line)
 
     elif (re.search (r'"content":"Nil"',line)):
         printkw ("nil", line)
@@ -32,5 +30,28 @@ for line in sys.stdin:
         printkw ("messagedata", line)
     elif (re.search (r'"content":"%3Fetag"',line)):
         printkw ("messageetag", line)
+    elif (re.search (r'"content":"connections"',line)):
+        printkw ("connections", line)
+
+    elif (re.search (r'"content":"%E2%88%9E"',line)):
+        printkw ("lookup", line)
+    elif (re.search (r'"content":"%CE%BB"',line)):
+        printkw ("lambda", line)
+    elif (re.search (r'"content":"."',line)):
+        printkw ("dot", line)
+    elif (re.search (r'"content":"\("',line)):
+        printkw ("lpar", line)
+    elif (re.search (r'"content":"\)"',line)):
+        printkw ("rpar", line)
+    elif (re.search (r'"content":"%5B"',line)):
+        printkw ("lbracket", line)
+    elif (re.search (r'"content":"%5D"',line)):
+        printkw ("rbracket", line)
+    elif (re.search (r'"content":"%C2%AB"',line)):
+        printkw ("lport", line)
+    elif (re.search (r'"content":"%C2%BB"',line)):
+        printkw ("rport", line)
+
+
     else:
         print (line, end="")

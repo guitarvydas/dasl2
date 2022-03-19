@@ -1,6 +1,6 @@
 devall: testkey testbuiltin testconnections testcomponents testlexical testcode testother teststring testeolcomment testblockcomment testother testlookup
 old_dev: rmws
-dev: tr
+dev: testlexical
 
 target=testbuiltin
 tr:
@@ -118,7 +118,7 @@ testconnections:
 	@echo
 	@echo '*** ' tokenized
 	./tokenize.bash <testconnections.asca >testconnections.asct
-
+	python3 tr.py <testconnections.asct
 
 testlexical:
 	@echo
@@ -127,6 +127,7 @@ testlexical:
 	@echo
 	@echo '*** ' tokenized
 	./tokenize.bash <testlexical.asca >testlexical.asct
+	python3 tr.py <testlexical.asct
 
 testcomponents:
 	@echo
