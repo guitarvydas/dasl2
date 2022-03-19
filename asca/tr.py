@@ -52,6 +52,30 @@ for line in sys.stdin:
     elif (re.search (r'"content":"%C2%BB"',line)):
         printkw ("rport", line)
 
+    elif (re.search (r'"content":"def"',line)):
+        printkw ("def", line)
+    elif (re.search (r'"content":"etags"',line)):
+        printkw ("etags", line)
+    elif (re.search (r'"content":"name"',line)):
+        printkw ("name", line)
+    elif (re.search (r'"content":"signature"',line)):
+        printkw ("signature", line)
+    elif (re.search (r'"content":"inputs"',line)):
+        printkw ("inputs", line)
+    elif (re.search (r'"content":"outputs"',line)):
+        printkw ("outputs", line)
+    elif (re.search (r'"content":"nets"',line)):
+        printkw ("nets", line)
+    elif (re.search (r'"content":"locals"',line)):
+        printkw ("locals", line)
+    elif (re.search (r'"content":"initially"',line)):
+        printkw ("initially", line)
+    elif (re.search (r'"content":"handler"',line)):
+        printkw ("handler", line)
+    elif (re.search (r'"content":"finally"',line)):
+        printkw ("finally", line)
+    elif (re.search (r'"content":"children"',line)):
+        printkw ("children", line)
 
     else:
         print (line, end="")
