@@ -87,9 +87,9 @@ InputsSection = KwToken<"inputs"> TagNameRef*
 OutputsSection = KwToken<"outputs"> TagNameRef*
 NetsSection = KwToken<"nets"> NetNameDef*
 LocalsSection = KwToken<"locals"> LocalNameDef*
-InitiallySection = KwToken<"initially"> Code
-HandlerSection = KwToken<"handler"> HandlerCode
-FinallySection = KwToken<"finally"> Code
+InitiallySection = KwToken<"initially"> Code?
+HandlerSection = KwToken<"handler"> HandlerCode?
+FinallySection = KwToken<"finally"> Code?
 ChildrenSection = KwToken<"children"> Child*
 ConnectionsSection = Connection*
 
@@ -163,9 +163,11 @@ ConnectionsSection = Connection*
 		Yes = KwToken<"yes">
 		No = KwToken<"no">
 		Trigger = KwToken<"trigger">
+		MessageData = KwToken<"messagedata">
+		MessageEtag = KwToken<"messageetag">
 		Synonym = LxKwToken<"synonym">
 
-                BuiltinConstant = Yes | No | Trigger
+                BuiltinConstant = Yes | No | Trigger | MessageData | MessageEtag
 
   LxKwToken<s> = KwToken<s>
   KwToken<s> = CompoundKwToken KwSecondToken<s> KWContent LineToken?
