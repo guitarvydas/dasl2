@@ -1,0 +1,24 @@
+def [successful]
+  name [successful]
+  etags «conclude» «found» «answer»
+  inputs «conclude»
+  outputs «found» «answer»
+  nets
+  locals
+  initially
+  handler
+    [
+      | «conclude»
+          Send «answer» ?data
+          Send «found» Yes
+    ]
+  finally
+  children
+  connections
+
+
+signature [successful]
+  name [successful]
+  etags «conclude» «found» «answer»
+  inputs «conclude»
+  outputs «found» «answer»
