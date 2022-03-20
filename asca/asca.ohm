@@ -66,6 +66,9 @@ keywords <: subident {
 
 
 ascal <: keywords {
+
+Main := ASCScript
+
 ASCScript = ASCComponent+ Signature+
 
 ASCComponent = DefToken ComponentNameDef NameSection EtagsSection
@@ -93,7 +96,7 @@ ConnectionsSection = Connection*
   Connection = Sender NetNameRef Receiver+
   Child = ComponentNameRef FunctionOrComponent
   FunctionOrComponent = FunctionRef | ComponentNameRef
-  FunctionRef = LxToken<"lambda"> FunctionNameRef
+  FunctionRef = LxKwToken<"lambda"> FunctionNameRef
 
 
     HandlerCode = MessageHandler | Code
@@ -143,30 +146,32 @@ ConnectionsSection = Connection*
 	      TagNameXRef = TagName
 
 		Syn = KwToken<"synonym">
-		ComponentName = LxToken<"lbracket"> SubIdentToken+ LxToken<"rbracket">
-		TagName = LxToken<"lport"> SubIdentToken+ LxToken<"rport">
+		ComponentName = LxKwToken<"lbracket"> SubIdentToken+ LxKwToken<"rbracket">
+		TagName = LxKwToken<"lport"> SubIdentToken+ LxKwToken<"rport">
 		Identifier 
-                  = LxToken<"lpar"> SubIdentToken+ LxToken<"rpar"> -- multiple
+                  = LxKwToken<"lpar"> SubIdentToken+ LxKwToken<"rpar"> -- multiple
                   | SubIdentToken                                  -- single
-		Lbracket = LxToken<"lbracket">
-		Rbracket = LxToken<"rbracket">
-		Lpar = LxToken<"lpar">
-		Rpar = LxToken<"rpar">
-		Langle = LxToken<"langle">
-		Rangle = LxToken<"rangle">
-		Choice = LxToken<"choice">
-		Slot = LxToken<"dot">
-		Lookup = LxToken<"lookup">
+		Lbracket = LxKwToken<"lbracket">
+		Rbracket = LxKwToken<"rbracket">
+		Lpar = LxKwToken<"lpar">
+		Rpar = LxKwToken<"rpar">
+		Langle = LxKwToken<"langle">
+		Rangle = LxKwToken<"rangle">
+		Choice = LxKwToken<"choice">
+		Slot = LxKwToken<"dot">
+		Lookup = LxKwToken<"lookup">
 		Yes = KwToken<"yes">
 		No = KwToken<"no">
 		Trigger = KwToken<"trigger">
-		Synonym = LxToken<"synonym">
+		Synonym = LxKwToken<"synonym">
 
                 BuiltinConstant = Yes | No | Trigger
 
-  LxToken<s> = "{" dq "token" dq ":" dq "lex" dq "," dq "content" dq ":" dq s dq "}" ","?
-  KwToken<s> = "{" dq "token" dq ":" dq s dq "," dq "content" dq ":" string "}" ","?
+  LxKwToken<s> = KwToken<s>
+  KwToken<s> = CompoundKwToken KwSecondToken<s> KWContent LineToken?
+  KwSecondToken<s> = "{" dq "token" dq ":" dq "keyword" dq "," dq "tag" dq ":" dq s dq"}" ","? LineToken?
+  CompoundKwToken = "{" dq "token" dq ":" dq "compound" dq "," dq "tag" dq ":" dq "keyword" dq "}" ","? LineToken?
 
-  ExternalCode = CodeToken
+  ExternalCode = CodeToken  LineToken?
 
 }
