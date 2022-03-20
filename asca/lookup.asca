@@ -78,7 +78,7 @@ def [match single atom name]
   handler
     [
       | «go»
-          [ (match string)()
+          [ ⟨match string⟩()
 	      | yes: Send «ok» Trigger
 	      | no : Send «mismatch» Trigger
 	  ]
