@@ -59,3 +59,5 @@ CompoundTokenKW [klb dq1 ktoken dq2 kcolon dq11 kcompound dq12  kcomma dq3 ktag 
 
 KeywordToken [klb dq1 ktoken dq2 kcolon dq21 kkeyword dq22 kcomma dq3 kcontent dq4 kcolon2 s2 krb @optcomma]
   = [[${klb}${dq1}${ktoken}${dq2}${kcolon}${dq21}${kkeyword}${dq22}${kcomma}${dq3}${kcontent}${dq4}${kcolon2}${s2}${krb}${optcomma}\n]]
+
+KWContent [t] = [[${t}]]
