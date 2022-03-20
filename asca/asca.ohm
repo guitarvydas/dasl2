@@ -48,7 +48,14 @@ compoundidents <: brackets {
   SubWSToken = "{" dq "token" dq ":" dq "ws" dq "," dq "content" dq ":" string "}" ","?
 }
 
-keywords <: compoundidents {
+subident <: compoundidents{
+  Token := NewSubIdentToken | ...
+  NewSubIdentToken = "{" dq "token" dq ":" dq "subident" dq "," dq "content" dq ":" string "}" ","?
+}
+
+keywords <: subident {
+  Token := Keyword | CompoundTokenKW | KeywordToken | ...
+  
   Keyword = CompoundTokenKW KeywordToken IdentToken
 
   CompoundTokenKW = "{" dq "token" dq ":" dq "compound" dq "," dq "tag" dq ":" dq "keyword" dq "}" ","?
