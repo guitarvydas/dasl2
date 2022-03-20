@@ -43,14 +43,14 @@ compoundidents <: brackets {
   CompoundIdentToken = Component | Port | Token
   Component = LbracketToken CompoundName+ RbracketToken
   Port = LportToken CompoundName+ RportToken
-  CompoundName = SubIdentToken | SubWSToken
-  SubIdentToken = "{" dq "token" dq ":" dq "ident" dq "," dq "content" dq ":" string "}" ","?
+  CompoundName = OldSubIdentToken | SubWSToken
+  OldSubIdentToken = "{" dq "token" dq ":" dq "ident" dq "," dq "content" dq ":" string "}" ","?
   SubWSToken = "{" dq "token" dq ":" dq "ws" dq "," dq "content" dq ":" string "}" ","?
 }
 
 subident <: compoundidents{
-  Token := NewSubIdentToken | ...
-  NewSubIdentToken = "{" dq "token" dq ":" dq "subident" dq "," dq "content" dq ":" string "}" ","?
+  Token := SubIdentToken | ...
+  SubIdentToken = "{" dq "token" dq ":" dq "subident" dq "," dq "content" dq ":" string "}" ","?
 }
 
 keywords <: subident {
