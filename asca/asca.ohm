@@ -1,3 +1,6 @@
+
+
+
 basictoken {
 // basic token
   Main = Token+
@@ -17,13 +20,17 @@ basictoken {
   dq = "\""
   stringChar = ~dq any
 
+  number = digit+
 
 }
 
 linenumbers <: basictoken {
+  Token := LineToken | NLToken | WSToken | LexToken | TextToken | IdentToken | CompoundToken | EndCompoundToken
+  LineToken = "{" dq "token" dq ":" dq "line" dq "," dq "content" dq ":" number "}" ","?
 }
 
-brackets <: basictoken {
+brackets <: linenumbers {
+  Token := LbracketToken | RbracketToken | LportToken | RportToken | LineToken | NLToken | WSToken | LexToken | TextToken | IdentToken | CompoundToken | EndCompoundToken
   LbracketToken = "{" dq "token" dq ":" dq "lex" dq "," dq "content" dq ":" dq "%5B" dq "}" ","?
   RbracketToken = "{" dq "token" dq ":" dq "lex" dq "," dq "content" dq ":" dq  "%5D" dq "}" ","?
   LportToken = "{" dq "token" dq ":" dq "lex" dq "," dq "content" dq ":" dq "%C2%AB" dq "}" ","?
