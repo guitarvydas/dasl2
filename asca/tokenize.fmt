@@ -1,7 +1,7 @@
 main [@token] = [[${token}]]
   
 token_lexical [c] = [[{"token":"lex","content":"${support.encode (c)}"},\n]]
-token_code [s] = [[{"token":"text","content":"${support.encode (s)}"},\n]]
+token_code [s] = [[{"token":"code","content":"${support.encode (s)}"},\n]]
 token_string [s] = [[{"token":"text","content":"${support.encode (s)}"},\n]]
 token_commentToEol [s] = [[{"token":"text","content":"${support.encode (s)}"},\n]]
 token_blockComment [s] = [[{"token":"text","content":"${support.encode (s)}"},\n]]
