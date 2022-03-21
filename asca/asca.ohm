@@ -81,7 +81,7 @@ Signature = SignatureToken ComponentNameRef NameSection EtagsSection
 
 
 DefSection = DefToken ComponentNameDef
-NameSection = KwToken<"name"> ComponentNameRef
+NameSection = KwToken<"id"> ComponentNameRef
 EtagsSection = KwToken<"etags"> TagNameDef*
 InputsSection = KwToken<"inputs"> TagNameRef*
 OutputsSection = KwToken<"outputs"> TagNameRef*
@@ -138,7 +138,7 @@ ConnectionsSection = KwToken<"connections"> Connection*
 
 
 	      LocalNameDef = IdentToken
-	      LocalNameRef = IdentToken
+	      LocalNameRef = ArgsKW | IdentToken
 	      NetNameDef = IdentToken
 	      NetNameRef = IdentToken
 	      FunctionNameRef = IdentToken
@@ -164,11 +164,12 @@ ConnectionsSection = KwToken<"connections"> Connection*
 		Yes = KwToken<"yes">
 		No = KwToken<"no">
 		Trigger = KwToken<"trigger">
+		ArgsKW = KwToken<"args">
 		MessageData = KwToken<"messagedata">
 		MessageEtag = KwToken<"messageetag">
 		Synonym = LxKwToken<"synonym">
 
-                BuiltinConstant = Yes | No | Trigger | MessageData | MessageEtag
+                BuiltinConstant = Yes | No | Trigger | MessageData | MessageEtag | ArgsKW
 
   LxKwToken<s> = KwToken<s>
   KwToken<s> = LineToken? CompoundKwToken KwSecondToken<s> KWContent LineToken?

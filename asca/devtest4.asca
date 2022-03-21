@@ -3,9 +3,10 @@ def [successful]
   etags «conclude» «found» «answer»
   inputs «conclude»
   outputs «found» «answer»
-  nets ⇒₁ ⇒₂ ⇒₃ ⇒₄ ⇒₅ ⇒₆ ⇒₇ ⇒₈
+  nets ⇒₁ ⇒₂
   locals found answer name
   initially
+    name = Args.name
   handler
     [
       | «conclude»
@@ -17,7 +18,7 @@ def [successful]
   connections
 
 signature [successful]
-  id [successful]
+  name [successful]
   etags «conclude» «found» «answer»
   inputs «conclude»
   outputs «found» «answer»

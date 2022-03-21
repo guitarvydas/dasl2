@@ -1,15 +1,15 @@
 def [lookup]
-  name [lookup]
+  id [lookup]
   etags «name» «found» «answer»
   inputs «name»
   outputs «found» «answer»
   nets ⇒₁ ⇒₂ ⇒₃ ⇒₄ ⇒₅ ⇒₆ ⇒₇ ⇒₈
-  locals found answer id
+  locals found answer name
   initially
     name = Args.name
     answer = Nil
     found = No
-    Inject [scroll through atoms]«name» id
+    Inject [scroll through atoms]«name» name
   handler
     [
       | «found»
@@ -37,7 +37,7 @@ def [lookup]
     [successful]«answer» ⇒₈ [self]«answer»
 
 def [scroll through atoms]
-  name [scroll through atoms]
+  id [scroll through atoms]
   etags «name» «advance» «EOF» «try 1 name match»
   inputs «name» «advance»
   outputs «EOF» «try 1 name match»
@@ -68,7 +68,7 @@ def [scroll through atoms]
   connections
 
 def [match single atom name]
-  name [match single atom name]
+  id [match single atom name]
   etags «name» «advance» «EOF» «try 1 name match»
   inputs «name» «advance»
   outputs «EOF» «try 1 name match»
@@ -89,7 +89,7 @@ def [match single atom name]
 
 
 def [unsuccessful]
-  name [unsuccessful]
+  id [unsuccessful]
   etags «conclude» «found»
   inputs «conclude»
   outputs «found»
@@ -106,7 +106,7 @@ def [unsuccessful]
   connections
 
 def [successful]
-  name [successful]
+  id [successful]
   etags «conclude» «found» «answer»
   inputs «conclude»
   outputs «found» «answer»
@@ -125,27 +125,27 @@ def [successful]
 
 
 signature [lookup]
-  name [lookup]
+  id [lookup]
   etags «name» «found» «answer»
   inputs «name»
   outputs «found» «answer»
 signature [scroll through atoms]
-  name [scroll through atoms]
+  id [scroll through atoms]
   etags «name» «advance» «EOF» «try 1 name match»
   inputs «name» «advance»
   outputs «EOF» «try 1 name match»
 signature [match single atom name]
-  name [match single atom name]
+  id [match single atom name]
   etags «name» «advance» «EOF» «try 1 name match»
   inputs «name» «advance»
   outputs «EOF» «try 1 name match»
 signature [unsuccessful]
-  name [unsuccessful]
+  id [unsuccessful]
   etags «conclude» «found»
   inputs «conclude»
   outputs «found»
 signature [successful]
-  name [successful]
+  id [successful]
   etags «conclude» «found» «answer»
   inputs «conclude»
   outputs «found» «answer»
