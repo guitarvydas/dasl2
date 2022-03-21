@@ -95,11 +95,3 @@ ConnectionsSection = Connection*
 		Synonym = LexToken<"synonym">
 
                 BuiltinConstant = Yes | No | Trigger
-		
-
-
-undefined
-  lextoken choice "|"
-  lextoken synonym "="
-  lextoken langle "⟨"
-  lextoken rangle "⟩"
