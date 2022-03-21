@@ -4,12 +4,12 @@ def [lookup]
   inputs «name»
   outputs «found» «answer»
   nets ⇒₁ ⇒₂ ⇒₃ ⇒₄ ⇒₅ ⇒₆ ⇒₇ ⇒₈
-  locals found answer name
+  locals found answer id
   initially
     name = Args.name
     answer = Nil
     found = No
-    Inject [scroll through atoms]«name» name
+    Inject [scroll through atoms]«name» id
   handler
     [
       | «found»

@@ -171,7 +171,7 @@ ConnectionsSection = KwToken<"connections"> Connection*
                 BuiltinConstant = Yes | No | Trigger | MessageData | MessageEtag
 
   LxKwToken<s> = KwToken<s>
-  KwToken<s> = CompoundKwToken KwSecondToken<s> KWContent LineToken?
+  KwToken<s> = LineToken? CompoundKwToken KwSecondToken<s> KWContent LineToken?
   KwSecondToken<s> = "{" dq "token" dq ":" dq "keyword" dq "," dq "tag" dq ":" dq s dq"}" ","? LineToken?
   CompoundKwToken = "{" dq "token" dq ":" dq "compound" dq "," dq "tag" dq ":" dq "keyword" dq "}" ","? LineToken?
 

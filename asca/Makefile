@@ -2,9 +2,9 @@ dev: tr
 
 #target=devtest
 #target=devtest0
-target=devtest2
+#target=devtest2
 #target=devtest3
-#target=lookup
+target=lookup
 
 tr:
 	@echo

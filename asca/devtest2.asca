@@ -4,7 +4,7 @@ def [successful]
   inputs «conclude»
   outputs «found» «answer»
   nets ⇒₁ ⇒₂ ⇒₃ ⇒₄ ⇒₅ ⇒₆ ⇒₇ ⇒₈
-  locals found answer name
+  locals found answer id
   initially
   handler
     [
