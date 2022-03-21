@@ -13,7 +13,7 @@ LexToken [klb dq1 ktoken dq2 kcolon dq5 klex dq6 kcomma dq3 kcontent dq4 kcolon2
 TextToken [klb dq1 ktoken dq2 kcolon dq5 ktext dq6 kcomma dq3 kcontent dq4 kcolon2 s2 krb @optcomma]
   = [[12/${klb}${dq1}${ktoken}${dq2}${kcolon}${dq5}${ktext}${dq6}${kcomma}${dq3}${kcontent}${dq4}${kcolon2}${s2}${krb}${optcomma}\n]]
 IdentToken [klb dq1 ktoken dq2 kcolon dq5 kident dq6 kcomma dq3 kcontent dq4 kcolon2 s2 krb @optcomma]
-  = [[13/${support.decode (s2)}\n]]
+  = [[{support.decode (s2)}\n]]
 CompoundToken [klb dq1 ktoken dq2 kcolon dq5 kcompound dq6 kcomma dq3 kcontent dq4 kcolon2 s2 krb @optcomma]
   = [[14/${klb}${dq1}${ktoken}${dq2}${kcolon}${dq5}${kcompoun}${dq6}${kcomma}${dq3}${kcontent}${dq4}${kcolon2}${s2}${krb}${optcomma}\n]]
 EndCompoundToken [klb dq1 ktoken dq2 kcolon dq5 kendcompound dq6 kcomma dq3 kcontent dq4 kcolon2 s2 krb @optcomma]
@@ -51,14 +51,14 @@ OldSubIdentToken [klb dq1 ktoken dq2 kcolon dq5 kident dq6 kcomma dq3 kcontent d
 Keyword [compound kw id] = [[1/${compound}${kw}${id}]]
 
 CompoundTokenKW [klb dq1 ktoken dq2 kcolon dq11 kcompound dq12  kcomma dq3 ktag dq4 kcolon2 dq21 kkeyword dq22  krb @optcomma]
-  = [[2/\n]]
+  = [[]]
 
 KeywordToken [klb dq1 ktoken dq2 kcolon dq21 kkeyword dq22 kcomma dq3 kcontent dq4 kcolon2 s2 krb @optcomma]
-  = [[3/\n]]
+  = [[]]
 
 
 
 SubIdentToken [klb dq1 ktoken dq2 kcolon dq5 ksubident dq6 kcomma dq3 kcontent dq4 kcolon2 s2 krb @optcomma]
-  = [[4/${support.decode (s2)}\n]]
+  = [[${support.decode (s2)}]]
 
 
