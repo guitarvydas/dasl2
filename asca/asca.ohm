@@ -85,22 +85,22 @@ Signature = SignatureToken ComponentNameRef NameSection EtagsSection
 
 
 DefSection = DefToken ComponentNameDef
-NameSection = KwToken<"id"> ComponentNameRef
-EtagsSection = KwToken<"etags"> TagNameDef*
-InputsSection = KwToken<"inputs"> TagNameRef*
-OutputsSection = KwToken<"outputs"> TagNameRef*
-NetsSection = KwToken<"nets"> NetNameDef*
-LocalsSection = KwToken<"locals"> LocalNameDef*
-InitiallySection = KwToken<"initially"> Code?
-HandlerSection = KwToken<"handler"> HandlerCode?
-FinallySection = KwToken<"finally"> Code?
-ChildrenSection = KwToken<"children"> Child*
-ConnectionsSection = KwToken<"connections"> Connection*
+NameSection = "id" ComponentNameRef
+EtagsSection = "etags" TagNameDef*
+InputsSection = "inputs" TagNameRef*
+OutputsSection = "outputs" TagNameRef*
+NetsSection = "nets" NetNameDef*
+LocalsSection = "locals" LocalNameDef*
+InitiallySection = "initially" Code?
+HandlerSection = "handler" HandlerCode?
+FinallySection = "finally" Code?
+ChildrenSection = "children" Child*
+ConnectionsSection = "connections" Connection*
 
   Connection = Sender NetNameRef Receiver+
   Child = ComponentNameRef FunctionOrComponent
   FunctionOrComponent = FunctionRef | ComponentNameRef
-  FunctionRef = LxKwToken<"lambda"> FunctionNameRef
+  FunctionRef = "λ" FunctionNameRef
 
 
     HandlerCode = MessageHandler | Code
@@ -110,13 +110,13 @@ ConnectionsSection = KwToken<"connections"> Connection*
 	   | ExternalCodeStatement
 
       SynonymStatement = Lvalue Syn Rvalue
-      ConcludeStatement = KwToken<"conclude">
-      ReturnStatement = KwToken<"return"> Rvalue*
-      SendStatement = KwToken<"send"> TagName Rvalue
-      InjectStatement = KwToken<"inject"> TagName Rvalue
+      ConcludeStatement = "conclude"
+      ReturnStatement = "return" Rvalue*
+      SendStatement = "send" TagName Rvalue
+      InjectStatement = "inject" TagName Rvalue
       ExternalCodeStatement = ExternalCode
-      ConditionalStatement = Lbracket PredicateTest CondClause+ Rbracket
-      MessageHandler = Lbracket HandlerClause+ Rbracket
+      ConditionalStatement = "[" PredicateTest CondClause+ "]"
+      MessageHandler = "[" HandlerClause+ "]"
 
 	CondClause = Choice Rvalue Code
 	HandlerClause = Choice TagNameRef Code
@@ -133,10 +133,10 @@ ConnectionsSection = KwToken<"connections"> Connection*
 	    Receiver = ComponentNameRef TagNameXRef
             PredicateTest = Identifier Args
 
-	    Args = Lpar Rvalue+ Rpar
+	    Args = "(" Rvalue+ ")"
 
-	    DefToken = KwToken<"def">
-	    SignatureToken = KwToken<"signature">
+	    DefToken = "def"
+	    SignatureToken = "signature"
 	    ComponentNameDef = ComponentName
 	    ComponentNameRef = ComponentName
 
@@ -150,36 +150,26 @@ ConnectionsSection = KwToken<"connections"> Connection*
 	      TagNameRef = TagName
 	      TagNameXRef = TagName
 
-		Syn = KwToken<"synonym">
-		ComponentName = LxKwToken<"lbracket"> SubIdentToken+ LxKwToken<"rbracket">
-		TagName = LxKwToken<"lport"> SubIdentToken+ LxKwToken<"rport">
+		Syn = "="
+		ComponentName = "[" SubIdentToken+ "]"
+		TagName = "«" SubIdentToken+ "»"
 		Identifier 
-                  = LxKwToken<"lpar"> SubIdentToken+ LxKwToken<"rpar"> -- multiple
-                  | SubIdentToken                                  -- single
-		Lbracket = LxKwToken<"lbracket">
-		Rbracket = LxKwToken<"rbracket">
-		Lpar = LxKwToken<"lpar">
-		Rpar = LxKwToken<"rpar">
-		Langle = LxKwToken<"langle">
-		Rangle = LxKwToken<"rangle">
-		Choice = LxKwToken<"choice">
-		Slot = LxKwToken<"dot">
-		Lookup = LxKwToken<"lookup">
-		Yes = KwToken<"yes">
-		No = KwToken<"no">
-		Trigger = KwToken<"trigger">
-		ArgsKW = KwToken<"args">
-		MessageData = KwToken<"messagedata">
-		MessageEtag = KwToken<"messageetag">
-		Synonym = LxKwToken<"synonym">
+                  = "(" SubIdentToken+ ")" -- multiple
+                  | SubIdentToken          -- single
+		Choice = "|"
+		Slot = "."
+		Lookup = "∞"
+		Yes = "yes"
+		No = "no"
+		Trigger = "trigger"
+		ArgsKW = "args"
+		MessageData = "messagedata"
+		MessageEtag = "messageetag"
+		Synonym = "="
 
                 BuiltinConstant = Yes | No | Trigger | MessageData | MessageEtag | ArgsKW
 
-  LxKwToken<s> = KwToken<s>
-  KwToken<s> = LineToken? CompoundKwToken KwSecondToken<s> KWContent LineToken?
-  KwSecondToken<s> = "{" dq "token" dq ":" dq "keyword" dq "," dq "tag" dq ":" dq s dq"}" ","? LineToken?
-  CompoundKwToken = "{" dq "token" dq ":" dq "compound" dq "," dq "tag" dq ":" dq "keyword" dq "}" ","? LineToken?
+  ExternalCode = "{" #(uriChar+) "}"
 
-  ExternalCode = CodeToken  LineToken?
-
+  uriChar = ~"}" any
 }
