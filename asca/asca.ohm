@@ -14,8 +14,8 @@ basictoken {
   TextToken = "{" dq "token" dq ":" dq "text" dq "," dq "content" dq ":" string "}" ","?
   CodeToken = "{" dq "token" dq ":" dq "code" dq "," dq "content" dq ":" string "}" ","?
   IdentToken = "{" dq "token" dq ":" dq "ident" dq "," dq "content" dq ":" string "}" ","?
-  CompoundToken = "{" dq "token" dq ":" dq "compound" dq "," dq "content" dq ":" string "}" ","?
-  EndCompoundToken = "{" dq "token" dq ":" dq "endcompound" dq "," dq "content" dq ":" string "}" ","?
+  CompoundToken = "{" dq "token" dq ":" dq "compound" dq "," dq "tag" dq ":" string "}" ","?
+  EndCompoundToken = "{" dq "token" dq ":" dq "endcompound" dq "," dq "tag" dq ":" string "}" ","?
 
   string = dq stringChar* dq
   dq = "\""
@@ -26,12 +26,12 @@ basictoken {
 }
 
 linenumbers <: basictoken {
-  Token := LineToken | NLToken | WSToken | LexToken | TextToken | IdentToken | CompoundToken | EndCompoundToken
+  Token := LineToken | ...
   LineToken = "{" dq "token" dq ":" dq "line" dq "," dq "content" dq ":" number "}" ","?
 }
 
 brackets <: linenumbers {
-  Token := LbracketToken | RbracketToken | LportToken | RportToken | LineToken | NLToken | WSToken | LexToken | TextToken | IdentToken | CompoundToken | EndCompoundToken
+  Token := LbracketToken | RbracketToken | LportToken | RportToken | LineToken | ...
   LbracketToken = "{" dq "token" dq ":" dq "lex" dq "," dq "content" dq ":" dq "%5B" dq "}" ","?
   RbracketToken = "{" dq "token" dq ":" dq "lex" dq "," dq "content" dq ":" dq  "%5D" dq "}" ","?
   LportToken = "{" dq "token" dq ":" dq "lex" dq "," dq "content" dq ":" dq "%C2%AB" dq "}" ","?
@@ -43,14 +43,32 @@ compoundidents <: brackets {
   CompoundIdentToken = Component | Port | Token
   Component = LbracketToken CompoundName+ RbracketToken
   Port = LportToken CompoundName+ RportToken
-  CompoundName = SubIdentToken | SubWSToken
-  SubIdentToken = "{" dq "token" dq ":" dq "ident" dq "," dq "content" dq ":" string "}" ","?
+  CompoundName = OldSubIdentToken | SubWSToken
+  OldSubIdentToken = "{" dq "token" dq ":" dq "ident" dq "," dq "content" dq ":" string "}" ","?
   SubWSToken = "{" dq "token" dq ":" dq "ws" dq "," dq "content" dq ":" string "}" ","?
 }
 
+subident <: compoundidents{
+  Token := SubIdentToken | ...
+  SubIdentToken = "{" dq "token" dq ":" dq "subident" dq "," dq "content" dq ":" string "}" ","?
+}
+
+keywords <: subident {
+  Token := Keyword | CompoundTokenKW | KeywordToken | ...
+  
+  Keyword = CompoundTokenKW KeywordToken KWContent
+
+  KWContent = IdentToken | LexToken
+
+  CompoundTokenKW = "{" dq "token" dq ":" dq "compound" dq "," dq "tag" dq ":" dq "keyword" dq "}" ","?
+  KeywordToken = "{" dq "token" dq ":" dq "keyword" dq "," dq "tag" dq ":" string "}" ","?
+}
 
 
-ascal <: compoundidents {
+ascal <: keywords {
+
+Main := ASCScript
+
 ASCScript = ASCComponent+ Signature+
 
 ASCComponent = DefToken ComponentNameDef NameSection EtagsSection
@@ -63,34 +81,35 @@ Signature = SignatureToken ComponentNameRef NameSection EtagsSection
 
 
 DefSection = DefToken ComponentNameDef
-NameSection = KeywordToken<"name"> ComponentNameRef
-EtagsSection = KeywordToken<"etags"> TagNameDef*
-InputsSection = KeywordToken<"inputs"> TagNameRef*
-OutputsSection = KeywordToken<"outputs"> TagNameRef*
-NetsSection = KeywordToken<"nets"> NetNameDef*
-LocalsSection = KeywordToken<"locals"> LocalNameDef*
-InitiallySection = KeywordToken<"initially"> Code
-HandlerSection = KeywordToken<"handler"> HandlerCode
-FinallySection = KeywordToken<"finally"> Code
-ChildrenSection = KeywordToken<"children"> Child*
-ConnectionsSection = Connection*
+NameSection = KwToken<"name"> ComponentNameRef
+EtagsSection = KwToken<"etags"> TagNameDef*
+InputsSection = KwToken<"inputs"> TagNameRef*
+OutputsSection = KwToken<"outputs"> TagNameRef*
+NetsSection = KwToken<"nets"> NetNameDef*
+LocalsSection = KwToken<"locals"> LocalNameDef*
+InitiallySection = KwToken<"initially"> Code?
+HandlerSection = KwToken<"handler"> HandlerCode?
+FinallySection = KwToken<"finally"> Code?
+ChildrenSection = KwToken<"children"> Child*
+ConnectionsSection = KwToken<"connections"> Connection*
 
   Connection = Sender NetNameRef Receiver+
   Child = ComponentNameRef FunctionOrComponent
   FunctionOrComponent = FunctionRef | ComponentNameRef
-  FunctionRef = LxToken<"lambda"> FunctionNameRef
+  FunctionRef = LxKwToken<"lambda"> FunctionNameRef
 
 
     HandlerCode = MessageHandler | Code
-    Code = SynonymStatement | ConcludeStatement | ReturnStatement
+    Code = Statement+
+    Statement = SynonymStatement | ConcludeStatement | ReturnStatement
            | ConditionalStatement | SendStatement | InjectStatement
 	   | ExternalCodeStatement
 
       SynonymStatement = Lvalue Syn Rvalue
-      ConcludeStatement = KeywordToken<"conclude">
-      ReturnStatement = KeywordToken<"return"> Rvalue*
-      SendStatement = KeywordToken<"send"> TagName Rvalue
-      InjectStatement = KeywordToken<"inject"> TagName Rvalue
+      ConcludeStatement = KwToken<"conclude">
+      ReturnStatement = KwToken<"return"> Rvalue*
+      SendStatement = KwToken<"send"> TagName Rvalue
+      InjectStatement = KwToken<"inject"> TagName Rvalue
       ExternalCodeStatement = ExternalCode
       ConditionalStatement = Lbracket PredicateTest CondClause+ Rbracket
       MessageHandler = Lbracket HandlerClause+ Rbracket
@@ -112,8 +131,8 @@ ConnectionsSection = Connection*
 
 	    Args = Lpar Rvalue+ Rpar
 
-	    DefToken = KeywordToken<"def">
-	    SignatureToken = KeywordToken<"signature">
+	    DefToken = KwToken<"def">
+	    SignatureToken = KwToken<"signature">
 	    ComponentNameDef = ComponentName
 	    ComponentNameRef = ComponentName
 
@@ -127,31 +146,35 @@ ConnectionsSection = Connection*
 	      TagNameRef = TagName
 	      TagNameXRef = TagName
 
-		Syn = KeywordToken<"synonym">
-		ComponentName = LxToken<"lbracket"> SubIdentToken+ LxToken<"rbracket">
-		TagName = LxToken<"lport"> SubIdentToken+ LxToken<"rport">
+		Syn = KwToken<"synonym">
+		ComponentName = LxKwToken<"lbracket"> SubIdentToken+ LxKwToken<"rbracket">
+		TagName = LxKwToken<"lport"> SubIdentToken+ LxKwToken<"rport">
 		Identifier 
-                  = LxToken<"lpar"> SubIdentToken+ LxToken<"rpar"> -- multiple
+                  = LxKwToken<"lpar"> SubIdentToken+ LxKwToken<"rpar"> -- multiple
                   | SubIdentToken                                  -- single
-		Lbracket = LxToken<"lbracket">
-		Rbracket = LxToken<"rbracket">
-		Lpar = LxToken<"lpar">
-		Rpar = LxToken<"rpar">
-		Langle = LxToken<"langle">
-		Rangle = LxToken<"rangle">
-		Choice = LxToken<"choice">
-		Slot = LxToken<"dot">
-		Lookup = LxToken<"lookup">
-		Yes = KeywordToken<"yes">
-		No = KeywordToken<"no">
-		Trigger = KeywordToken<"trigger">
-		Synonym = LxToken<"synonym">
+		Lbracket = LxKwToken<"lbracket">
+		Rbracket = LxKwToken<"rbracket">
+		Lpar = LxKwToken<"lpar">
+		Rpar = LxKwToken<"rpar">
+		Langle = LxKwToken<"langle">
+		Rangle = LxKwToken<"rangle">
+		Choice = LxKwToken<"choice">
+		Slot = LxKwToken<"dot">
+		Lookup = LxKwToken<"lookup">
+		Yes = KwToken<"yes">
+		No = KwToken<"no">
+		Trigger = KwToken<"trigger">
+		MessageData = KwToken<"messagedata">
+		MessageEtag = KwToken<"messageetag">
+		Synonym = LxKwToken<"synonym">
 
-                BuiltinConstant = Yes | No | Trigger
+                BuiltinConstant = Yes | No | Trigger | MessageData | MessageEtag
 
-  LxToken<s> = "{" dq "token" dq ":" dq "lex" dq "," dq "content" dq ":" dq s dq "}" ","?
-  KeywordToken<s> = "{" dq "token" dq ":" dq s dq "," dq "content" dq ":" string "}" ","?
+  LxKwToken<s> = KwToken<s>
+  KwToken<s> = CompoundKwToken KwSecondToken<s> KWContent LineToken?
+  KwSecondToken<s> = "{" dq "token" dq ":" dq "keyword" dq "," dq "tag" dq ":" dq s dq"}" ","? LineToken?
+  CompoundKwToken = "{" dq "token" dq ":" dq "compound" dq "," dq "tag" dq ":" dq "keyword" dq "}" ","? LineToken?
 
-  ExternalCode = CodeToken
+  ExternalCode = CodeToken  LineToken?
 
 }
