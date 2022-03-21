@@ -100,7 +100,8 @@ ConnectionsSection = Connection*
 
 
     HandlerCode = MessageHandler | Code
-    Code = SynonymStatement | ConcludeStatement | ReturnStatement
+    Code = Statement+
+    Statement = SynonymStatement | ConcludeStatement | ReturnStatement
            | ConditionalStatement | SendStatement | InjectStatement
 	   | ExternalCodeStatement
 
