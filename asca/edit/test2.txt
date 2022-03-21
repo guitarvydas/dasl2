@@ -1,3 +1,4 @@
-Main = ASCScript ;
-
-ASCScript = @ASCComponent @Signature ;
+Main := ASCScript;
+;
+ASCScript = @ASCComponent @Signature;
+;

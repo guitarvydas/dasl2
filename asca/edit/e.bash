@@ -2,7 +2,8 @@
 prep=~/tools/pre/pre
 cdir=`pwd`
 
-target=test2
+#target=test2
+target=grammar
 
 # ${prep} '.' '$' edit1.ohm edit1.fmt --stop=1 <${target}.txt
 

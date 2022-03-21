@@ -1,5 +1,5 @@
 main [@x] = [[${x}]]
-rule [name eq @item ksemi @ws] = [[${name} «${item}» = 〖${item}〗;\n]]
+rule [@ws1 name eq @item ksemi @ws] = [[${name} «${item}» = 〖${item}〗;\n]]
 eq [k @ws] = [[${k}]]
 item_atname [kat name] = [[${kat}${name}]]
 item_single [name] = [[${name}]]
