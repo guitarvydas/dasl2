@@ -1,6 +1,6 @@
 edit {
 Main = Rule+
-Rule = Name "«" Item+ "»" "=" "〖" Fmt+ "〗" "^"
+Rule = Name "«" Item+ "»" "=" "〖" Fmt+ "〗" ";"
 Item
   = "@" Name -- atname
   | Name     -- single
