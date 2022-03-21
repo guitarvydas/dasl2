@@ -91,7 +91,7 @@ InitiallySection = KwToken<"initially"> Code?
 HandlerSection = KwToken<"handler"> HandlerCode?
 FinallySection = KwToken<"finally"> Code?
 ChildrenSection = KwToken<"children"> Child*
-ConnectionsSection = Connection*
+ConnectionsSection = KwToken<"connections"> Connection*
 
   Connection = Sender NetNameRef Receiver+
   Child = ComponentNameRef FunctionOrComponent
