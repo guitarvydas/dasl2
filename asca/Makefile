@@ -4,8 +4,8 @@ dev: tr
 #target=devtest0
 #target=devtest2
 #target=devtest3
-target=devtest4
-#target=lookup
+#target=devtest4
+target=lookup
 
 tr:
 	@echo
