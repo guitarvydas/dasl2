@@ -26,12 +26,13 @@ basictoken {
 }
 
 linenumbers <: basictoken {
-  Token := LineToken | ...
+  Main := Token+
+  Token += LineToken
   LineToken = "{" dq "token" dq ":" dq "line" dq "," dq "content" dq ":" number "}" ","?
 }
 
 brackets <: linenumbers {
-  Token := LbracketToken | RbracketToken | LportToken | RportToken | LineToken | ...
+  Token += LbracketToken | RbracketToken | LportToken | RportToken | LineToken
   LbracketToken = "{" dq "token" dq ":" dq "lex" dq "," dq "content" dq ":" dq "%5B" dq "}" ","?
   RbracketToken = "{" dq "token" dq ":" dq "lex" dq "," dq "content" dq ":" dq  "%5D" dq "}" ","?
   LportToken = "{" dq "token" dq ":" dq "lex" dq "," dq "content" dq ":" dq "%C2%AB" dq "}" ","?
@@ -49,12 +50,12 @@ compoundidents <: brackets {
 }
 
 subident <: compoundidents{
-  Token := SubIdentToken | ...
+  Token += SubIdentToken
   SubIdentToken = "{" dq "token" dq ":" dq "subident" dq "," dq "content" dq ":" string "}" ","?
 }
 
 keywords <: subident {
-  Token := Keyword | CompoundTokenKW | KeywordToken | ...
+  Token += Keyword | CompoundTokenKW | KeywordToken
   
   Keyword = CompoundTokenKW KeywordToken KWContent
 
@@ -64,6 +65,9 @@ keywords <: subident {
   KeywordToken = "{" dq "token" dq ":" dq "keyword" dq "," dq "tag" dq ":" string "}" ","?
 }
 
+
+untokenize <: keywords {
+}
 
 ascal <: keywords {
 
