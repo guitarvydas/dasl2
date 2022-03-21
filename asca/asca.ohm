@@ -67,12 +67,6 @@ keywords <: subident {
 
 
 untokenize <: keywords {
-  Token 
-    := Keyword | CompoundTokenKW | KeywordToken
-    | SubIdentToken
-    | LbracketToken | RbracketToken | LportToken | RportToken
-    | LineToken
-    | NLToken | WSToken | LexToken | TextToken | IdentToken | CompoundToken | EndCompoundToken
 }
 
 ascal <: keywords {
