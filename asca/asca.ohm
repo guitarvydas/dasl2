@@ -26,6 +26,7 @@ basictoken {
 }
 
 linenumbers <: basictoken {
+  Main := Token+
   Token := LineToken | ...
   LineToken = "{" dq "token" dq ":" dq "line" dq "," dq "content" dq ":" number "}" ","?
 }
@@ -49,7 +50,7 @@ compoundidents <: brackets {
 }
 
 subident <: compoundidents{
-  Token := SubIdentToken | ...
+  Token := SubIdentToken  | ...
   SubIdentToken = "{" dq "token" dq ":" dq "subident" dq "," dq "content" dq ":" string "}" ","?
 }
 
@@ -64,6 +65,9 @@ keywords <: subident {
   KeywordToken = "{" dq "token" dq ":" dq "keyword" dq "," dq "tag" dq ":" string "}" ","?
 }
 
+
+untokenize <: keywords {
+}
 
 ascal <: keywords {
 
@@ -81,7 +85,7 @@ Signature = SignatureToken ComponentNameRef NameSection EtagsSection
 
 
 DefSection = DefToken ComponentNameDef
-NameSection = KwToken<"name"> ComponentNameRef
+NameSection = KwToken<"id"> ComponentNameRef
 EtagsSection = KwToken<"etags"> TagNameDef*
 InputsSection = KwToken<"inputs"> TagNameRef*
 OutputsSection = KwToken<"outputs"> TagNameRef*
@@ -138,7 +142,7 @@ ConnectionsSection = KwToken<"connections"> Connection*
 
 
 	      LocalNameDef = IdentToken
-	      LocalNameRef = IdentToken
+	      LocalNameRef = ArgsKW | IdentToken
 	      NetNameDef = IdentToken
 	      NetNameRef = IdentToken
 	      FunctionNameRef = IdentToken
@@ -164,14 +168,15 @@ ConnectionsSection = KwToken<"connections"> Connection*
 		Yes = KwToken<"yes">
 		No = KwToken<"no">
 		Trigger = KwToken<"trigger">
+		ArgsKW = KwToken<"args">
 		MessageData = KwToken<"messagedata">
 		MessageEtag = KwToken<"messageetag">
 		Synonym = LxKwToken<"synonym">
 
-                BuiltinConstant = Yes | No | Trigger | MessageData | MessageEtag
+                BuiltinConstant = Yes | No | Trigger | MessageData | MessageEtag | ArgsKW
 
   LxKwToken<s> = KwToken<s>
-  KwToken<s> = CompoundKwToken KwSecondToken<s> KWContent LineToken?
+  KwToken<s> = LineToken? CompoundKwToken KwSecondToken<s> KWContent LineToken?
   KwSecondToken<s> = "{" dq "token" dq ":" dq "keyword" dq "," dq "tag" dq ":" dq s dq"}" ","? LineToken?
   CompoundKwToken = "{" dq "token" dq ":" dq "compound" dq "," dq "tag" dq ":" dq "keyword" dq "}" ","? LineToken?
 

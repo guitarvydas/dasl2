@@ -2,6 +2,10 @@ exports.encode = function (s) {
     return encodeURIComponent (s);
 }
 
+exports.decode = function (s) {
+    return decodeURIComponent (s.replace (/"/g,""));
+}
+
 let linenumber = 1;
 exports.resetlinenumber = function () { linenumber = 1; }
 

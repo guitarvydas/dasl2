@@ -66,8 +66,8 @@ for line in sys.stdin:
         printkw ("def", line)
     elif (re.search (r'"token":"ident".+"content":"etags"',line)):
         printkw ("etags", line)
-    elif (re.search (r'"token":"ident".+"content":"name"',line)):
-        printkw ("name", line)
+    elif (re.search (r'"token":"ident".+"content":"id"',line)):
+        printkw ("id", line)
     elif (re.search (r'"token":"ident".+"content":"signature"',line)):
         printkw ("signature", line)
     elif (re.search (r'"token":"ident".+"content":"inputs"',line)):

@@ -6,6 +6,7 @@ def [successful]
   nets ⇒₁ ⇒₂ ⇒₃ ⇒₄ ⇒₅ ⇒₆ ⇒₇ ⇒₈
   locals found answer name
   initially
+    name = Args.name
   handler
     [
       | «conclude»

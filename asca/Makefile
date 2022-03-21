@@ -2,8 +2,9 @@ dev: tr
 
 #target=devtest
 #target=devtest0
-target=devtest2
+#target=devtest2
 #target=devtest3
+target=devtest4
 #target=lookup
 
 tr:
@@ -19,4 +20,6 @@ tr:
 	python3 tr.py </tmp/$(target).asct-ci >/tmp/$(target).asc-tr
 	# remove whitespace
 	./rmws.bash </tmp/$(target).asc-tr >/tmp/$(target).asc-no-ws
-	./ascal.bash </tmp/$(target).asc-no-ws
+	./untokenize.bash </tmp/$(target).asc-no-ws >/tmp/$(target).ascu
+	cat /tmp/$(target).ascu
+	#./ascal.bash </tmp/$(target).asc-no-ws
