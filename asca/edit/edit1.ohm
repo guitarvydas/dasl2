@@ -1,0 +1,12 @@
+edit {
+main = rule+
+rule = name eq item+ ";" ws+
+eq = ("=" | ":=") ws+
+item
+  = "@" name -- atname
+  | name     -- single
+name = (~delim any)+ ws+
+delim = ws | "=" | ";"
+ws = " " | nl
+nl = "\n"
+}
