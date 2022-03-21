@@ -1,0 +1,11 @@
+edit {
+Main = Rule+
+Rule = Name "«" Item+ "»" "=" "〖" Fmt+ "〗" ";"
+Item
+  = "@" Name -- atname
+  | Name     -- single
+Fmt
+  = "@" Name -- atname
+  | Name     -- single
+Name = "(" (~")" any)* ")"
+}

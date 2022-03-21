@@ -1,0 +1,8 @@
+Main [@x] = [[${x}]]
+Rule [name klp @item krp keq kfp @fmt krp ksemi]
+  = [[${name} \[${item}\] = \[\[${fmt}\]\]\n]]
+Item_atname [kat name] = [[ ${kat}${name}]]
+Item_single [name] = [[ ${name}]]
+Fmt_atname [kat name] = [[\$\{${name}\}]]
+Fmt_single [name] = [[\$\{${name}\}]]
+Name [klpar @cs krpar] = [[${cs}]]
