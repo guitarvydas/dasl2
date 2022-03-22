@@ -125,7 +125,7 @@ ConnectionsSection = "connections" Connection*
           Lvalue = LocalAccessor
           Rvalue = BuiltinConstant | LocalAccessor
 
-          LocalAccessor 
+          LocalAccessor
             = LocalNameRef "∞" LocalAccessor -- lookup
             | LocalNameRef "." LocalAccessor -- slot
             | LocalNameRef                   -- final
@@ -133,6 +133,7 @@ ConnectionsSection = "connections" Connection*
             Sender = ComponentNameRef TagNameRef
             Receiver = ComponentNameRef TagNameXRef
             PredicateTest = LocalAccessor Args
+            LocalCall = LocalAccessor Args
 
             Args = "(" Rvalue* ")"
 
@@ -196,7 +197,6 @@ ConnectionsSection = "connections" Connection*
   ident = identFirst identRest*
   identFirst = ~space ~digit ~separator ~keyword any
   identRest = ~space ~digit ~separator ~keyword ("0" .. "9" | identFirst)
-  identSep = ~space ~digit ~separator ~keyword
   nl = "\n"
   separator = ")" | "]" | "(" | "[" | "{" | "}" | "="
             | "«" | "»"
