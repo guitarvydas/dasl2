@@ -126,7 +126,7 @@ uriChar [c] = [[${c}]]
 
   identIncludingSpaces [@cs] = [[${cs}]]
   identCharIncludingSpace [c] = [[${c}]]
-  ident_bracketed_bracketd [left compoundident right] = [[${left}${compoundident}${right}]]
+  ident_bracketed [left compoundident right] = [[${left}${compoundident}${right}]]
   ident_raw [identfirst @identrest] = [[${identfirst}${identrest}]]
   identFirst [c] = [[${c}]]
   identRest [c] = [[${c}]]

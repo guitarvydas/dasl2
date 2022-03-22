@@ -78,8 +78,8 @@ def [match single atom name]
     [
       | «go» :
           [ ⟨match string⟩()
-	      | yes: Send «ok» Trigger
-	      | no : Send «mismatch» Trigger
+	      | Yes: Send «ok» Trigger
+	      | No : Send «mismatch» Trigger
 	  ]
     ]
   finally
