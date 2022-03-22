@@ -8,7 +8,7 @@ def [successful]
   initially
   handler
     [
-      | «conclude»
+      | «conclude» :
           Send «answer» ?data
           Send «found» Yes
     ]

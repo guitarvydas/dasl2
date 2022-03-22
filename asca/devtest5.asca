@@ -1,0 +1,19 @@
+def [devtest5]
+  id [devtest5]
+  etags «conclude» «found» «answer long name»
+  inputs
+  outputs
+  nets
+  locals
+  initially
+          Send «found» Yes
+  handler
+  finally
+  children
+  connections
+
+signature [devtest5]
+  id [devtest5]
+  etags «conclude» «found» «answer long name»
+  inputs
+  outputs

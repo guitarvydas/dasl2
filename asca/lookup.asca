@@ -12,10 +12,10 @@ def [lookup]
     Inject [scroll through atoms]«name» name
   handler
     [
-      | «found»
+      | «found» :
           found = ?data
 	  Conclude
-      | «answer»
+      | «answer» :
           answer = ?data
     ]
   finally
@@ -27,14 +27,14 @@ def [lookup]
     [unsuccessful] [unsuccessful]
     [successful] [successful]
   connections
-    [self]«name» ⇒₁ [scroll through atoms]«name»
-    [scoll through atoms]«EOF» ⇒₂ [unsuccessful]«conclude»
-    [scoll through atoms]«try 1 name match» ⇒₃ [match single atom name]«go»
-    [match single atom name]«mismatch» ⇒₄ [scroll through atoms]«advance»
-    [match single atom name]«ok» ⇒₅ [successful]«conclude»
-    [unsuccessful]«found» ⇒₆ [self]«found»
-    [successful]«found» ⇒₇ [self]«found»
-    [successful]«answer» ⇒₈ [self]«answer»
+    [self]«name» ⇒₁ ⎣ [scroll through atoms]«name» ⎦
+    [scoll through atoms]«EOF» ⇒₂ ⎣ [unsuccessful]«conclude» ⎦
+    [scoll through atoms]«try 1 name match» ⇒₃ ⎣ [match single atom name]«go» ⎦
+    [match single atom name]«mismatch» ⇒₄ ⎣ [scroll through atoms]«advance» ⎦
+    [match single atom name]«ok» ⇒₅ ⎣ [successful]«conclude» ⎦
+    [unsuccessful]«found» ⇒₆ ⎣ [self]«found» ⎦
+    [successful]«found» ⇒₇ ⎣ [self]«found» ⎦
+    [successful]«answer» ⇒₈ ⎣ [self]«answer» ⎦
 
 def [scroll through atoms]
   id [scroll through atoms]
@@ -53,10 +53,10 @@ def [scroll through atoms]
     atom-memory = Args ∞ atom-memory
   handler
     [
-      | «name»
+      | «name» :
           Send «try 1 name match» Trigger
 	  Conclude
-      | «advance»
+      | «advance» :
           atom-memory.advanceToNextAtom ()
 	  [ atom-memory.eof? ()
 	    | Yes : Send «EOF» No
@@ -77,7 +77,7 @@ def [match single atom name]
   initially
   handler
     [
-      | «go»
+      | «go» :
           [ ⟨match string⟩()
 	      | yes: Send «ok» Trigger
 	      | no : Send «mismatch» Trigger
@@ -98,7 +98,7 @@ def [unsuccessful]
   initially
   handler
     [
-      | «conclude»
+      | «conclude» :
           Send «found» No
     ]
   finally
@@ -115,7 +115,7 @@ def [successful]
   initially
   handler
     [
-      | «conclude»
+      | «conclude» :
           Send «answer» ?data
           Send «found» Yes
     ]

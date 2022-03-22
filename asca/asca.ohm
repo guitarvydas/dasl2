@@ -27,12 +27,12 @@ basictoken {
 
 linenumbers <: basictoken {
   Main := Token+
-  Token := LineToken | ...
+  Token += LineToken
   LineToken = "{" dq "token" dq ":" dq "line" dq "," dq "content" dq ":" number "}" ","?
 }
 
 brackets <: linenumbers {
-  Token := LbracketToken | RbracketToken | LportToken | RportToken | LineToken | ...
+  Token += LbracketToken | RbracketToken | LportToken | RportToken | LineToken
   LbracketToken = "{" dq "token" dq ":" dq "lex" dq "," dq "content" dq ":" dq "%5B" dq "}" ","?
   RbracketToken = "{" dq "token" dq ":" dq "lex" dq "," dq "content" dq ":" dq  "%5D" dq "}" ","?
   LportToken = "{" dq "token" dq ":" dq "lex" dq "," dq "content" dq ":" dq "%C2%AB" dq "}" ","?
@@ -50,12 +50,12 @@ compoundidents <: brackets {
 }
 
 subident <: compoundidents{
-  Token := SubIdentToken  | ...
+  Token += SubIdentToken
   SubIdentToken = "{" dq "token" dq ":" dq "subident" dq "," dq "content" dq ":" string "}" ","?
 }
 
 keywords <: subident {
-  Token := Keyword | CompoundTokenKW | KeywordToken | ...
+  Token += Keyword | CompoundTokenKW | KeywordToken
   
   Keyword = CompoundTokenKW KeywordToken KWContent
 
@@ -97,79 +97,113 @@ FinallySection = "finally" Code?
 ChildrenSection = "children" Child*
 ConnectionsSection = "connections" Connection*
 
-  Connection = Sender NetNameRef Receiver+
+  Connection = Sender NetNameRef "⎣" Receiver+ "⎦"
   Child = ComponentNameRef FunctionOrComponent
   FunctionOrComponent = FunctionRef | ComponentNameRef
   FunctionRef = "λ" FunctionNameRef
 
 
-    HandlerCode = MessageHandler | Code
+    HandlerCode = (MessageHandler | Statement)+
     Code = Statement+
     Statement = SynonymStatement | ConcludeStatement | ReturnStatement
            | ConditionalStatement | SendStatement | InjectStatement
-	   | ExternalCodeStatement
+           | ExternalCodeStatement
 
-      SynonymStatement = Lvalue Syn Rvalue
-      ConcludeStatement = "conclude"
-      ReturnStatement = "return" Rvalue*
-      SendStatement = "send" TagName Rvalue
-      InjectStatement = "inject" TagName Rvalue
+      SynonymStatement = Lvalue "=" Rvalue
+      ConcludeStatement = "Conclude"
+      ReturnStatement = "Return" Rvalue*
+      SendStatement = "Send" OwnTag Rvalue
+      InjectStatement = "Inject" Receiver Rvalue
       ExternalCodeStatement = ExternalCode
       ConditionalStatement = "[" PredicateTest CondClause+ "]"
       MessageHandler = "[" HandlerClause+ "]"
 
-	CondClause = Choice Rvalue Code
-	HandlerClause = Choice TagNameRef Code
+        CondClause = "|" Rvalue ":" Code
+        HandlerClause = "|" TagNameRef ":" Code
 
-	  Lvalue = LocalAccessor
-	  Rvalue = BuiltinConstant | LocalAccessor
+          Lvalue = LocalAccessor
+          Rvalue = BuiltinConstant | LocalAccessor
 
           LocalAccessor 
-            = LocalNameRef Lookup LocalAccessor -- lookup
-            | LocalNameRef Slot LocalAccessor   -- slot
-            | LocalNameRef                      -- final
+            = LocalNameRef "∞" LocalAccessor -- lookup
+            | LocalNameRef "." LocalAccessor -- slot
+            | LocalNameRef                   -- final
 
-	    Sender = ComponentNameRef TagNameRef
-	    Receiver = ComponentNameRef TagNameXRef
-            PredicateTest = Identifier Args
+            Sender = ComponentNameRef TagNameRef
+            Receiver = ComponentNameRef TagNameXRef
+            PredicateTest = LocalAccessor Args
 
-	    Args = "(" Rvalue+ ")"
+            Args = "(" Rvalue* ")"
 
-	    DefToken = "def"
-	    SignatureToken = "signature"
-	    ComponentNameDef = ComponentName
-	    ComponentNameRef = ComponentName
+            DefToken = "def"
+            SignatureToken = "signature"
+            ComponentNameDef = ComponentName
+            ComponentNameRef = ComponentName
 
 
-	      LocalNameDef = IdentToken
-	      LocalNameRef = ArgsKW | IdentToken
-	      NetNameDef = IdentToken
-	      NetNameRef = IdentToken
-	      FunctionNameRef = IdentToken
-	      TagNameDef = TagName
-	      TagNameRef = TagName
-	      TagNameXRef = TagName
+              LocalNameDef = ident
+              LocalNameRef = ArgsKW | ident
+              NetNameDef = ident
+              NetNameRef = ident
+              FunctionNameRef = ident
+              TagNameDef = TagName
+              TagNameRef = TagName
+              TagNameXRef = TagName
+	      OwnTag = TagNameRef
 
-		Syn = "="
-		ComponentName = "[" SubIdentToken+ "]"
-		TagName = "«" SubIdentToken+ "»"
-		Identifier 
-                  = "(" SubIdentToken+ ")" -- multiple
-                  | SubIdentToken          -- single
-		Choice = "|"
-		Slot = "."
-		Lookup = "∞"
-		Yes = "yes"
-		No = "no"
-		Trigger = "trigger"
-		ArgsKW = "args"
-		MessageData = "messagedata"
-		MessageEtag = "messageetag"
-		Synonym = "="
+                ComponentName = "[" #identIncludingSpaces "]"
+                TagName = "«" #identIncludingSpaces "»"
+                Yes = "Yes"
+                No = "No"
+                Trigger = "Trigger"
+                ArgsKW = "Args"
+                MessageData = "?data"
+                MessageEtag = "?etag"
 
-                BuiltinConstant = Yes | No | Trigger | MessageData | MessageEtag | ArgsKW
+                BuiltinConstant = Yes | No | Trigger | MessageData | MessageEtag
+
+                    keyword
+                      = "id"
+                      | "etags"
+                      | "inputs"
+                      | "outputs"
+                      | "nets"
+                      | "locals"
+                      | "initially"
+                      | "handler"
+                      | "finally"
+                      | "children"
+                      | "connections"
+                      | "Conclude"
+                      | "Return"
+                      | "Send"
+                      | "Inject"
+                      | "def"
+                      | "signature"
+                      | "Yes"
+                      | "No"
+                      | "Trigger"
+                      | "Args"
+                      | "messagedata"
+                      | "messageetag"
 
   ExternalCode = "{" #(uriChar+) "}"
-
   uriChar = ~"}" any
+
+  identIncludingSpaces = identCharIncludingSpace+
+  identCharIncludingSpace = ~")" ~"]" ~"»" ~nl any
+  ident = ~keyword ~separator identFirst identRest*
+  identFirst = ~space ~digit ~separator any
+  identRest = "0" .. "9" | identFirst
+  nl = "\n"
+  separator = ")" | "]" | "(" | "[" | "{" | "}" | "="
+            | "|" | "." | "∞"
+            | "⎣" | "⎦"
+	    | "〖" | "〗"
+
+  lineNumber = "〖" digit+ "〗"
+  space += lineNumber
 }
+
+
+
