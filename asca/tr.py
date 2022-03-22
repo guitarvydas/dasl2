@@ -26,6 +26,8 @@ for line in sys.stdin:
         printkw ("send", line)
     elif (re.search (r'"token":"ident".+"content":"Inject"',line)):
         printkw ("inject", line)
+    elif (re.search (r'"token":"ident".+"content":"Pass"',line)):
+        printkw ("pass", line)
     elif (re.search (r'"token":"ident".+"content":"%3Fdata"',line)):
         printkw ("messagedata", line)
     elif (re.search (r'"token":"ident".+"content":"%3Fetag"',line)):

@@ -107,7 +107,7 @@ ConnectionsSection = "connections" Connection*
     Code = Statement+
     Statement = SynonymStatement | ConcludeStatement | ReturnStatement
            | ConditionalStatement | SendStatement | InjectStatement
-           | ExternalCodeStatement
+           | ExternalCodeStatement | PassStatement
 
       SynonymStatement = Lvalue "=" Rvalue
       ConcludeStatement = "Conclude"
@@ -117,6 +117,7 @@ ConnectionsSection = "connections" Connection*
       ExternalCodeStatement = ExternalCode
       ConditionalStatement = "[" PredicateTest CondClause+ "]"
       MessageHandler = "[" HandlerClause+ "]"
+      PassStatement = "Pass"
 
         CondClause = "|" Rvalue ":" Code
         HandlerClause = "|" TagNameRef ":" Code
