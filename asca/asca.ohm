@@ -105,21 +105,20 @@ ConnectionsSection = "connections" Connection*
 
     HandlerCode = Statement? MessageHandler Statement?
     Code = Statement
-    Statement = (SynonymStatement | ConcludeStatement | ReturnStatement
+    Statement = SynonymStatement | ConcludeStatement | ReturnStatement
            | ConditionalStatement | SendStatement | InjectStatement
-           | ExternalCodeStatement | PassStatement | ExpressionStatement)
-	   Statement?
+           | ExternalCodeStatement | PassStatement | ExpressionStatement
 
-      SynonymStatement = Lvalue "=" Rvalue
-      ConcludeStatement = "Conclude"
-      ReturnStatement = "Return" Rvalue*
-      SendStatement = "Send" OwnTag Rvalue
-      InjectStatement = "Inject" Receiver Rvalue
-      ExternalCodeStatement = ExternalCode
-      ConditionalStatement = "[" LocalAccessor CondClause+ "]"
-      MessageHandler = "⎡" HandlerClause+ "⎦"
-      PassStatement = "Pass"
-      ExpressionStatement = Rvalue
+      SynonymStatement = Lvalue "=" Rvalue Statement?
+      ConcludeStatement = "Conclude" Statement?
+      ReturnStatement = "Return" Rvalue* Statement?
+      SendStatement = "Send" OwnTag Rvalue Statement?
+      InjectStatement = "Inject" Receiver Rvalue Statement?
+      ExternalCodeStatement = ExternalCode Statement?
+      ConditionalStatement = "[" LocalAccessor CondClause+ "]" Statement?
+      MessageHandler = "⎡" HandlerClause+ "⎦" Statement?
+      PassStatement = "Pass" Statement?
+      ExpressionStatement = Rvalue Statement?
 
         CondClause = "|" Rvalue ":" Code
         HandlerClause = "•" TagNameRef ":" Code
