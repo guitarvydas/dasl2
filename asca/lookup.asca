@@ -51,7 +51,6 @@ def [scroll through atoms]
     ]
   handler
     atom-memory = Args ∞ atom-memory
-  handler
     [
       | «name» :
           Send «try 1 name match» Trigger
