@@ -103,7 +103,7 @@ ConnectionsSection = "connections" Connection*
   FunctionRef = "λ" FunctionNameRef
 
 
-    HandlerCode = (MessageHandler | Statement)+
+    HandlerCode = Statement? MessageHandler Statement?
     Code = Statement+
     Statement = SynonymStatement | ConcludeStatement | ReturnStatement
            | ConditionalStatement | SendStatement | InjectStatement
@@ -184,7 +184,7 @@ ConnectionsSection = "connections" Connection*
                       | "def"
                       | "signature"
                       | "Yes"
-                      | "No"
+                      | "No" 
                       | "Trigger"
                       | "Args"
                       | "messagedata"
