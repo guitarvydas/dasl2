@@ -22,3 +22,9 @@ exports.getlinenumber = function () {
 exports.createToken = function (token, content) {
     return `{"token":"${token}", "content":${content}}`;
 }
+
+exports.mangle = function (s) {
+    // let mangled = encodeURIComponent (s).replace (/%20/g," ");
+    // return mangled;
+    return s;
+}
