@@ -6,7 +6,7 @@ def [successful]
   nets ⇒₁ ⇒₂
   locals found answer long name name
   initially
-    name = Args.name
+    name ⇐ Args.name
   handler
     [
       | «conclude» :

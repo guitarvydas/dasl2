@@ -105,11 +105,13 @@ ConnectionsSection = "connections" Connection*
 
     HandlerCode = Statement? MessageHandler Statement?
     Code = Statement
-    Statement = SynonymStatement | ConcludeStatement | ReturnStatement
+    Statement = SynonymStatement | AssignmentStatement
+           | ConcludeStatement | ReturnStatement
            | ConditionalStatement | SendStatement | InjectStatement
            | ExternalCodeStatement | PassStatement | ExpressionStatement
 
-      SynonymStatement = Lvalue "=" Rvalue Statement?
+      SynonymStatement = Lvalue "≡" Rvalue Statement?
+      AssignmentStatement = Lvalue "⇐" Rvalue Statement?
       ConcludeStatement = "Conclude" Statement?
       ReturnStatement = "Return" Rvalue* Statement?
       SendStatement = "Send" OwnTag Rvalue Statement?
@@ -202,7 +204,8 @@ ConnectionsSection = "connections" Connection*
   identFirst = ~space ~digit ~separator ~keyword any
   identRest = ~space ~digit ~separator ~keyword ("0" .. "9" | identFirst)
   nl = "\n"
-  separator = ")" | "]" | "(" | "[" | "{" | "}" | "="
+  separator = ")" | "]" | "(" | "[" | "{" | "}"
+            | "⇐" | "≡"
             | "«" | "»"
             | "|" | "." | "∞"
             | "⎣" | "⎦"

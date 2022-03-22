@@ -6,17 +6,17 @@ def 〔lookup〕
   nets ⇒₁ ⇒₂ ⇒₃ ⇒₄ ⇒₅ ⇒₆ ⇒₇ ⇒₈
   locals found answer name
   initially
-    name = Args.name
-    answer = Nil
-    found = No
+    name ⇐ Args.name
+    answer ⇐ Nil
+    found ⇐ No
     Inject 〔scroll through atoms〕«name» name
   handler
     ⎡
       • «found» :
-          found = ?data
+          found ⇐ ?data
           Conclude
       • «answer» :
-          answer = ?data
+          answer ⇐ ?data
     ⎦
   finally
       Return found answer

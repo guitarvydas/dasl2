@@ -54,13 +54,19 @@ for line in sys.stdin:
     elif (re.search (r'"token":"lex".+"content":"%C2%BB"',line)):
         printkw ("rport", line)
 
-# |=⟨⟩
+# |
     elif (re.search (r'"token":"lex".+"content":"%7C"',line)):
         printkw ("choice", line)
-    elif (re.search (r'"token":"lex".+"content":"%3D"',line)):
+#≡
+    elif (re.search (r'"token":"lex".+"content":"%E289A1"',line)):
         printkw ("synonym", line)
+#⇐
+    elif (re.search (r'"token":"lex".+"content":"%E28790"',line)):
+        printkw ("synonym", line)
+#⟨
     elif (re.search (r'"token":"lex".+"content":"%E2%9F%A8"',line)):
         printkw ("langle", line)
+#⟩
     elif (re.search (r'"token":"lex".+"content":"%E2%9F%A9"',line)):
         printkw ("rangle", line)
 

@@ -33,3 +33,11 @@ exports.makeLispName = function (s) {
     let name = s.replace (/"/g, "");
     return name;
 }
+
+exports.formatContinuation = function (s) {
+    if (s.trim ()) {
+	return "\n" + s;
+    } else {
+	return "";
+    }
+}

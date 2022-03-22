@@ -6,17 +6,17 @@ def 〔lookup〕
   nets ⇒₁ ⇒₂ ⇒₃ ⇒₄ ⇒₅ ⇒₆ ⇒₇ ⇒₈
   locals found answer name
   initially
-    name = Args.name
-    answer = Nil
-    found = No
+    name ⇐ Args.name
+    answer ⇐ Nil
+    found ⇐ No
     Inject 〔scroll through atoms〕«name» name
   handler
     ⎡
       • «found» :
-          found = ?data
+          found ⇐ ?data
           Conclude
       • «answer» :
-          answer = ?data
+          answer ⇐ ?data
     ⎦
   finally
       Return found answer
@@ -44,13 +44,13 @@ def 〔scroll through atoms〕
   nets
   locals atom-memory
   initially
-    atom-memory = Args.atom-memory
+    atom-memory ⇐ Args.atom-memory
     [atom-memory.eof? ()
       | Yes : Send «EOF» No
       | No  : Pass
     ]
   handler
-    atom-memory = Args ∞ atom-memory
+    atom-memory ⇐ Args ∞ atom-memory
     ⎡
       • «name» :
           Send «try 1 name match» Trigger

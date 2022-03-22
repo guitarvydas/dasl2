@@ -6,7 +6,7 @@ def [devtest6]
   nets
   locals
   initially
-    name = Args.name
+    name ⇐ Args.name
   handler
   finally
   children
