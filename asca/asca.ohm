@@ -104,10 +104,11 @@ ConnectionsSection = "connections" Connection*
 
 
     HandlerCode = Statement? MessageHandler Statement?
-    Code = Statement+
-    Statement = SynonymStatement | ConcludeStatement | ReturnStatement
+    Code = Statement
+    Statement = (SynonymStatement | ConcludeStatement | ReturnStatement
            | ConditionalStatement | SendStatement | InjectStatement
-           | ExternalCodeStatement | PassStatement | ExpressionStatement
+           | ExternalCodeStatement | PassStatement | ExpressionStatement)
+	   Statement?
 
       SynonymStatement = Lvalue "=" Rvalue
       ConcludeStatement = "Conclude"

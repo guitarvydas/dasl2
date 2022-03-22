@@ -22,9 +22,9 @@ Child [ ComponentNameRef FunctionOrComponent] = [[${ComponentNameRef}${FunctionO
 FunctionOrComponent [ fc] = [[${fc}]]
 FunctionRef [ klxlambda FunctionNameRef] = [[${klxlambda}${FunctionNameRef}]]
 HandlerCode [ pre mh post ] = [[${pre}${mh}${post}]]
-Code [ @Statement] = [[${Statement}]]
+Code [Statement] = [[${Statement}]]
 
-Statement [ st] = [[${st}\n]]
+Statement [ st @continuation] = [[${st}${continuation}\n]]
 SynonymStatement [ Lvalue Syn Rvalue] = [[(let ((${support.makeLispVar (Lvalue)} ${Rvalue})))]]
 ConcludeStatement [ kwconclude] = [[${kwconclude}]]
 ReturnStatement [ kwreturn @Rvalue] = [[${kwreturn}${Rvalue}]]
