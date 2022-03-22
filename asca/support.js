@@ -29,7 +29,7 @@ exports.mangle = function (s) {
     return s;
 }
 
-exports.makeLispVar = function (s) {
+exports.makeLispName = function (s) {
     let name = s.replace (/"/g, "");
     return name;
 }
