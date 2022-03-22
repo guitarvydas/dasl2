@@ -195,7 +195,9 @@ ConnectionsSection = "connections" Connection*
 
   identIncludingSpaces = ~separator identCharIncludingSpace+
   identCharIncludingSpace = ~separator ~nl any
-  ident = identFirst identRest*
+  ident
+    = "⟨" identIncludingSpaces "⟩"          -- bracketed
+    | identFirst identRest*  -- raw
   identFirst = ~space ~digit ~separator ~keyword any
   identRest = ~space ~digit ~separator ~keyword ("0" .. "9" | identFirst)
   nl = "\n"
@@ -204,6 +206,7 @@ ConnectionsSection = "connections" Connection*
             | "|" | "." | "∞"
             | "⎣" | "⎦"
 	    | "〖" | "〗"
+            | "⟨"| "⟩"
 
   lineNumber = "〖" digit+ "〗"
   space += lineNumber
