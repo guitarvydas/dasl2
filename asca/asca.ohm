@@ -116,12 +116,12 @@ ConnectionsSection = "connections" Connection*
       InjectStatement = "Inject" Receiver Rvalue
       ExternalCodeStatement = ExternalCode
       ConditionalStatement = "[" LocalAccessor CondClause+ "]"
-      MessageHandler = "[" HandlerClause+ "]"
+      MessageHandler = "⎡" HandlerClause+ "⎦"
       PassStatement = "Pass"
       ExpressionStatement = Rvalue
 
         CondClause = "|" Rvalue ":" Code
-        HandlerClause = "|" TagNameRef ":" Code
+        HandlerClause = "•" TagNameRef ":" Code
 
           Lvalue = LocalAccessor
           Rvalue = BuiltinConstant | LocalAccessor
@@ -154,7 +154,7 @@ ConnectionsSection = "connections" Connection*
               TagNameXRef = TagName
 	      OwnTag = TagNameRef
 
-                ComponentName = "[" #identIncludingSpaces "]"
+                ComponentName = "〔" #identIncludingSpaces "〕"
                 TagName = "«" #identIncludingSpaces "»"
                 Yes = "Yes"
                 No = "No"
@@ -206,7 +206,9 @@ ConnectionsSection = "connections" Connection*
             | "|" | "." | "∞"
             | "⎣" | "⎦"
 	    | "〖" | "〗"
-            | "⟨"| "⟩"
+            | "⟨" | "⟩"
+            | "〔" | "〕"
+            | "⎡" | "⎦" | "•"
 
   lineNumber = "〖" digit+ "〗"
   space += lineNumber

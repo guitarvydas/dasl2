@@ -1,5 +1,5 @@
-def [lookup]
-  id [lookup]
+def 〔lookup〕
+  id 〔lookup〕
   etags «name» «found» «answer»
   inputs «name»
   outputs «found» «answer»
@@ -9,35 +9,35 @@ def [lookup]
     name = Args.name
     answer = Nil
     found = No
-    Inject [scroll through atoms]«name» name
+    Inject 〔scroll through atoms〕«name» name
   handler
-    [
-      | «found» :
+    ⎡
+      • «found» :
           found = ?data
-	  Conclude
-      | «answer» :
+          Conclude
+      • «answer» :
           answer = ?data
-    ]
+    ⎦
   finally
       Return found answer
   children
-    [self] λlookup
-    [scroll through atoms] [scroll through atoms]
-    [match single atom name] [match single atom name]
-    [unsuccessful] [unsuccessful]
-    [successful] [successful]
+    〔self〕 λlookup
+    〔scroll through atoms〕 〔scroll through atoms〕
+    〔match single atom name〕 〔match single atom name〕
+    〔unsuccessful〕 〔unsuccessful〕
+    〔successful〕 〔successful〕
   connections
-    [self]«name» ⇒₁ ⎣ [scroll through atoms]«name» ⎦
-    [scoll through atoms]«EOF» ⇒₂ ⎣ [unsuccessful]«conclude» ⎦
-    [scoll through atoms]«try 1 name match» ⇒₃ ⎣ [match single atom name]«go» ⎦
-    [match single atom name]«mismatch» ⇒₄ ⎣ [scroll through atoms]«advance» ⎦
-    [match single atom name]«ok» ⇒₅ ⎣ [successful]«conclude» ⎦
-    [unsuccessful]«found» ⇒₆ ⎣ [self]«found» ⎦
-    [successful]«found» ⇒₇ ⎣ [self]«found» ⎦
-    [successful]«answer» ⇒₈ ⎣ [self]«answer» ⎦
+    〔self〕«name» ⇒₁ ⎣ 〔scroll through atoms〕«name» ⎦
+    〔scoll through atoms〕«EOF» ⇒₂ ⎣ 〔unsuccessful〕«conclude» ⎦
+    〔scoll through atoms〕«try 1 name match» ⇒₃ ⎣ 〔match single atom name〕«go» ⎦
+    〔match single atom name〕«mismatch» ⇒₄ ⎣ 〔scroll through atoms〕«advance» ⎦
+    〔match single atom name〕«ok» ⇒₅ ⎣ 〔successful〕«conclude» ⎦
+    〔unsuccessful〕«found» ⇒₆ ⎣ 〔self〕«found» ⎦
+    〔successful〕«found» ⇒₇ ⎣ 〔self〕«found» ⎦
+    〔successful〕«answer» ⇒₈ ⎣ 〔self〕«answer» ⎦
 
-def [scroll through atoms]
-  id [scroll through atoms]
+def 〔scroll through atoms〕
+  id 〔scroll through atoms〕
   etags «name» «advance» «EOF» «try 1 name match»
   inputs «name» «advance»
   outputs «EOF» «try 1 name match»
@@ -45,29 +45,29 @@ def [scroll through atoms]
   locals atom-memory
   initially
     atom-memory = Args.atom-memory
-    [ atom-memory.eof? ()
+    [atom-memory.eof? ()
       | Yes : Send «EOF» No
       | No  : Pass
     ]
   handler
     atom-memory = Args ∞ atom-memory
-    [
-      | «name» :
+    ⎡
+      • «name» :
           Send «try 1 name match» Trigger
-	  Conclude
-      | «advance» :
+          Conclude
+      • «advance» :
           atom-memory.advanceToNextAtom ()
-	  [ atom-memory.eof? ()
-	    | Yes : Send «EOF» No
-	    | No  : Send «try 1 name match» Trigger
-	  ]
-    ]
+          [ atom-memory.eof? ()
+            | Yes : Send «EOF» No
+            | No  : Send «try 1 name match» Trigger
+          ]
+    ⎦
   finally
   children
   connections
 
-def [match single atom name]
-  id [match single atom name]
+def 〔match single atom name〕
+  id 〔match single atom name〕
   etags «name» «advance» «EOF» «try 1 name match»
   inputs «name» «advance»
   outputs «EOF» «try 1 name match»
@@ -75,20 +75,20 @@ def [match single atom name]
   locals atom-memory
   initially
   handler
-    [
-      | «go» :
+    ⎡
+      • «go» :
           [ ⟨match string⟩()
-	      | Yes: Send «ok» Trigger
-	      | No : Send «mismatch» Trigger
-	  ]
-    ]
+              | Yes: Send «ok» Trigger
+              | No : Send «mismatch» Trigger
+          ]
+    ⎦
   finally
   children
   connections
 
 
-def [unsuccessful]
-  id [unsuccessful]
+def 〔unsuccessful〕
+  id 〔unsuccessful〕
   etags «conclude» «found»
   inputs «conclude»
   outputs «found»
@@ -96,16 +96,16 @@ def [unsuccessful]
   locals
   initially
   handler
-    [
-      | «conclude» :
+    ⎡
+      • «conclude» :
           Send «found» No
-    ]
+    ⎦
   finally
   children
   connections
 
-def [successful]
-  id [successful]
+def 〔successful〕
+  id 〔successful〕
   etags «conclude» «found» «answer»
   inputs «conclude»
   outputs «found» «answer»
@@ -113,38 +113,38 @@ def [successful]
   locals
   initially
   handler
-    [
-      | «conclude» :
+    ⎡
+      • «conclude» :
           Send «answer» ?data
           Send «found» Yes
-    ]
+    ⎦
   finally
   children
   connections
 
 
-signature [lookup]
-  id [lookup]
+signature 〔lookup〕
+  id 〔lookup〕
   etags «name» «found» «answer»
   inputs «name»
   outputs «found» «answer»
-signature [scroll through atoms]
-  id [scroll through atoms]
+signature 〔scroll through atoms〕
+  id 〔scroll through atoms〕
   etags «name» «advance» «EOF» «try 1 name match»
   inputs «name» «advance»
   outputs «EOF» «try 1 name match»
-signature [match single atom name]
-  id [match single atom name]
+signature 〔match single atom name〕
+  id 〔match single atom name〕
   etags «name» «advance» «EOF» «try 1 name match»
   inputs «name» «advance»
   outputs «EOF» «try 1 name match»
-signature [unsuccessful]
-  id [unsuccessful]
+signature 〔unsuccessful〕
+  id 〔unsuccessful〕
   etags «conclude» «found»
   inputs «conclude»
   outputs «found»
-signature [successful]
-  id [successful]
+signature 〔successful〕
+  id 〔successful〕
   etags «conclude» «found» «answer»
   inputs «conclude»
   outputs «found» «answer»
