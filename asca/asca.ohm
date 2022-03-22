@@ -75,7 +75,7 @@ Main := ASCScript
 
 ASCScript = ASCComponent+ Signature+
 
-ASCComponent = DefToken ComponentNameDef NameSection EtagsSection
+ASCComponent = DefTopLevel NameSection EtagsSection
   InputsSection OutputsSection NetsSection LocalsSection
   InitiallySection HandlerSection FinallySection
   ChildrenSection ConnectionsSection
@@ -84,7 +84,7 @@ Signature = SignatureToken ComponentNameRef NameSection EtagsSection
   InputsSection OutputsSection
 
 
-DefSection = DefToken ComponentNameDef
+DefTopLevel = DefToken ComponentNameDef
 NameSection = "id" ComponentNameRef
 EtagsSection = "etags" TagNameDef*
 InputsSection = "inputs" TagNameRef*
