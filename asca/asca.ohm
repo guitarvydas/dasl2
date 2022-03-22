@@ -107,7 +107,7 @@ ConnectionsSection = "connections" Connection*
     Code = Statement+
     Statement = SynonymStatement | ConcludeStatement | ReturnStatement
            | ConditionalStatement | SendStatement | InjectStatement
-           | ExternalCodeStatement | PassStatement
+           | ExternalCodeStatement | PassStatement | ExpressionStatement
 
       SynonymStatement = Lvalue "=" Rvalue
       ConcludeStatement = "Conclude"
@@ -118,6 +118,7 @@ ConnectionsSection = "connections" Connection*
       ConditionalStatement = "[" LocalAccessor CondClause+ "]"
       MessageHandler = "[" HandlerClause+ "]"
       PassStatement = "Pass"
+      ExpressionStatement = Rvalue
 
         CondClause = "|" Rvalue ":" Code
         HandlerClause = "|" TagNameRef ":" Code
