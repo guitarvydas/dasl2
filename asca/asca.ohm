@@ -191,13 +191,15 @@ ConnectionsSection = "connections" Connection*
   ExternalCode = "{" #(uriChar+) "}"
   uriChar = ~"}" any
 
-  identIncludingSpaces = identCharIncludingSpace+
-  identCharIncludingSpace = ~")" ~"]" ~"»" ~nl any
+  identIncludingSpaces = ~separator identCharIncludingSpace+
+  identCharIncludingSpace = ~separator ~nl any
   ident = ~keyword ~separator identFirst identRest*
-  identFirst = ~space ~digit ~separator any
-  identRest = "0" .. "9" | identFirst
+  identFirst = ~identSep any
+  identRest = ~identSep ("0" .. "9" | identFirst)
+  identSep = ~space ~digit ~separator
   nl = "\n"
   separator = ")" | "]" | "(" | "[" | "{" | "}" | "="
+            | "«" | "»"
             | "|" | "." | "∞"
             | "⎣" | "⎦"
 	    | "〖" | "〗"

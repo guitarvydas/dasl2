@@ -1,5 +1,5 @@
 def [successful]
-  name [successful]
+  id [successful]
   etags «conclude» «found» «answer»
   inputs «conclude»
   outputs «found» «answer»
@@ -18,7 +18,7 @@ def [successful]
 
 
 signature [successful]
-  name [successful]
+  id [successful]
   etags «conclude» «found» «answer»
   inputs «conclude»
   outputs «found» «answer»
