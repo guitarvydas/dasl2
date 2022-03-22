@@ -193,10 +193,10 @@ ConnectionsSection = "connections" Connection*
 
   identIncludingSpaces = ~separator identCharIncludingSpace+
   identCharIncludingSpace = ~separator ~nl any
-  ident = ~keyword ~separator identFirst identRest*
-  identFirst = ~identSep any
-  identRest = ~identSep ("0" .. "9" | identFirst)
-  identSep = ~space ~digit ~separator
+  ident = identFirst identRest*
+  identFirst = ~space ~digit ~separator ~keyword any
+  identRest = ~space ~digit ~separator ~keyword ("0" .. "9" | identFirst)
+  identSep = ~space ~digit ~separator ~keyword
   nl = "\n"
   separator = ")" | "]" | "(" | "[" | "{" | "}" | "="
             | "«" | "»"
@@ -207,6 +207,3 @@ ConnectionsSection = "connections" Connection*
   lineNumber = "〖" digit+ "〗"
   space += lineNumber
 }
-
-
-
