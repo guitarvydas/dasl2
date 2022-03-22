@@ -113,7 +113,7 @@ ConnectionsSection = "connections" Connection*
       ConcludeStatement = "Conclude" Statement?
       ReturnStatement = "Return" Rvalue* Statement?
       SendStatement = "Send" OwnTag Rvalue Statement?
-      InjectStatement = "Inject" Receiver Rvalue Statement?
+      InjectStatement = "Inject" ReceiverRef Rvalue Statement?
       ExternalCodeStatement = ExternalCode Statement?
       ConditionalStatement = "[" LocalAccessor CondClause+ "]" Statement?
       MessageHandler = "⎡" HandlerClause+ "⎦" Statement?
@@ -134,6 +134,7 @@ ConnectionsSection = "connections" Connection*
 
             Sender = ComponentNameRef TagNameRef
             Receiver = ComponentNameRef TagNameXRef
+            ReceiverRef = ComponentNameRef TagNameXRef
             LocalCall = LocalAccessor Args
 
             Args = "(" Rvalue* ")"

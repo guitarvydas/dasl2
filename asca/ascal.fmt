@@ -136,3 +136,5 @@ uriChar [c] = [[${c}]]
 
   lineNumber [left @ds right] = [[${left}${ds}${right}]]
   space [c] = [[${c}]]
+
+ReceiverRef [component tag] = [['(${component} . ${tag})]]
