@@ -126,8 +126,9 @@ ConnectionsSection = "connections" Connection*
           Rvalue = BuiltinConstant | LocalAccessor
 
           LocalAccessor
-            = LocalNameRef "∞" LocalAccessor -- lookup
-            | LocalNameRef "." LocalAccessor -- slot
+            = LocalAccessor "∞" LocalNameRef -- lookup
+            | LocalAccessor "." LocalNameRef -- slot
+	    | LocalAccessor Args             -- call
             | LocalNameRef                   -- final
 
             Sender = ComponentNameRef TagNameRef
