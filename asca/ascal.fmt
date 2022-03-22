@@ -41,7 +41,6 @@ LocalAccessor_slot [ LocalNameRef Slot LocalAccessor] = [[${LocalNameRef}${Slot}
 LocalAccessor_final [ LocalNameRef] = [[${LocalNameRef}]]
 Sender [ ComponentNameRef TagNameRef] = [[${ComponentNameRef}${TagNameRef}]]
 Receiver [ ComponentNameRef TagNameXRef] = [[${ComponentNameRef}${TagNameXRef}]]
-PredicateTest [ Identifier Args] = [[${Identifier}${Args}]]
 Args [ Lpar @Rvalue Rpar] = [[${Lpar}${Rvalue}${Rpar}]]
 DefToken [ kwdef] = [[${kwdef}]]
 SignatureToken [ kwsignature] = [[${kwsignature}]]

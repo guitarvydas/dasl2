@@ -115,7 +115,7 @@ ConnectionsSection = "connections" Connection*
       SendStatement = "Send" OwnTag Rvalue
       InjectStatement = "Inject" Receiver Rvalue
       ExternalCodeStatement = ExternalCode
-      ConditionalStatement = "[" PredicateTest CondClause+ "]"
+      ConditionalStatement = "[" LocalAccessor CondClause+ "]"
       MessageHandler = "[" HandlerClause+ "]"
       PassStatement = "Pass"
 
@@ -133,7 +133,6 @@ ConnectionsSection = "connections" Connection*
 
             Sender = ComponentNameRef TagNameRef
             Receiver = ComponentNameRef TagNameXRef
-            PredicateTest = LocalAccessor Args
             LocalCall = LocalAccessor Args
 
             Args = "(" Rvalue* ")"
