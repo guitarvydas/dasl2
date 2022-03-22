@@ -28,3 +28,8 @@ exports.mangle = function (s) {
     // return mangled;
     return s;
 }
+
+exports.makeLispVar = function (s) {
+    let name = s.replace (/"/g, "");
+    return name;
+}
