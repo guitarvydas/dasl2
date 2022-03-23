@@ -30,7 +30,7 @@ exports.mangle = function (s) {
 }
 
 exports.makeLispName = function (s) {
-    let name = s.replace (/"/g, "");
+    let name = s.trim ().replace (/"/g, "");
     return name;
 }
 

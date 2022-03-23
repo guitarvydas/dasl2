@@ -7,7 +7,7 @@ def 〔lookup〕
   locals found answer name
   initially
     name ⇐ Args.name
-    answer ⇐ Nil
+    answer ⇐ No
     found ⇐ No
     Inject 〔scroll through atoms〕«name» name
   handler

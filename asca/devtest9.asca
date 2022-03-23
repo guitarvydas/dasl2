@@ -1,0 +1,19 @@
+def 〔lookup〕
+  id 〔lookup〕
+  etags
+  inputs
+  outputs
+  nets
+  locals
+  initially
+    answer ⇐ No
+  handler
+  finally
+  children
+  connections
+
+signature 〔lookup〕
+  id 〔lookup〕
+  etags
+  inputs
+  outputs
