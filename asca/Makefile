@@ -7,7 +7,8 @@ dev: tr
 #target=devtest4
 #target=devtest5
 #target=devtest6
-target=devtest7
+#target=devtest7
+target=devtest8
 #target=lookup
 
 tr:

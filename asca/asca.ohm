@@ -91,9 +91,18 @@ InputsSection = "inputs" TagNameRef*
 OutputsSection = "outputs" TagNameRef*
 NetsSection = "nets" NetNameDef*
 LocalsSection = "locals" LocalNameDef*
-InitiallySection = "initially" Code?
-HandlerSection = "handler" HandlerCode?
-FinallySection = "finally" Code?
+
+InitiallySection
+  = "initially" Code -- code
+  | "initially"      -- empty
+  
+HandlerSection
+  = "handler" HandlerCode -- code
+  | "handler"              -- empty
+FinallySection
+  = "finally" Code -- code
+  | "finally"      -- empty
+
 ChildrenSection = "children" Child*
 ConnectionsSection = "connections" Connection*
 
