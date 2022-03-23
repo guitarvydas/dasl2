@@ -39,6 +39,7 @@ ConcludeStatement [ kwconclude @continuation] = [[($dispatch-conclude $context)$
 ReturnStatement [ kwreturn @Rvalue @continuation] = [[(values ${Rvalue})${support.formatContinuation (continuation)}]]
 SendStatement [ kwsend TagName Rvalue @continuation] = [[${kwsend}${TagName}${Rvalue}${support.formatContinuation (continuation)}]]
 InjectStatement [ kwinject Receiver Rvalue @continuation] = [[($inject ${Receiver} ${Rvalue} $context nil)${support.formatContinuation (continuation)}]]
+PassStatement [k @stmt] = [[nil]]
 ExternalCodeStatement [ ExternalCode @continuation] = [[(assert nil) ;; ${ExternalCode}${support.formatContinuation (continuation)}]]
 ConditionalStatement [ Lbracket PredicateTest @CondClause Rbracket @continuation]
   = [[(let (($pred ${PredicateTest}))${CondClause}${support.formatContinuation (continuation)})]]
