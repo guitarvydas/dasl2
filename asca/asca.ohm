@@ -80,11 +80,12 @@ ASCComponent = DefTopLevel NameSection EtagsSection
   InitiallySection HandlerSection FinallySection
   ChildrenSection ConnectionsSection
 
-Signature = SignatureToken ComponentNameRef NameSection EtagsSection
+Signature = SignatureTopLevel NameSection EtagsSection
   InputsSection OutputsSection
 
 
 DefTopLevel = DefToken ComponentNameDef
+SignatureTopLevel = SignatureToken ComponentNameDef
 NameSection = "id" ComponentNameRef
 EtagsSection = "etags" TagNameDef*
 InputsSection = "inputs" TagNameRef*
