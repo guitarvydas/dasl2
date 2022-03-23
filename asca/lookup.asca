@@ -28,8 +28,8 @@ def 〔lookup〕
     〔successful〕 〔successful〕
   connections
     〔self〕«name» ⇒₁ ⎣ 〔scroll through atoms〕«name» ⎦
-    〔scoll through atoms〕«EOF» ⇒₂ ⎣ 〔unsuccessful〕«conclude» ⎦
-    〔scoll through atoms〕«try 1 name match» ⇒₃ ⎣ 〔match single atom name〕«go» ⎦
+    〔scroll through atoms〕«EOF» ⇒₂ ⎣ 〔unsuccessful〕«conclude» ⎦
+    〔scroll through atoms〕«try 1 name match» ⇒₃ ⎣ 〔match single atom name〕«go» ⎦
     〔match single atom name〕«mismatch» ⇒₄ ⎣ 〔scroll through atoms〕«advance» ⎦
     〔match single atom name〕«ok» ⇒₅ ⎣ 〔successful〕«conclude» ⎦
     〔unsuccessful〕«found» ⇒₆ ⎣ 〔self〕«found» ⎦

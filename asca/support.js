@@ -41,3 +41,31 @@ exports.formatContinuation = function (s) {
 	return "";
     }
 }
+
+let prototypeNameStack = [];
+exports.pushPrototypeName = function (s) {
+    prototypeNameStack.push (s);
+}
+exports.popPrototypeName = function () {
+    prototypeNameStack.pop ();
+    return "";
+}
+exports.getPrototypeName = function () {
+    let name = prototypeNameStack.pop ();
+    prototypeNameStack.push (name);
+    return name;
+}
+let messageNameStack = [];
+exports.pushMessageName = function (s) {
+    messageNameStack.push (s);
+}
+exports.popMessageName = function () {
+    messageNameStack.pop ();
+    return "";
+}
+exports.getMessageName = function () {
+    let name = messageNameStack.pop ();
+    messageNameStack.push (name);
+    return name;
+}
+
