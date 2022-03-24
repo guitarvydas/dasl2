@@ -141,7 +141,9 @@ ConnectionsSection = "connections" Connection*
           LocalAccessor
             = LocalAccessor "∞" LocalNameRef -- lookup
             | LocalAccessor "." LocalNameRef -- slot
-	    | LocalAccessor Args             -- call
+	    | "⤶" ArgNameRef                -- argfetch
+	    | "⥀" ArgNameRef                -- arglookupfetch
+            | LocalAccessor Args             -- call
             | LocalNameRef                   -- final
 
             Sender = ComponentNameRef TagNameRef
@@ -157,6 +159,7 @@ ConnectionsSection = "connections" Connection*
             ComponentNameRef = ComponentName
 
 
+	      ArgNameRef = LocalNameRef
               LocalNameDef = ident
               LocalNameRef = ArgsKW | ident
               NetNameDef = ident
@@ -217,7 +220,7 @@ ConnectionsSection = "connections" Connection*
   separator = ")" | "]" | "(" | "[" | "{" | "}"
             | "⇐" | "≡"
             | "«" | "»"
-            | "|" | "." | "∞"
+            | "|" | "." | "∞" | "⤶"
             | "⎣" | "⎦"
 	    | "〖" | "〗"
             | "⟨" | "⟩"

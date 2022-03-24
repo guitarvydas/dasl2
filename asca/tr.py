@@ -69,6 +69,12 @@ for line in sys.stdin:
 #⟩
     elif (re.search (r'"token":"lex".+"content":"%E2%9F%A9"',line)):
         printkw ("rangle", line)
+#⤶
+    elif (re.search (r'"token":"lex".+"content":"%E2%A4%B6"',line)):
+        printkw ("fetch", line)
+#⥀
+    elif (re.search (r'"token":"lex".+"content":"%E2%A5%80"',line)):
+        printkw ("lookupfetch", line)
 
     elif (re.search (r'"token":"ident".+"content":"def"',line)):
         printkw ("def", line)
