@@ -1,0 +1,96 @@
+{
+  "main": {
+    "id": "d1a7f13df7eb7835",
+    "type": "split",
+    "children": [
+      {
+        "id": "d152c3f5d09e2a45",
+        "type": "leaf",
+        "state": {
+          "type": "markdown",
+          "state": {
+            "file": "Variable Prefixes.md",
+            "mode": "source",
+            "source": false
+          }
+        }
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "fda916689db61bda",
+    "type": "split",
+    "children": [
+      {
+        "id": "cae16e97f7bae7a8",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "e3438cecb265494b",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {}
+            }
+          },
+          {
+            "id": "42f07cc83c1f4834",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "7903f264a6202e23",
+    "type": "split",
+    "children": [
+      {
+        "id": "e11475a9f1cdee69",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "b19ea0f0f12b2b21",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "Variable Prefixes.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "active": "d152c3f5d09e2a45",
+  "lastOpenFiles": [
+    "Variable Prefixes.md",
+    "Orthogonal Languages.md",
+    "Kinds of Variables.md"
+  ]
+}

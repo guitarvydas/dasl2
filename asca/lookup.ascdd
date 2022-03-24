@@ -3,23 +3,24 @@ def 〔lookup〕
   etags «name» «found» «answer»
   inputs «name»
   outputs «found» «answer»
-  nets ⇒₁ ⇒₂ ⇒₃ ⇒₄ ⇒₅ ⇒₆ ⇒₇ ⇒₈
-  own ◦found answer ◦name
+  nets {0,net,,,{"⇒₁"}} {0,net,,,{"⇒₂"}} {0,net,,,{"⇒₃"}} {0,net,,,{"⇒₄"}} {0,net,,,{"⇒₅"}} {0,net,,,{"⇒₆"}} {0,net,,,{"⇒₇"}} {0,net,,,{"⇒₈"}}
+  own found answer name
+  own {1,own,,,{"found"}} {1,own,,,{"answer"}} {1,own,,,{"name"}} 
   initially
-    ◦name ≡ ⤶name
-    ◎answer ⇐ No
+    ~name ≡ ⤶name
+    answer ⇐ No
     found ⇐ No
-    Inject 〔scroll through atoms〕«name» ◦name
+    Inject 〔scroll through atoms〕«name» name
   handler
     ⎡
       • «found» :
-          ◎found ⇐ ?data
+          Found ⇐ ?data
           Conclude
       • «answer» :
-          ◎answer ⇐ ?data
+          Answer ⇐ ?data
     ⎦
   finally
-      Return ◎found ◎answer
+      Return Found Answer
   children
     〔self〕 λlookup
     〔scroll through atoms〕 〔scroll through atoms〕
@@ -42,22 +43,22 @@ def 〔scroll through atoms〕
   inputs «name» «advance»
   outputs «EOF» «try 1 name match»
   nets
-  locals
+  locals atom-memory
   initially
-    ◦atom-memory ≡ ⤶atom-memory
-    [◦atom-memory.eof? ()
+    atom-memory ≡ ⤶atom-memory
+    [atom-memory.eof? ()
       | Yes : Send «EOF» No
       | No  : Pass
     ]
   handler
-    ◦atom-memory ≡ ⥀atom-memory
+    atom-memory ≡ ⥀atom-memory
     ⎡
       • «name» :
           Send «try 1 name match» Trigger
           Conclude
       • «advance» :
-          ◦atom-memory.advanceToNextAtom ()
-          [ ◦atom-memory.eof? ()
+          atom-memory.advanceToNextAtom ()
+          [ atom-memory.eof? ()
             | Yes : Send «EOF» No
             | No  : Send «try 1 name match» Trigger
           ]
@@ -72,7 +73,7 @@ def 〔match single atom name〕
   inputs «name» «advance»
   outputs «EOF» «try 1 name match»
   nets
-  locals
+  locals atom-memory
   initially
   handler
     ⎡

@@ -139,12 +139,11 @@ ConnectionsSection = "connections" Connection*
           Rvalue = BuiltinConstant | LocalAccessor
 
           LocalAccessor
-            = LocalAccessor "∞" LocalNameRef -- lookup
-            | LocalAccessor "." LocalNameRef -- slot
+            = LocalAccessor "∞" "◎" LocalNameRef -- lookup
 	    | "⤶" ArgNameRef                -- argfetch
 	    | "⥀" ArgNameRef                -- arglookupfetch
-            | LocalAccessor Args             -- call
-            | LocalNameRef                   -- final
+            | "◦" TempNameRef Args           -- calltemp
+	    | "◦" TempNameRef                -- fetchtemp
 
             Sender = ComponentNameRef TagNameRef
             Receiver = ComponentNameRef TagNameXRef
