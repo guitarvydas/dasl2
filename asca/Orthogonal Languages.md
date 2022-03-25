@@ -103,3 +103,52 @@ With PEG parsing, backtracking and newer hardware, we can do better.
 For example, we might devise a diagrammatic language for the description of networked computers.  The obvious use for this kind of language would be to describe systems of internet-connected clients and servers, or, blockchain.
 
 I believe that robotics and IoT are struggling with the current form of synchronous languages, and might benefit from a language like the above, i.e. a language for describing networks of distributed Components-in-the-small.
+
+## New Assembler
+- create operations, don't check operands (checking done by upstream pipeline, validity checking)
+- use PEG to lay syntactic skin over operations
+
+old-style assembler = machine-readable syntax (triples), no type checking
+mid-style assembler = machine-readable syntax (PEG), no type checking
+new-style assembler = machine-readable syntax (OCG), no type checking
+
+## Readability
+There are two (2) kinds of readability
+1. Human readability, language designed as UX for human programmers
+2. Machine readability, language designed with normalization in mind, data normalized, control-flow normalized, easy to automate
+
+## Type Checking
+### Syntax Checking
+Traditionally, simple checking is done by the parser - 
+- syntax checking
+- declaration before use (to avoid typos)
+### Type Checking Preprocessor
+Type Checking is "just another" kind of checking for programmer mistakes.
+
+Type Checking is more involved than syntax checking, but, syntax checking used to be "difficult", then became common-place.
+
+To do type-checking as a form of validity checking, we need:
+- a simple, machine-readable syntax to peel off type definition info
+- a simple, machine-readable syntax to annotate every "variable" with a reference to type info
+- e.g. the Haskell programming language already differentiates between type *definition* and type *use* (reference)
+	- we want a special syntax for type definition
+	- we want a special syntax for type use
+## Lisp Macros
+Note that Lisp Macros are of the form of New Assembler, where *all* syntax looks like function calls.
+
+Lisp syntax is very regular: 
+1. operator
+2. operands.
+
+E.g. `b + c` is written in Lisp as `(+ b c)`
+E.g. `a = b + c` is written in Lisp as `(setf a (+ b c))`
+
+Lisp Macro syntax and PEG syntax are macros.
+
+Lisp Macro syntax only works on Lisp lists `( ... )`.
+
+PEG Macro syntax works with characters and allows infix, among other syntactic variations, e.g. infix notation can be parsed to prefix-syntax, `b + c` -> `(+ b c)`
+
+Furthermore, PEG allows matching of *structured* text (unlike REGEX)[^sm].
+
+[^sm]: This is because PEG allows using rules as subroutines.  Subroutines can be called and can be called recursively.

@@ -1,0 +1,231 @@
+
+
+
+basictoken {
+// basic token
+  Main = Token+
+
+  Token = NLToken | WSToken | LexToken | TextToken | IdentToken | CompoundToken | EndCompoundToken
+  GenericToken = "{" dq "token" dq ":" string "," dq "content" dq ":" string "}" ","?
+
+  NLToken = "{" dq "token" dq ":" dq "nl" dq "," dq "content" dq ":" string "}" ","?
+  WSToken = "{" dq "token" dq ":" dq "ws" dq "," dq "content" dq ":" string "}" ","?
+  LexToken = "{" dq "token" dq ":" dq "lex" dq "," dq "content" dq ":" string "}" ","?
+  TextToken = "{" dq "token" dq ":" dq "text" dq "," dq "content" dq ":" string "}" ","?
+  CodeToken = "{" dq "token" dq ":" dq "code" dq "," dq "content" dq ":" string "}" ","?
+  IdentToken = "{" dq "token" dq ":" dq "ident" dq "," dq "content" dq ":" string "}" ","?
+  CompoundToken = "{" dq "token" dq ":" dq "compound" dq "," dq "tag" dq ":" string "}" ","?
+  EndCompoundToken = "{" dq "token" dq ":" dq "endcompound" dq "," dq "tag" dq ":" string "}" ","?
+
+  string = dq stringChar* dq
+  dq = "\""
+  stringChar = ~dq any
+
+  number = digit+
+
+}
+
+linenumbers <: basictoken {
+  Main := Token+
+  Token += LineToken
+  LineToken = "{" dq "token" dq ":" dq "line" dq "," dq "content" dq ":" number "}" ","?
+}
+
+brackets <: linenumbers {
+  Token += LbracketToken | RbracketToken | LportToken | RportToken | LineToken
+  LbracketToken = "{" dq "token" dq ":" dq "lex" dq "," dq "content" dq ":" dq "%5B" dq "}" ","?
+  RbracketToken = "{" dq "token" dq ":" dq "lex" dq "," dq "content" dq ":" dq  "%5D" dq "}" ","?
+  LportToken = "{" dq "token" dq ":" dq "lex" dq "," dq "content" dq ":" dq "%C2%AB" dq "}" ","?
+  RportToken = "{" dq "token" dq ":" dq "lex" dq "," dq "content" dq ":" dq "%C2%BB" dq "}" ","?
+}
+
+compoundidents <: brackets {
+  Main := CompoundIdentToken+
+  CompoundIdentToken = Component | Port | Token
+  Component = LbracketToken CompoundName+ RbracketToken
+  Port = LportToken CompoundName+ RportToken
+  CompoundName = OldSubIdentToken | SubWSToken
+  OldSubIdentToken = "{" dq "token" dq ":" dq "ident" dq "," dq "content" dq ":" string "}" ","?
+  SubWSToken = "{" dq "token" dq ":" dq "ws" dq "," dq "content" dq ":" string "}" ","?
+}
+
+subident <: compoundidents{
+  Token += SubIdentToken
+  SubIdentToken = "{" dq "token" dq ":" dq "subident" dq "," dq "content" dq ":" string "}" ","?
+}
+
+keywords <: subident {
+  Token += Keyword | CompoundTokenKW | KeywordToken
+  
+  Keyword = CompoundTokenKW KeywordToken KWContent
+
+  KWContent = IdentToken | LexToken
+
+  CompoundTokenKW = "{" dq "token" dq ":" dq "compound" dq "," dq "tag" dq ":" dq "keyword" dq "}" ","?
+  KeywordToken = "{" dq "token" dq ":" dq "keyword" dq "," dq "tag" dq ":" string "}" ","?
+}
+
+
+untokenize <: keywords {
+}
+
+ascal <: keywords {
+
+Main := ASCScript
+
+ASCScript = ASCComponent+ Signature+
+
+ASCComponent = DefTopLevel NameSection EtagsSection
+  InputsSection OutputsSection NetsSection LocalsSection
+  InitiallySection HandlerSection FinallySection
+  ChildrenSection ConnectionsSection
+
+Signature = SignatureTopLevel NameSection EtagsSection
+  InputsSection OutputsSection
+
+
+DefTopLevel = DefToken ComponentNameDef
+SignatureTopLevel = SignatureToken ComponentNameDef
+NameSection = "id" ComponentNameRef
+EtagsSection = "etags" TagNameDef*
+InputsSection = "inputs" TagNameRef*
+OutputsSection = "outputs" TagNameRef*
+NetsSection = "nets" NetNameDef*
+LocalsSection = "locals" LocalNameDef*
+
+InitiallySection
+  = "initially" Code -- code
+  | "initially"      -- empty
+  
+HandlerSection
+  = "handler" HandlerCode -- code
+  | "handler"              -- empty
+FinallySection
+  = "finally" Code -- code
+  | "finally"      -- empty
+
+ChildrenSection = "children" Child*
+ConnectionsSection = "connections" Connection*
+
+  Connection = Sender NetNameRef "⎣" Receiver+ "⎦"
+  Child = ComponentNameRef FunctionOrComponent
+  FunctionOrComponent = FunctionRef | ComponentNameRef
+  FunctionRef = "λ" FunctionNameRef
+
+
+    HandlerCode = Statement? MessageHandler Statement?
+    Code = Statement
+    Statement = SynonymStatement | AssignmentStatement
+           | ConcludeStatement | ReturnStatement
+           | ConditionalStatement | SendStatement | InjectStatement
+           | ExternalCodeStatement | PassStatement | ExpressionStatement
+
+      SynonymStatement = Lvalue "≡" Rvalue Statement?
+      AssignmentStatement = Lvalue "⇐" Rvalue Statement?
+      ConcludeStatement = "Conclude" Statement?
+      ReturnStatement = "Return" Rvalue* Statement?
+      SendStatement = "Send" OwnTag Rvalue Statement?
+      InjectStatement = "Inject" ReceiverRef Rvalue Statement?
+      ExternalCodeStatement = ExternalCode Statement?
+      ConditionalStatement = "[" LocalAccessor CondClause+ "]" Statement?
+      MessageHandler = "⎡" HandlerClause+ "⎦" Statement?
+      PassStatement = "Pass" Statement?
+      ExpressionStatement = Rvalue Statement?
+
+        CondClause = "|" Rvalue ":" Code
+        HandlerClause = "•" TagNameRef ":" Code
+
+          Lvalue = LocalAccessor
+          Rvalue = BuiltinConstant | LocalAccessor
+
+          LocalAccessor
+            = LocalAccessor "∞" "◎" LocalNameRef -- lookup
+	    | "⤶" ArgNameRef                -- argfetch
+	    | "⥀" ArgNameRef                -- arglookupfetch
+            | "◦" TempNameRef Args           -- calltemp
+	    | "◦" TempNameRef                -- fetchtemp
+
+            Sender = ComponentNameRef TagNameRef
+            Receiver = ComponentNameRef TagNameXRef
+            ReceiverRef = ComponentNameRef TagNameXRef
+            LocalCall = LocalAccessor Args
+
+            Args = "(" Rvalue* ")"
+
+            DefToken = "def"
+            SignatureToken = "signature"
+            ComponentNameDef = ComponentName
+            ComponentNameRef = ComponentName
+
+
+	      ArgNameRef = LocalNameRef
+              LocalNameDef = ident
+              LocalNameRef = ArgsKW | ident
+              NetNameDef = ident
+              NetNameRef = ident
+              FunctionNameRef = ident
+              TagNameDef = TagName
+              TagNameRef = TagName
+              TagNameXRef = TagName
+	      OwnTag = TagNameRef
+
+                ComponentName = "〔" #identIncludingSpaces "〕"
+                TagName = "«" #identIncludingSpaces "»"
+                Yes = "Yes"
+                No = "No"
+                Trigger = "Trigger"
+                ArgsKW = "Args"
+                MessageData = "?data"
+                MessageEtag = "?etag"
+
+                BuiltinConstant = Yes | No | Trigger | MessageData | MessageEtag
+
+                    keyword
+                      = "id"
+                      | "etags"
+                      | "inputs"
+                      | "outputs"
+                      | "nets"
+                      | "locals"
+                      | "initially"
+                      | "handler"
+                      | "finally"
+                      | "children"
+                      | "connections"
+                      | "Conclude"
+                      | "Return"
+                      | "Send"
+                      | "Inject"
+                      | "def"
+                      | "signature"
+                      | "Yes"
+                      | "No" 
+                      | "Trigger"
+                      | "Args"
+                      | "messagedata"
+                      | "messageetag"
+
+  ExternalCode = "{" #(uriChar+) "}"
+  uriChar = ~"}" any
+
+  identIncludingSpaces = ~separator identCharIncludingSpace+
+  identCharIncludingSpace = ~separator ~nl any
+  ident
+    = "⟨" identIncludingSpaces "⟩"          -- bracketed
+    | identFirst identRest*  -- raw
+  identFirst = ~space ~digit ~separator ~keyword any
+  identRest = ~space ~digit ~separator ~keyword ("0" .. "9" | identFirst)
+  nl = "\n"
+  separator = ")" | "]" | "(" | "[" | "{" | "}"
+            | "⇐" | "≡"
+            | "«" | "»"
+            | "|" | "." | "∞" | "⤶"
+            | "⎣" | "⎦"
+	    | "〖" | "〗"
+            | "⟨" | "⟩"
+            | "〔" | "〕"
+            | "⎡" | "⎦" | "•"
+
+  lineNumber = "〖" digit+ "〗"
+  space += lineNumber
+}
