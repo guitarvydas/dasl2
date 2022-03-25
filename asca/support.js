@@ -6,6 +6,10 @@ exports.decode = function (s) {
     return decodeURIComponent (s.replace (/"/g,""));
 }
 
+exports.decodeVerbatim = function (s) {
+    return decodeURIComponent (s.replace (/◻/g,'').replace (/"/g,""));
+}
+
 let linenumber = 1;
 exports.resetlinenumber = function () { linenumber = 1; }
 

@@ -20,10 +20,10 @@
 
 (cond 
 ((string= "found" (?etag-from-message $message)) 
-($!local $context "found" (?data-from-message ◻%28%3Fdata-from-message%20%24message%29))
+($!local $context "found" (?data-from-message $message)))
 ($dispatch-conclude $context))
 ((string= "answer" (?etag-from-message $message)) 
-($!local $context "answer" (?data-from-message ◻%28%3Fdata-from-message%20%24message%29))))))
+($!local $context "answer" (?data-from-message $message)))))))
 (finally . 
 ,(lambda ($context) 
 (values 
@@ -102,7 +102,7 @@ nil))))))
 
 (cond 
 ((string= "go" (?etag-from-message $message)) 
-(let (($pred (match-string atom-memory ?edata )))
+(let (($pred (match-string atom-memory "?edata" )))
 (cond 
 ((equal t $pred)
 ($send '("match single atom name" "ok") t))
@@ -150,7 +150,7 @@ nil))
 
 (cond 
 ((string= "conclude" (?etag-from-message $message)) 
-($send '("successful" "answer") ◻"%28%3Fdata-from-message%20%24message%29")
+($send '("successful" "answer") (?data-from-message $message))
 ($send '("successful" "found") t)))))
 (finally . nil)
 (children . nil)
