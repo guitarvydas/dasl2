@@ -68,17 +68,22 @@ def 〔scroll through atoms〕
 
 def 〔match single atom name〕
   id 〔match single atom name〕
-  etags «name» «advance» «EOF» «try 1 name match»
-  inputs «name» «advance»
-  outputs «EOF» «try 1 name match»
+  etags «go» «mismatch» «ok»
+  inputs «go»
+  outputs «mimatch» «ok»
   nets
   own
   initially
   handler
-    ⎡
-      • «go» :[ @⟨match string⟩() | Yes: Send «ok» Trigger ]
-      •      : Send «mismatch» Trigger
-    ⎦
+    atom-memory ⤶ atom-memory
+   ⎡
+      • «go» :[ @⟨match string⟩(atom-memory ?edata) 
+                | Yes: Send «ok» Trigger
+                |    : Send «mismatch» Trigger
+	      ]
+      •      : Pass
+   ⎦
+   Send «mismatch» Trigger
   finally
   children
   connections

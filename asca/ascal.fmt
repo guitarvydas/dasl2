@@ -64,6 +64,7 @@ Op_ChildConnection [c1 p1 n c2 p2 @op] = [[((${c1} . ${p1}) . ((${c2} . ${p2})))
 
 Op_ChildToSelfConnection [c1 p1 n kself p2 @op] = [[((${c1} . ${p1}) . (("$self" . ${p2})))${op}]]
 
+Op_CallPredicateOfTempWithArgs [id1 kdot id2 klp @args krp @op] = [[(${support.makeLispName (id2)} ${support.makeLispName (id1)} ${args})${op}]]
 Op_CallPredicateOfTempWithNoArgs [id1 kdot id2 klp krp @op] = [[(${support.makeLispName (id2)} ${support.makeLispName (id1)})${op}]]
 
 Op_SendConstant [ksend p c @op] = [[($send '(${support.getPrototypeName ()} ${p}) ${c})${op}]]
@@ -72,7 +73,10 @@ Op_ConditionalMethod [kleft kat id1 kdot id2 klp krp @clause kright @op]
   = [[(let (($pred (${support.makeLispName (id2)} ${support.makeLispName (id1)})))\n(cond ${clause})${op})]]
 Op_ConditionalFunction [kleft kat id1 klp krp @clause kright @op]
   = [[(let (($pred (${support.makeLispName (id1)})))\n(cond ${clause})${op})]]
+Op_ConditionalFunctionWithArgs [kleft kat id1 klp @args krp @clause kright @op]
+  = [[(let (($pred (${support.makeLispName (id1)} ${args})))\n(cond ${clause})${op})]]
 
+Op_CallExternalPredicateWithArgs [kat id klp @args krp @op] = [[(${support.makeLispName (id)} ${args})${op}]]
 Op_CallExternalPredicateNoArgs [kat id klp krp @op] = [[(${support.makeLispName (id)})${op}]]
 
 Op_SendMessageData [ksend p data @op]
@@ -86,9 +90,9 @@ ChildComponent [c1 c2] = [[\n(${c1} . ${c2})]]
 
 CondClause [cl] = [[${cl}]]
 CondClauseWithTest [k constant kcolon op] = [[\n((equal ${support.makeLispName (constant)} $pred)${op})]]
-DefaultCondClause [k kcolon op] = [[\n(t $pred)${op})]]
+DefaultCondClause [k kcolon op] = [[\n(t ${op})]]
 
-AnonymousHandlerFunction [opr] = [[\n,(lambda ($context $message)\n(cond ${opr}))]]
+AnonymousHandlerFunction [opr] = [[\n,(lambda ($context $message)\n${opr})]]
 Handler_withoutDefault [@pre left @h right @post] = [[${pre}(cond ${h}\n(t (error-unhandled-message $context $message)))${post}]]
 Handler_withDefault [@pre left @h right @post] = [[${pre}(cond ${h})${post}]]
 

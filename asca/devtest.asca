@@ -1,43 +1,27 @@
-def 〔lookup〕
-  id 〔lookup〕
-  etags «name» «found» «answer»
-  inputs «name»
-  outputs «found» «answer»
-  nets ⇒₁ ⇒₂ ⇒₃ ⇒₄ ⇒₅ ⇒₆ ⇒₇ ⇒₈
-  own found answer name
+def 〔match single atom name〕
+  id 〔match single atom name〕
+  etags «go» «mismatch» «ok»
+  inputs «go»
+  outputs «mimatch» «ok»
+  nets
+  own
   initially
-    name ⤶ name
-    answer ⇐ No
-    found ⇐ No
-    Inject 〔scroll through atoms〕«name» name
   handler
-    ⎡
-      • «found» :
-          found ⇐ ?data
-          Conclude
-      • «answer» :
-          answer ⇐ ?data
-    ⎦
+    atom-memory ⤶ atom-memory
+   ⎡
+      • «go» :[ @⟨match string⟩(atom-memory ?edata) 
+                | Yes: Send «ok» Trigger
+                |    : Send «mismatch» Trigger
+	      ]
+      •      : Pass
+   ⎦
+   Send «mismatch» Trigger
   finally
-      Return found answer
   children
-    〔self〕 λlookup
-    〔scroll through atoms〕 〔scroll through atoms〕
-    〔match single atom name〕 〔match single atom name〕
-    〔unsuccessful〕 〔unsuccessful〕
-    〔successful〕 〔successful〕
   connections
-    〔self〕«name» ⇒₁ 〔scroll through atoms〕«name»
-    〔scroll through atoms〕«EOF» ⇒₂ 〔unsuccessful〕«conclude»
-    〔scroll through atoms〕«try 1 name match» ⇒₃ 〔match single atom name〕«go» 
-    〔match single atom name〕«mismatch» ⇒₄ 〔scroll through atoms〕«advance» 
-    〔match single atom name〕«ok» ⇒₅ 〔successful〕«conclude» 
-    〔unsuccessful〕«found» ⇒₆ 〔self〕«found» 
-    〔successful〕«found» ⇒₇ 〔self〕«found»
-    〔successful〕«answer» ⇒₈ 〔self〕«answer»
 
-signature 〔lookup〕
-  id 〔lookup〕
-  etags «name» «found» «answer»
-  inputs «name»
-  outputs «found» «answer»
+signature 〔match single atom name〕
+  id 〔match single atom name〕
+  etags «name» «advance» «EOF» «try 1 name match»
+  inputs «name» «advance»
+  outputs «EOF» «try 1 name match»

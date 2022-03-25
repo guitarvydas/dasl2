@@ -128,10 +128,13 @@ Op
  | "〔self〕" PortName NetName ComponentName PortName Operation? -- SelfConnection
  | ComponentName PortName NetName ComponentName PortName Operation? -- ChildConnection
  | ComponentName PortName NetName "〔self〕" PortName Operation? -- ChildToSelfConnection
+ | ident "." ident "(" Arg+ ")"  Operation?         -- CallPredicateOfTempWithArgs
  | ident "." ident "(" ")"       Operation?         -- CallPredicateOfTempWithNoArgs
  | "Send" PortName Constant      Operation?         -- SendConstant
  | "[" "@" ident "." ident "(" ")" CondClause+ "]" Operation? -- ConditionalMethod
+ | "[" "@" ident "(" Arg+ ")" CondClause+ "]" Operation?     -- ConditionalFunctionWithArgs
  | "[" "@" ident "(" ")" CondClause+ "]" Operation?     -- ConditionalFunction
+ | "@" ident "(" Arg+ ")"        Operation?         -- CallExternalPredicateWithArgs
  | "@" ident "(" ")"             Operation?         -- CallExternalPredicateNoArgs
  | "Send" PortName "?data"       Operation?         -- SendMessageData
 
@@ -175,6 +178,7 @@ TagNameListItem = TagName
 NetNameListItem = ident
 TempNameListItem = ident
 ReturnItem = ident
+Arg = ident
 
 
 
