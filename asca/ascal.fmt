@@ -1,7 +1,7 @@
 
 Main [x] = [[${x}]]
 
-ASCScript [asc sig] = [[${asc}${sig}]]
+ASCScript [@asc @sig] = [[${asc}${sig}]]
 
 ASCComponent [ DefSection NameSection EtagsSection InputsSection OutputsSection NetsSection LocalsSection InitiallySection HandlerSection FinallySection ChildrenSection ConnectionsSection] =
   {{ support.pushPrototypeName (_DefSection._glue ()); }}
@@ -35,14 +35,18 @@ ConnectionsSection_op [k op] = [[\n(connections . (${op}))]]
 ConnectionsSection_empty [k] = [[\n(connections . nil)]]
 
 AnonymousFunction [opr] = [[\n,(lambda ($context) ${opr})]]
-AnonymousHandlerFunction [opr] = [[\n,(lambda ($context $message) ${opr})]]
+
+
+
+
+
 Operation [op] = [[\n${op}]]
 
 Op_CreateAndSetTempFromArgs [idleft kop idright @op] = [[(let ((${support.makeLispName (idleft)} ($?field ($?field $context '$args) '${support.makeLispName (idright)})))\n${op})]]
 
 Op_SetOwnFromConstant [idleft kop idright @op] = [[($!local ${idleft} ${support.makeLispName (idright)})${op}]]
 
-Op_InjectFromTemp [kinject c p id @op] = [[($inject '(${c} . ${p}) ${support.makeLispName(id)})${op}]]
+Op_InjectFromTemp [kinject c p id @op] = [[($inject '(${c} . ${p}) ${support.makeLispName(id)} $context nil)${op}]]
 
 Op_SetOwnFromMessageData [idleft kop idright @op] = [[($!local $context ${idleft} (?data-from-message ${support.makeLispName (idright)}))${op}]]
 
@@ -65,9 +69,9 @@ Op_CallPredicateOfTempWithNoArgs [id1 kdot id2 klp krp @op] = [[(${id2} ${id1})$
 Op_SendConstant [ksend p c @op] = [[($send '(${support.getPrototypeName ()} ${p}) ${c})${op}]]
 
 Op_ConditionalMethod [kleft kat id1 kdot id2 klp krp @clause kright @op]
-  = [[(cond ((${id2} ${id1}) ${clause}))${op}]]
+  = [[(let (($pred (${support.makeLispName (id2)} ${support.makeLispName (id1)})))\n(cond ${clause})${op})]]
 Op_ConditionalFunction [kleft kat id1 klp krp @clause kright @op]
-  = [[(cond ((${id1}) ${clause}))${op}]]
+  = [[(let (($pred (${support.makeLispName (id1)})))\n(cond ${clause})${op})]]
 
 Op_CallExternalPredicateNoArgs [kat id klp krp @op] = [[(${id})${op}]]
 
@@ -80,12 +84,18 @@ ChildComponent [c1 c2] = [[\n(${c1} . ${c2})]]
 
 
 
-Handler [@op1 left @clause right @op2] = [[${op1}${left}${clause}${right}${op2}]]
+CondClause [k constant kcolon op] = [[\n((equal ${support.makeLispName (constant)} $pred) ${op})]]
 
+AnonymousHandlerFunction [opr] = [[\n,(lambda ($context $message)\n(cond ${opr} (t (error-unhandled-message $context $message))))]]
+HandlerClause [h] = [[${h}]]
+Handler [@pre left @h right @post] = [[${pre}${h}${post}]]
+MessageHandlerClause [k portname kcolon op] = [[\n((string= ${portname} (?etag-from-message $message)) ${op})]]
+DefaultHandlerClause [k kcolon op] = [[\n(t ${op})]]
 
-CondClause [k constant kcolon op] = [[${k}${constant}${kcolon}${op}]]
-HandlerClause [k portname kcolon op] = [[${k}${portname}${kcolon}${op}]]
-Constant [k] = [[${k}]]
+Constant_yes [k] = [[t]]
+Constant_no [k] = [[nil]]
+Constant_trigger [k] = [[t]]
+Constant_none [k] = [[nil]]
 
 
 

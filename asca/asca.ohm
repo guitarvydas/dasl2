@@ -147,8 +147,15 @@ Handler = Operation? "⎡" HandlerClause+ "⎦" Operation?
 
 
 CondClause = "|" Constant ":" Operation
-HandlerClause = "•" PortName ":" Operation
-Constant = "Yes" | "No" | "Trigger" | "None"
+HandlerClause = MessageHandlerClause | DefaultHandlerClause
+DefaultHandlerClause = "•" ":" Operation
+MessageHandlerClause = "•" PortName ":" Operation
+
+Constant
+  = "Yes"     -- yes
+  | "No"      -- no
+  | "Trigger" -- trigger
+  | "None"    -- none
 
 
 

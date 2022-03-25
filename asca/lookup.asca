@@ -79,8 +79,8 @@ def 〔match single atom name〕
       • «go» :
           [ @⟨match string⟩()
               | Yes: Send «ok» Trigger
-              | No : Send «mismatch» Trigger
           ]
+      •      : Send «mismatch» Trigger
     ⎦
   finally
   children
