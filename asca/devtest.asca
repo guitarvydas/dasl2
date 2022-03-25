@@ -7,15 +7,13 @@ def 〔match single atom name〕
   own
   initially
   handler
-    atom-memory ⤶ atom-memory
-   ⎡
-      • «go» :[ @atom-memory.⟨match string⟩ (?data) 
-                | Yes: Send «ok» Trigger
-                |    : Send «mismatch» Trigger
-	      ]
-      •      : Pass
-   ⎦
-   Send «mismatch» Trigger
+    ⎡
+      • «found» :
+          found ⇐ ?data
+          Conclude
+      • «answer» :
+          answer ⇐ ?data
+    ⎦
   finally
   children
   connections
