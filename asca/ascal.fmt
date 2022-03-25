@@ -86,9 +86,10 @@ ChildComponent [c1 c2] = [[\n(${c1} . ${c2})]]
 
 CondClause [k constant kcolon op] = [[\n((equal ${support.makeLispName (constant)} $pred) ${op})]]
 
-AnonymousHandlerFunction [opr] = [[\n,(lambda ($context $message)\n(cond ${opr} (t (error-unhandled-message $context $message))))]]
-HandlerClause [h] = [[${h}]]
-Handler [@pre left @h right @post] = [[${pre}${h}${post}]]
+AnonymousHandlerFunction [opr] = [[\n,(lambda ($context $message)\n(cond ${opr}))]]
+Handler_withoutDefault [@pre left @h right @post] = [[${pre}(cond ${h}\n(t (error-unhandled-message $context $message)))${post}]]
+Handler_withDefault [@pre left @h right @post] = [[${pre}(cond ${h})${post}]]
+
 MessageHandlerClause [k portname kcolon op] = [[\n((string= ${portname} (?etag-from-message $message)) ${op})]]
 DefaultHandlerClause [k kcolon op] = [[\n(t ${op})]]
 

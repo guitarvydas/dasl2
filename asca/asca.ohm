@@ -143,11 +143,14 @@ ChildComponent = ComponentName ComponentName
 
 
 AnonymousHandlerFunction = Handler
-Handler = Operation? "⎡" HandlerClause+ "⎦" Operation?
+Handler
+  = Operation? "⎡" HandlerClauseWithDefault+ "⎦" Operation?     -- withDefault
+  | Operation? "⎡" HandlerClauseWithoutDefault+ "⎦" Operation?  -- withoutDefault
 
 
 CondClause = "|" Constant ":" Operation
-HandlerClause = MessageHandlerClause | DefaultHandlerClause
+HandlerClauseWithDefault = MessageHandlerClause | DefaultHandlerClause
+HandlerClauseWithoutDefault = MessageHandlerClause
 DefaultHandlerClause = "•" ":" Operation
 MessageHandlerClause = "•" PortName ":" Operation
 

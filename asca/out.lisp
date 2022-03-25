@@ -16,12 +16,12 @@
 ($inject '("scroll through atoms" . "name") name $context nil))))
 (handler . 
 ,(lambda ($context $message)
-(cond 
+(cond (cond 
 ((string= "found" (?etag-from-message $message)) 
 ($!local $context "found" (?data-from-message ?data))
 ($dispatch-conclude $context))
 ((string= "answer" (?etag-from-message $message)) 
-($!local $context "answer" (?data-from-message ?data))) (t (error-unhandled-message $context $message)))))
+($!local $context "answer" (?data-from-message ?data)))))))
 (finally . 
 ,(lambda ($context) 
 (values 
@@ -65,7 +65,7 @@ nil))))))
 ,(lambda ($context $message)
 (cond 
 (let ((atom-memory ($?field ($?field $context '$args) 'atom-memory)))
-)
+)(cond 
 ((string= "name" (?etag-from-message $message)) 
 ($send '("scroll through atoms" "try 1 name match") t)
 ($dispatch-conclude $context))
@@ -76,7 +76,7 @@ nil))))))
 ((equal t $pred) 
 ($send '("scroll through atoms" "EOF") nil))
 ((equal nil $pred) 
-($send '("scroll through atoms" "try 1 name match") t))))) (t (error-unhandled-message $context $message)))))
+($send '("scroll through atoms" "try 1 name match") t)))))))))
 (finally . nil)
 (children . nil)
 (connections . nil)))
@@ -92,14 +92,14 @@ nil))))))
 (initially . nil)
 (handler . 
 ,(lambda ($context $message)
-(cond 
+(cond (cond 
 ((string= "go" (?etag-from-message $message)) 
 (let (($pred (match-string-)))
 (cond 
 ((equal t $pred) 
 ($send '("match single atom name" "ok") t)))))
 (t 
-($send '("match single atom name" "mismatch") t)) (t (error-unhandled-message $context $message)))))
+($send '("match single atom name" "mismatch") t))))))
 (finally . nil)
 (children . nil)
 (connections . nil)))
@@ -115,9 +115,9 @@ nil))))))
 (initially . nil)
 (handler . 
 ,(lambda ($context $message)
-(cond 
+(cond (cond 
 ((string= "conclude" (?etag-from-message $message)) 
-($send '("unsuccessful" "found") nil)) (t (error-unhandled-message $context $message)))))
+($send '("unsuccessful" "found") nil))))))
 (finally . nil)
 (children . nil)
 (connections . nil)))
@@ -133,10 +133,10 @@ nil))))))
 (initially . nil)
 (handler . 
 ,(lambda ($context $message)
-(cond 
+(cond (cond 
 ((string= "conclude" (?etag-from-message $message)) 
 ($send '("successful" "answer") (?edata-from-message ?data))
-($send '("successful" "found") t)) (t (error-unhandled-message $context $message)))))
+($send '("successful" "found") t))))))
 (finally . nil)
 (children . nil)
 (connections . nil)))
