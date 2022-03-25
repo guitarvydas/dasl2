@@ -1,5 +1,7 @@
-Main [ ASCScript] = [[${ASCScript}]]
-ASCScript [ @ASCComponent @Signature] = [[${ASCComponent}${Signature}]]
+
+Main [x] = [[${x}]]
+
+ASCScript [asc sig] = [[${asc]${sig}]]
 
 ASCComponent [ DefSection NameSection EtagsSection InputsSection OutputsSection NetsSection LocalsSection InitiallySection HandlerSection FinallySection ChildrenSection ConnectionsSection] =
   {{ support.pushPrototypeName (_DefSection._glue ()); }}
@@ -10,89 +12,86 @@ Signature [ Signature NameSection EtagsSection InputsSection OutputsSection]
 
 DefTopLevel [ kDef ComponentNameDef] = [[${ComponentNameDef}]]
 SignatureTopLevel [ kSig ComponentNameDef] = [[${ComponentNameDef}]]
-NameSection [ kwname ComponentNameRef] = [[\n(name . ${ComponentNameRef})]]
+NameSection [ kwname ComponentName] = [[\n(name . ${ComponentName})]]
 EtagsSection [ kwetags @TagNameDef] = [[\n(etags . (${TagNameDef}))]]
-InputsSection [ kwinputs @TagNameRef] = [[\n(inputs . (${TagNameRef}))]]
-OutputsSection [ kwoutputs @TagNameRef] = [[\n(outputs . (${TagNameRef}))]]
-NetsSection [ kwnets @NetNameDef] = [[\n(nets . (${NetNameDef}))]]
-LocalsSection [ kwlocals @LocalNameDef] = [[\n(locals . (${LocalNameDef}))]]
+InputsSection [ kwinputs @TagName] = [[\n(inputs . (${TagName}))]]
+OutputsSection [ kwoutputs @TagName] = [[\n(outputs . (${TagName}))]]
+NetsSection [ kwnets @NetName] = [[\n(nets . (${NetName}))]]
+OwnSection [ kwown @OwnName] = [[\n(locals . (${OwnName}))]]
+
+InitiallySection_op [k op] = [[${k}${op}]]
+InitiallySection_empty [k] = [[${k}]]
   
-InitiallySection_code [ kwinitially Code]
-  = {{support.pushMessageName ("\"initially\"");}} 
-    [[
-(initially .
-  ,(lambda ($context)
-     ${Code}))${support.popMessageName ()}]]
-InitiallySection_empty [ kwinitially] = [[\n(initially . nil)]]
-HandlerSection_code [ kwhandler HandlerCode] = {{support.pushMessageName ("\"handler\"");}} [[\n(handler . \n,(lambda ($context $message) ${HandlerCode}${support.popMessageName ()}))]]
-HandlerSection_empty [ kwhandler] = [[\n(handler . nil)]]
-FinallySection_code [ kwfinally Code] = {{support.pushMessageName ("\"finally\"");}} [[\n(finally . \n,(lambda ($context) ${Code}))${support.popMessageName ()}]]
-FinallySection_empty [ kwfinally] = [[\n(finally . nil)]]
-ChildrenSection [ kwchildren @Child] = [[\n(children . (${Child}))]]
-ConnectionsSection [ kwconnections @Connection] = [[\n(connections . (${Connection}))\n]]
+HandlerSection_op [k op]  = [[${k}${op}]]
+HandlerSection_empty [k]  = [[${k}]]
 
-Connection [ Sender NetNameRef left @Receiver right] = [[\n((${Sender}) . ( (${Receiver})) )]]
-Child [ ComponentNameRef FunctionOrComponent] = [[\n(${ComponentNameRef} . ${FunctionOrComponent})]]
-FunctionOrComponent [ fc] = [[${fc}]]
-FunctionRef [ klxlambda FunctionNameRef] = [[${FunctionNameRef}]]
-HandlerCode [ pre mh post ] = [[${pre}${mh}${post}]]
-Code [Statement] = [[${Statement}]]
+FinallySection_op [k op]  = [[${k}${op}]]
+FinallySection_empty [k]  = [[${k}]]
 
-Statement [ st] = [[${st}]]
-SynonymStatement [ Lvalue Syn Rvalue @continuation]
-  = [[
-(let ((${support.makeLispName (Lvalue)} ${Rvalue}))
-   ${support.formatContinuation (continuation)})]]
-AssignmentStatement [ Lvalue move Rvalue @continuation] = [[\n($!local $context "${support.makeLispName (Lvalue)}" ${Rvalue})${support.formatContinuation (continuation)}]]
-ExpressionStatement [Rvalue @continuation] = [[\n${Rvalue}${support.formatContinuation (continuation)})]]
-ConcludeStatement [ kwconclude @continuation] = [[\n($dispatch-conclude $context)${support.formatContinuation (continuation)}]]
-ReturnStatement [ kwreturn @Rvalue @continuation] = [[\n(values ${Rvalue})${support.formatContinuation (continuation)}]]
-SendStatement [ kwsend TagName Rvalue @continuation]
-  = [[\n($send '(${support.getPrototypeName ()} ${TagName}) ${Rvalue} $context '(${support.getPrototypeName ()} . ${support.getMessageName ()}))${support.formatContinuation (continuation)}]]
-InjectStatement [ kwinject Receiver Rvalue @continuation] = [[\n($inject ${Receiver} ${Rvalue} $context nil)${support.formatContinuation (continuation)}]]
-PassStatement [k @stmt] = [[nil]]
-ExternalCodeStatement [ ExternalCode @continuation] = [[\n(assert nil) ;; ${ExternalCode}${support.formatContinuation (continuation)}]]
-ConditionalStatement [ Lbracket PredicateTest @CondClause Rbracket @continuation]
-  = [[\n(let (($pred ${PredicateTest}))${CondClause}${support.formatContinuation (continuation)})]]
-MessageHandler [ Lbracket @HandlerClause Rbracket @continuation] = [[\n(cond${HandlerClause}\n(t (error-unhandled-message $context $message)))${support.formatContinuation (continuation)}]]
+ChildrenSection_op [k @op] = [[${k}${op}]]
+ChildrenSection_empty [k] = [[${k}]]
+  
+ConnectionsSection_op [k op] = [[${k}${op}]]
+ConnectionsSection_empty [k] = [[${k}]]
 
-CondClause [ Choice Rvalue kcolon Code] = [[\n((equal ${Rvalue} $pred) ${Code})]]
-    HandlerClause [ Choice TagNameRef kcolon Code] = {{support.pushMessageName (_TagNameRef._glue ());}} [[\n((string= ${TagNameRef} (?etag-from-message $message))${Code})${support.popMessageName ()}]]
-Lvalue [ LocalAccessor] = [[${LocalAccessor}]]
-Rvalue [ bl] = [[${bl}]]
-LocalAccessor_call [a args] = [[(${support.makeLispName (a)} ${args})]]
 
-LocalAccessor_lookup [ LocalNameRef Lookup LocalAccessor] = [[${LocalNameRef}${Lookup}${LocalAccessor}]]
-LocalAccessor_slot [ LocalNameRef Slot LocalAccessor] = [[${LocalNameRef}${Slot}${LocalAccessor}]]
-LocalAccessor_final [ LocalNameRef] = [[ ${support.makeLispName (LocalNameRef)} ]]
- LocalAccessor_argfetch [k name] = [[($?field ($?field $context '$args) '${support.makeLispName (name)})]]
- LocalAccessor_arglookupfetch [k name] = [[($?field ($?field-recursive $context '$args) '${support.makeLispName (name)})]]
+Operation_CreateAndSetTempFromArgs [idleft kop idright @op] = [[${idleft}${kop}${idright}${op}]]
+Operation_SetTempFromOwn [idleft kop idright @op] = [[${idleft}${kop}${idright}${op}]]
+Operation_SetOwnFromConstant [idleft kop idright @op] = [[${idleft}${kop}${idright}${op}]]
+Operation_InjectFromTemp [kinject c p id @op] = [[${kinject}${c}${p}${id}${op}]]
+Operation_SetOwnFromMessageData [idleft kop idright @op] = [[${idleft}${kop}${idright}${op}]]
+Operation_Conclude [k @op] = [[${k}${op}]]
+Operation_Pass [k @op] = [[${k}${op}]]
+Operation_ReturnOwnVariables [k @id @op] = [[${k}${id}${op}]]
+Operation_SelfConnection [k p n c p2 @op] = [[${k}${p}${n}${c}${p2}${op}]]
+Operation_ChildConnection [c1 p1 n c2 p2 @op] = [[${c1}${p1}${n}${c2}${p2}${op}]]
+Operation_ChildToSelfConnection [c1 p1 kself c2 p2 @op] = [[${c1}${p1}${kself}${c2}${p2}${op}]]
+Operation_CallPredicateOfTempWithNoArgs [id1 kdot id2 klp krp @op] = [[${id1}${kdot}${id2}${klp}${krp}${op}]]
+Operation_SendConstant [ksend p c @op] = [[${ksend}${p}${c}${op}]]
+Operation_ConditionalMethod [kleft kat id1 kdot kid2 klp krp @op] = [[${kleft}${kat}${id1}${kdot}${kid2}${klp}${krp}${op}]]
+Operation_ConditionalFunction [kleft kat id1 klp krp = [[${kleft}${kat}${id1}${klp}${krp}${op}]]
+Operation_CallExternalPredicateNoArgs [kat id klp krp] = [[${kat}${id}${klp}${krp}]]
+Operation_SendMessageData [ksend p kdata] = [[${ksend}${p}${kdata}]]
 
-Sender [ ComponentNameRef TagNameRef] = [[${ComponentNameRef}${TagNameRef}]]
-Receiver [ ComponentNameRef TagNameXRef] = [[${ComponentNameRef}${TagNameXRef}]]
-Args [ Lpar @Rvalue Rpar] = [[${Lpar}${Rvalue}${Rpar}]]
-DefToken [ kwdef] = [[${kwdef}]]
-SignatureToken [ kwsignature] = [[${kwsignature}]]
-ComponentNameDef [ ComponentName] = [[${ComponentName}]]
-ComponentNameRef [ ComponentName] = [[ ${ComponentName}]]
-LocalNameDef [ IdentToken] = [[ ${IdentToken}]]
-LocalNameRef [ IdentToken] = [[ ${IdentToken}]]
-NetNameDef [ IdentToken] = [[ ${IdentToken}]]
-NetNameRef [ IdentToken] = [[ ${IdentToken}]]
-FunctionNameRef [ IdentToken] = [[ ${IdentToken}]]
-TagNameDef [ TagName] = [[ ${TagName}]]
-TagNameRef [ TagName] = [[ ${TagName}]]
-TagNameXRef [ TagName] = [[ ${TagName}]]
-ComponentName [ klxlbracket ident klxrbracket] = [[${ident}]]
-TagName [ klxlport ident klxrport] = [[${ident}]]
-Yes [ kwyes] = [[t]]
-No [ kwno] = [[nil]]
-Trigger [ kwtrigger] = [[t]]
-ArgsKW [a] = [[${a}]]
-MessageData [ kwmessagedata] = [[(?data-from-message $message)]]
-MessageEtag [ kwmessageetag] = [[(?etag-from-message $message)]]
-BuiltinConstant [ kw] = [[${kw}]]
+Child [c] = [[${c}]]
+ChildSelfExternalFunction [kself klambda id] = [[${kself}${klambda}${id}]]
+ChildComponent [c1 c2] = [[${c1}${c2}]]
 
+
+
+Handler [@op1 left @clause right @op2] = [[${op1}${left}${clause}${right}${op2}]]
+
+
+CondClause [k constant kcolon op] = [[${k}${constant}${kcolon}${op}]]
+HandlerClause [k portname kcolon op] = [[${k}${portname}${kcolon}${op}]]
+Constant [k] = [[${k}]]
+
+
+
+  ComponentName [left @cs right] = [[${left}${cs}${right}]]
+  PortName  [i] = [[${i}]]
+  TagName [left @cs right] = [[${left}${cs}${right}]]
+  NetName  [i] = [[${i}]]
+  TempName [i] = [[${i}]]
+
+
+
+keyword [x] = [[${x}]]
+ExternalCode [ lb @cs rb ] = [[${lb}${cs}${rb}]]
+uriChar [c] = [[${c}]]
+
+  identIncludingSpaces [@cs] = [["${support.mangle (cs)}"]]
+  identCharIncludingSpace [c] = [[${c}]]
+  ident_bracketed [left compoundident right] = [["${support.mangle (compoundident)}"]]
+  ident_raw [identfirst @identrest] = [["${support.mangle (identfirst + identrest)}"]]
+  identFirst [c] = [[${c}]]
+  identRest [c] = [[${c}]]
+  identAny [c] = [[${c}]]
+  nl [c] = [[${c}]]
+
+  separator [c] = [[${c}]]
+  lineNumber [left @ds right] = [[${left}${ds}${right}]]
+  space [c] = [[${c}]]
 
 Token [t] = [[${t}]]
 
