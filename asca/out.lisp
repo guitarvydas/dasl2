@@ -6,7 +6,23 @@
 (inputs . ("name" ))
 (outputs . ("found" "answer" ))
 (nets . ("⇒₁" "⇒₂" "⇒₃" "⇒₄" "⇒₅" "⇒₆" "⇒₇" "⇒₈" ))
-(locals . ("found" "answer" "name" ))initially"name"⤶"name""answer"⇐No"found"⇐NoInject"scroll through atoms""name""◦name"handler⎡•"found":"found"⇐?dataConclude•"answer":"answer"⇐?data⎦finallyReturn"found""answer"children〔self〕λ"lookup""scroll through atoms""scroll through atoms""match single atom name""match single atom name""unsuccessful""unsuccessful""successful""successful"connections〔self〕"name""⇒₁""scroll through atoms""name""scroll through atoms""EOF""⇒₂""unsuccessful""conclude""scroll through atoms""try 1 name match""⇒₃""match single atom name""go""match single atom name""mismatch""⇒₄""scroll through atoms""advance""match single atom name""ok""⇒₅""successful""conclude""unsuccessful""found""⇒₆""self""found""successful""found""⇒₇""self""found""successful""answer""⇒₈""self""answer"))
+(locals . ("found" "answer" "name" ))
+"name"⤶"name"
+"answer"⇐No
+"found"⇐No
+Inject"scroll through atoms""name""◦name"⎡•"found":
+"found"⇐?data
+Conclude•"answer":
+"answer"⇐?data⎦
+Return"found""answer"〔self〕λ"lookup""scroll through atoms""scroll through atoms""match single atom name""match single atom name""unsuccessful""unsuccessful""successful""successful"
+〔self〕"name""⇒₁""scroll through atoms""name"
+"scroll through atoms""EOF""⇒₂""unsuccessful""conclude"
+"scroll through atoms""try 1 name match""⇒₃""match single atom name""go"
+"match single atom name""mismatch""⇒₄""scroll through atoms""advance"
+"match single atom name""ok""⇒₅""successful""conclude"
+"unsuccessful""found""⇒₆""self""found"
+"successful""found""⇒₇""self""found"
+"successful""answer""⇒₈""self""answer"))
 ,(defparameter *scroll-through-atoms*
 `(
 (name . "scroll through atoms")
@@ -15,7 +31,18 @@
 (inputs . ("name" "advance" ))
 (outputs . ("EOF" "try 1 name match" ))
 (nets . ())
-(locals . ())initially"atom-memory"⤶"atom-memory"[@"atom-memory"."eof?"()|Yes:Send"EOF"No|No:Pass]handler"atom-memory"⥀"atom-memory"⎡•"name":Send"try 1 name match"TriggerConclude•"advance":"atom-memory"."advanceToNextAtom"()[@"atom-memory"."eof?"()|Yes:Send"EOF"No|No:Send"try 1 name match"Trigger]⎦finallychildrenconnections))
+(locals . ())
+"atom-memory"⤶"atom-memory"
+[@"atom-memory"."eof?"()|Yes:
+Send"EOF"No|No:
+Pass]
+"atom-memory"⥀"atom-memory"⎡•"name":
+Send"try 1 name match"Trigger
+Conclude•"advance":
+"atom-memory"."advanceToNextAtom"()
+[@"atom-memory"."eof?"()|Yes:
+Send"EOF"No|No:
+Send"try 1 name match"Trigger]⎦))
 ,(defparameter *match-single-atom-name*
 `(
 (name . "match single atom name")
@@ -24,7 +51,10 @@
 (inputs . ("name" "advance" ))
 (outputs . ("EOF" "try 1 name match" ))
 (nets . ())
-(locals . ())initiallyhandler⎡•"go":[@""match string ""()|Yes:Send"ok"Trigger|No:Send"mismatch"Trigger]⎦finallychildrenconnections))
+(locals . ())⎡•"go":
+[@""match string ""()|Yes:
+Send"ok"Trigger|No:
+Send"mismatch"Trigger]⎦))
 ,(defparameter *unsuccessful*
 `(
 (name . "unsuccessful")
@@ -33,7 +63,8 @@
 (inputs . ("conclude" ))
 (outputs . ("found" ))
 (nets . ())
-(locals . ())initiallyhandler⎡•"conclude":Send"found"No⎦finallychildrenconnections))
+(locals . ())⎡•"conclude":
+Send"found"No⎦))
 ,(defparameter *successful*
 `(
 (name . "successful")
@@ -42,7 +73,9 @@
 (inputs . ("conclude" ))
 (outputs . ("found" "answer" ))
 (nets . ())
-(locals . ())initiallyhandler⎡•"conclude":Send"answer"?dataSend"found"Yes⎦finallychildrenconnections))
+(locals . ())⎡•"conclude":
+Send"answer"?data
+Send"found"Yes⎦))
 
 (defparameter *lookup-signature*
 (name . "lookup")

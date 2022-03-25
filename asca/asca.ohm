@@ -113,7 +113,8 @@ ConnectionsSection
   | "connections"           -- empty
 
 
-Operation
+Operation = Op
+Op
  = ident "⤶" ident           Operation?             -- CreateAndSetTempFromArgs
  | ident "⥀" ident            Operation?              -- SetTempFromOwn
  | ident "⇐" Constant        Operation?             -- SetOwnFromConstant
