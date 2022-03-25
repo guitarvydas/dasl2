@@ -11,8 +11,10 @@
 (handler . 
 ,(lambda ($context $message)
 
-(let zzz ((atom-memory ($?field ($?field $context '$args) 'atom-memory)))
- zzzz)(cond 
+(let ((atom-memory ($?field ($?field $context '$args) 'atom-memory)))
+
+
+(cond 
 ((string= "go" (?etag-from-message $message)) 
 (let (($pred (match-string- atom-memory (?data-from-message $message) )))
 (cond 
@@ -22,7 +24,7 @@
 ($send '("match single atom name" "mismatch") t)))))
 (t 
 nil))
-($send '("match single atom name" "mismatch") t)))
+($send '("match single atom name" "mismatch") t))))
 (finally . nil)
 (children . nil)
 (connections . nil)))

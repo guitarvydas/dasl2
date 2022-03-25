@@ -139,6 +139,7 @@ Op
  | "@" ident "(" Arg+ ")"        Operation?         -- CallExternalPredicateWithArgs
  | "@" ident "(" ")"             Operation?         -- CallExternalPredicateNoArgs
  | "Send" PortName "?data"       Operation?         -- SendMessageData
+ | Handler                       Operation?         -- handler
 
 
 Child = ChildSelfExternalFunction | ChildComponent
@@ -147,10 +148,10 @@ ChildComponent = ComponentName ComponentName
 
 
 
-AnonymousHandlerFunction = Handler
+AnonymousHandlerFunction = Operation
 Handler
-  = Operation? "⎡" HandlerClauseWithDefault+ "⎦" Operation?     -- withDefault
-  | Operation? "⎡" HandlerClauseWithoutDefault+ "⎦" Operation?  -- withoutDefault
+  = "⎡" HandlerClauseWithDefault+ "⎦"    -- withDefault
+  | "⎡" HandlerClauseWithoutDefault+ "⎦" -- withoutDefault
 
 
 CondClause = CondClauseWithTest | DefaultCondClause

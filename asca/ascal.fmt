@@ -42,7 +42,7 @@ AnonymousFunction [opr] = [[\n,(lambda ($context) ${opr})]]
 
 Operation [op] = [[\n${op}]]
 
-Op_CreateAndSetTempFromArgs [idleft kop idright @op] = [[(let zzz ((${support.makeLispName (idleft)} ($?field ($?field $context '$args) '${support.makeLispName (idright)})))\n${op} zzzz)]]
+Op_CreateAndSetTempFromArgs [idleft kop idright @op] = [[(let ((${support.makeLispName (idleft)} ($?field ($?field $context '$args) '${support.makeLispName (idright)})))\n${op})]]
 
 Op_SetOwnFromConstant [idleft kop idright @op] = [[($!local ${idleft} ${support.makeLispName (idright)})${op}]]
 
@@ -84,6 +84,8 @@ Op_CallExternalPredicateNoArgs [kat id klp krp @op] = [[(ccc ${support.makeLispN
 Op_SendMessageData [ksend p data @op]
  = [[($send '(${support.getPrototypeName ()} ${p}) (?edata-from-message ${data}))${op}]]
 
+Op_handler [h @op] = [[${h}${op}]]
+
 Child [c] = [[${c}]]
 ChildSelfExternalFunction [kself klambda id] = [[\n("$self" . ${id})]]
 ChildComponent [c1 c2] = [[\n(${c1} . ${c2})]]
@@ -95,8 +97,8 @@ CondClauseWithTest [k constant kcolon op] = [[\n((equal ${support.makeLispName (
 DefaultCondClause [k kcolon op] = [[\n(t ${op})]]
 
 AnonymousHandlerFunction [opr] = [[\n,(lambda ($context $message)\n${opr})]]
-Handler_withoutDefault [@pre left @h right @post] = [[${pre}(cond ${h}\n(t (error-unhandled-message $context $message)))${post}]]
-Handler_withDefault [@pre left @h right @post] = [[${pre}(cond ${h})${post}]]
+Handler_withoutDefault [left @h right] = [[\n(cond ${h}\n(t (error-unhandled-message $context $message)))]]
+Handler_withDefault [left @h right] = [[\n(cond ${h})]]
 
 MessageHandlerClause [k portname kcolon op] = [[\n((string= ${portname} (?etag-from-message $message)) ${op})]]
 DefaultHandlerClause [k kcolon op] = [[\n(t ${op})]]
