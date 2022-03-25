@@ -124,7 +124,7 @@ Op
  | ident "⇐" "?etag"         Operation?             -- SetOwnFromMessageEtag
  | "Conclude"                Operation?             -- Conclude
  | "Pass"                    Operation?             -- Pass
- | "Return" ident+           Operation?             -- ReturnOwnVariables
+ | "Return" ReturnItem+           Operation?             -- ReturnOwnVariables
  | "〔self〕" PortName NetName ComponentName PortName Operation? -- SelfConnection
  | ComponentName PortName NetName ComponentName PortName Operation? -- ChildConnection
  | ComponentName PortName NetName "〔self〕" PortName Operation? -- ChildToSelfConnection
@@ -161,6 +161,7 @@ Constant = "Yes" | "No" | "Trigger" | "None"
 TagNameListItem = TagName
 NetNameListItem = ident
 TempNameListItem = ident
+ReturnItem = ident
 
 
 

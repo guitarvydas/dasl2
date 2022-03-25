@@ -21,7 +21,9 @@
 ($!local $context "answer" (?data-from-message ?data))⎦))
 (finally . 
 ,(lambda ($context) 
-(values "found""answer")))
+(values 
+($?local $context "found")
+($?local $context "answer"))))
 (children . 〔self〕λ"lookup""scroll through atoms""scroll through atoms""match single atom name""match single atom name""unsuccessful""unsuccessful""successful""successful")
 (connections . (
 〔self〕"name""⇒₁""scroll through atoms""name"

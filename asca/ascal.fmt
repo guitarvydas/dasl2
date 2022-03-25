@@ -53,7 +53,7 @@ Op_Conclude [k @op] = [[($dispatch-conclude $context)${op}]]
 
 Op_Pass [k @op] = [[nil${op}]]
 
-Op_ReturnOwnVariables [k @id @op] = [[(values ${id})${op}]]
+Op_ReturnOwnVariables [k @ids @op] = [[(values ${ids})${op}]]
 Op_SelfConnection [k p n c p2 @op] = [[${k}${p}${n}${c}${p2}${op}]]
 Op_ChildConnection [c1 p1 n c2 p2 @op] = [[${c1}${p1}${n}${c2}${p2}${op}]]
 Op_ChildToSelfConnection [c1 p1 kself c2 p2 @op] = [[${c1}${p1}${kself}${c2}${p2}${op}]]
@@ -177,3 +177,4 @@ uriChar [c] = [[${c}]]
 TagNameListItem [id] = [[${id} ]]
 NetNameListItem [L] = [[${L} ]]
 TempNameListItem [L] = [[${L} ]]
+ReturnItem [id] = [[\n($?local $context ${id})]]
