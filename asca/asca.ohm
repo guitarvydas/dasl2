@@ -5,7 +5,7 @@ basictoken {
 // basic token
   Main = Token+
 
-  Token = NLToken | WSToken | LexToken | TextToken | IdentToken | CompoundToken | EndCompoundToken
+  Token = NLToken | WSToken | LexToken | TextToken | IdentToken | CompoundToken | EndCompoundToken | VerbatimToken
   GenericToken = "{" dq "token" dq ":" string "," dq "content" dq ":" string "}" ","?
 
   NLToken = "{" dq "token" dq ":" dq "nl" dq "," dq "content" dq ":" string "}" ","?
@@ -16,6 +16,7 @@ basictoken {
   IdentToken = "{" dq "token" dq ":" dq "ident" dq "," dq "content" dq ":" string "}" ","?
   CompoundToken = "{" dq "token" dq ":" dq "compound" dq "," dq "tag" dq ":" string "}" ","?
   EndCompoundToken = "{" dq "token" dq ":" dq "endcompound" dq "," dq "tag" dq ":" string "}" ","?
+  VerbatimToken = "{" dq "token" dq ":" dq "verbatim" dq "," dq "content" dq ":" dq stringChar+ dq "}" ","?
 
   string = dq stringChar* dq
   dq = "\""
@@ -131,6 +132,7 @@ Op
  | ident "." ident "(" Arg+ ")"  Operation?         -- CallPredicateOfTempWithArgs
  | ident "." ident "(" ")"       Operation?         -- CallPredicateOfTempWithNoArgs
  | "Send" PortName Constant      Operation?         -- SendConstant
+ | "[" "@" ident "." ident "(" Arg+ ")" CondClause+ "]" Operation? -- ConditionalMethodWithArgs
  | "[" "@" ident "." ident "(" ")" CondClause+ "]" Operation? -- ConditionalMethod
  | "[" "@" ident "(" Arg+ ")" CondClause+ "]" Operation?     -- ConditionalFunctionWithArgs
  | "[" "@" ident "(" ")" CondClause+ "]" Operation?     -- ConditionalFunction
@@ -220,7 +222,7 @@ Arg = ident
     = "⟨" identIncludingSpaces "⟩" -- bracketed
     | identFirst identRest*        -- raw
   identFirst = ~space ~digit ~separator ~keyword any
-  identRest = ~space ~digit ~separator ~keyword ("0" .. "9" | identFirst)
+  identRest = ~space ~separator ~keyword ("0" .. "9" | identFirst)
   nl = "\n"
   separator = ")" | "]" | "(" | "[" | "]" | "{" | "}"
             | "⇐" | "≡"

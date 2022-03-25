@@ -9,7 +9,7 @@ def 〔match single atom name〕
   handler
     atom-memory ⤶ atom-memory
    ⎡
-      • «go» :[ @⟨match string⟩(atom-memory ?edata) 
+      • «go» :[ @atom-memory.⟨match string⟩ (?data) 
                 | Yes: Send «ok» Trigger
                 |    : Send «mismatch» Trigger
 	      ]

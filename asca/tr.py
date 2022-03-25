@@ -2,10 +2,16 @@
 
 import sys
 import re
+import urllib.parse
 def printkw (tag, line):
     print ('{"token":"compound","tag":"keyword"}, ', end="")
     print ('{"token":"keyword","tag":"' + tag + '"}, ', end="")
     print (line,end="")
+
+def printverbatim (text):
+    txt = urllib.parse.quote(text.encode ('utf8'))
+    print ('{"token":"verbatim","content":"◻' + txt + '"}, ')
+
 for line in sys.stdin:
     if (re.search (r'"token":"ident".+"content":"Yes"',line)):
         printkw ("yes", line)
@@ -28,10 +34,10 @@ for line in sys.stdin:
         printkw ("inject", line)
     elif (re.search (r'"token":"ident".+"content":"Pass"',line)):
         printkw ("pass", line)
-    elif (re.search (r'"token":"ident".+"content":"%3Fdata"',line)):
-        printkw ("messagedata", line)
-    elif (re.search (r'"token":"ident".+"content":"%3Fetag"',line)):
-        printkw ("messageetag", line)
+    # elif (re.search (r'"token":"ident".+"content":"%3Fdata"',line)):
+    #     printkw ("messagedata", line)
+    # elif (re.search (r'"token":"ident".+"content":"%3Fetag"',line)):
+    #     printkw ("messageetag", line)
     elif (re.search (r'"token":"ident".+"content":"connections"',line)):
         printkw ("connections", line)
 
@@ -107,6 +113,11 @@ for line in sys.stdin:
         printkw ("finally", line)
     elif (re.search (r'"token":"ident".+"content":"children"',line)):
         printkw ("children", line)
+
+    elif (re.search (r'"token":"ident".+"content":"%3Fdata"',line)):
+        printverbatim ("(?data-from-message $message)")
+    elif (re.search (r'"token":"ident".+"content":"%3Fetag"',line)):
+        printverbatim ("(?etag-from-message $message)")
 
     else:
         print (line, end="")

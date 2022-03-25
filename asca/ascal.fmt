@@ -42,7 +42,7 @@ AnonymousFunction [opr] = [[\n,(lambda ($context) ${opr})]]
 
 Operation [op] = [[\n${op}]]
 
-Op_CreateAndSetTempFromArgs [idleft kop idright @op] = [[(let ((${support.makeLispName (idleft)} ($?field ($?field $context '$args) '${support.makeLispName (idright)})))\n${op})]]
+Op_CreateAndSetTempFromArgs [idleft kop idright @op] = [[(let zzz ((${support.makeLispName (idleft)} ($?field ($?field $context '$args) '${support.makeLispName (idright)})))\n${op} zzzz)]]
 
 Op_SetOwnFromConstant [idleft kop idright @op] = [[($!local ${idleft} ${support.makeLispName (idright)})${op}]]
 
@@ -64,20 +64,22 @@ Op_ChildConnection [c1 p1 n c2 p2 @op] = [[((${c1} . ${p1}) . ((${c2} . ${p2})))
 
 Op_ChildToSelfConnection [c1 p1 n kself p2 @op] = [[((${c1} . ${p1}) . (("$self" . ${p2})))${op}]]
 
-Op_CallPredicateOfTempWithArgs [id1 kdot id2 klp @args krp @op] = [[(${support.makeLispName (id2)} ${support.makeLispName (id1)} ${args})${op}]]
+Op_CallPredicateOfTempWithArgs [id1 kdot id2 klp @args krp @op] = [[(aaa ${support.makeLispName (id2)} ${support.makeLispName (id1)} ${args})${op}]]
 Op_CallPredicateOfTempWithNoArgs [id1 kdot id2 klp krp @op] = [[(${support.makeLispName (id2)} ${support.makeLispName (id1)})${op}]]
 
 Op_SendConstant [ksend p c @op] = [[($send '(${support.getPrototypeName ()} ${p}) ${c})${op}]]
 
+Op_ConditionalMethodWithArgs [kleft kat id1 kdot id2 klp @args krp @clause kright @op]
+  = [[(let (($pred (${support.makeLispName (id2)} ${support.makeLispName (id1)} ${args})))\n(cond ${clause})${op})]]
 Op_ConditionalMethod [kleft kat id1 kdot id2 klp krp @clause kright @op]
   = [[(let (($pred (${support.makeLispName (id2)} ${support.makeLispName (id1)})))\n(cond ${clause})${op})]]
 Op_ConditionalFunction [kleft kat id1 klp krp @clause kright @op]
   = [[(let (($pred (${support.makeLispName (id1)})))\n(cond ${clause})${op})]]
 Op_ConditionalFunctionWithArgs [kleft kat id1 klp @args krp @clause kright @op]
-  = [[(let (($pred (${support.makeLispName (id1)} ${args})))\n(cond ${clause})${op})]]
+  = [[(let (($pred (bbb ${support.makeLispName (id1)} ${args})))\n(cond ${clause})${op})]]
 
 Op_CallExternalPredicateWithArgs [kat id klp @args krp @op] = [[(${support.makeLispName (id)} ${args})${op}]]
-Op_CallExternalPredicateNoArgs [kat id klp krp @op] = [[(${support.makeLispName (id)})${op}]]
+Op_CallExternalPredicateNoArgs [kat id klp krp @op] = [[(ccc ${support.makeLispName (id)})${op}]]
 
 Op_SendMessageData [ksend p data @op]
  = [[($send '(${support.getPrototypeName ()} ${p}) (?edata-from-message ${data}))${op}]]
@@ -204,3 +206,4 @@ TagNameListItem [id] = [[${id} ]]
 NetNameListItem [L] = [[${L} ]]
 TempNameListItem [L] = [[${L} ]]
 ReturnItem [id] = [[\n($?local $context ${id})]]
+Arg [id] = [[${id} ]]

@@ -11,10 +11,10 @@
 (handler . 
 ,(lambda ($context $message)
 
-(let ((atom-memory ($?field ($?field $context '$args) 'atom-memory)))
-)(cond 
+(let zzz ((atom-memory ($?field ($?field $context '$args) 'atom-memory)))
+ zzzz)(cond 
 ((string= "go" (?etag-from-message $message)) 
-(let (($pred (match-string- "atom-memory""?edata")))
+(let (($pred (match-string- atom-memory "◻%28%3Fdata-from-message%20%24message%29" )))
 (cond 
 ((equal t $pred)
 ($send '("match single atom name" "ok") t))
