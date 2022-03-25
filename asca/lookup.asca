@@ -59,7 +59,7 @@ def 〔scroll through atoms〕
           atom-memory.advanceToNextAtom ()
           [@atom-memory.eof? ()
             | Yes : Send «EOF» No
-            | No  : Send «try 1 name match» Trigger
+            |     : Send «try 1 name match» Trigger
           ]
     ⎦
   finally
@@ -76,10 +76,7 @@ def 〔match single atom name〕
   initially
   handler
     ⎡
-      • «go» :
-          [ @⟨match string⟩()
-              | Yes: Send «ok» Trigger
-          ]
+      • «go» :[ @⟨match string⟩() | Yes: Send «ok» Trigger ]
       •      : Send «mismatch» Trigger
     ⎦
   finally

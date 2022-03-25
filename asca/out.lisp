@@ -57,9 +57,9 @@
 
 (let (($pred (eof? atom-memory)))
 (cond 
-((equal t $pred) 
+((equal t $pred)
 ($send '("scroll through atoms" "EOF") nil))
-((equal nil $pred) 
+((equal nil $pred)
 nil))))))
 (handler . 
 ,(lambda ($context $message)
@@ -70,12 +70,12 @@ nil))))))
 ($send '("scroll through atoms" "try 1 name match") t)
 ($dispatch-conclude $context))
 ((string= "advance" (?etag-from-message $message)) 
-("advanceToNextAtom" "atom-memory")
+(advanceToNextAtom atom-memory)
 (let (($pred (eof? atom-memory)))
 (cond 
-((equal t $pred) 
+((equal t $pred)
 ($send '("scroll through atoms" "EOF") nil))
-((equal nil $pred) 
+(t $pred)
 ($send '("scroll through atoms" "try 1 name match") t)))))))))
 (finally . nil)
 (children . nil)
@@ -96,7 +96,7 @@ nil))))))
 ((string= "go" (?etag-from-message $message)) 
 (let (($pred (match-string-)))
 (cond 
-((equal t $pred) 
+((equal t $pred)
 ($send '("match single atom name" "ok") t)))))
 (t 
 ($send '("match single atom name" "mismatch") t))))))

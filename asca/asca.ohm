@@ -148,7 +148,10 @@ Handler
   | Operation? "⎡" HandlerClauseWithoutDefault+ "⎦" Operation?  -- withoutDefault
 
 
-CondClause = "|" Constant ":" Operation
+CondClause = CondClauseWithTest | DefaultCondClause
+CondClauseWithTest = "|" Constant ":" Operation
+DefaultCondClause = "|" ":" Operation
+
 HandlerClauseWithDefault = MessageHandlerClause | DefaultHandlerClause
 HandlerClauseWithoutDefault = MessageHandlerClause
 DefaultHandlerClause = "•" ":" Operation
