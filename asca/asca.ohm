@@ -76,7 +76,7 @@ Main := ASCScript
 ASCScript = ASCComponent+ Signature+
 
 ASCComponent = DefTopLevel NameSection EtagsSection
-  InputsSection OutputsSection NetsSection LocalsSection
+  InputsSection OutputsSection NetsSection OwnSection
   InitiallySection HandlerSection FinallySection
   ChildrenSection ConnectionsSection
 
@@ -84,101 +84,78 @@ Signature = SignatureTopLevel NameSection EtagsSection
   InputsSection OutputsSection
 
 
-DefTopLevel = DefToken ComponentNameDef
-SignatureTopLevel = SignatureToken ComponentNameDef
-NameSection = "id" ComponentNameRef
-EtagsSection = "etags" TagNameDef*
-InputsSection = "inputs" TagNameRef*
-OutputsSection = "outputs" TagNameRef*
-NetsSection = "nets" NetNameDef*
-LocalsSection = "locals" LocalNameDef*
+DefTopLevel = "def" ComponentName
+SignatureTopLevel = "signature" ComponentName
+NameSection = "id" ComponentName
+EtagsSection = "etags" TagName*
+InputsSection = "inputs" TagName*
+OutputsSection = "outputs" TagName*
+NetsSection = "nets" NetName*
+OwnSection = "own" TempName*
 
 InitiallySection
-  = "initially" Code -- code
-  | "initially"      -- empty
+  = "initially" Operation -- op
+  | "initially"           -- empty
   
 HandlerSection
-  = "handler" HandlerCode -- code
-  | "handler"              -- empty
+  = "handler" Handler -- op
+  | "handler"         -- empty
 FinallySection
-  = "finally" Code -- code
-  | "finally"      -- empty
+  = "finally" Operation -- op
+  | "finally"           -- empty
 
-ChildrenSection = "children" Child*
-ConnectionsSection = "connections" Connection*
-
-  Connection = Sender NetNameRef "⎣" Receiver+ "⎦"
-  Child = ComponentNameRef FunctionOrComponent
-  FunctionOrComponent = FunctionRef | ComponentNameRef
-  FunctionRef = "λ" FunctionNameRef
-
-
-    HandlerCode = Statement? MessageHandler Statement?
-    Code = Statement
-    Statement = SynonymStatement | AssignmentStatement
-           | ConcludeStatement | ReturnStatement
-           | ConditionalStatement | SendStatement | InjectStatement
-           | ExternalCodeStatement | PassStatement | ExpressionStatement
-
-      SynonymStatement = Lvalue "≡" Rvalue Statement?
-      AssignmentStatement = Lvalue "⇐" Rvalue Statement?
-      ConcludeStatement = "Conclude" Statement?
-      ReturnStatement = "Return" Rvalue* Statement?
-      SendStatement = "Send" OwnTag Rvalue Statement?
-      InjectStatement = "Inject" ReceiverRef Rvalue Statement?
-      ExternalCodeStatement = ExternalCode Statement?
-      ConditionalStatement = "[" LocalAccessor CondClause+ "]" Statement?
-      MessageHandler = "⎡" HandlerClause+ "⎦" Statement?
-      PassStatement = "Pass" Statement?
-      ExpressionStatement = Rvalue Statement?
-
-        CondClause = "|" Rvalue ":" Code
-        HandlerClause = "•" TagNameRef ":" Code
-
-          Lvalue = LocalAccessor
-          Rvalue = BuiltinConstant | LocalAccessor
-
-          LocalAccessor
-            = LocalAccessor "∞" "◎" LocalNameRef -- lookup
-	    | "⤶" ArgNameRef                -- argfetch
-	    | "⥀" ArgNameRef                -- arglookupfetch
-            | "◦" TempNameRef Args           -- calltemp
-	    | "◦" TempNameRef                -- fetchtemp
-
-            Sender = ComponentNameRef TagNameRef
-            Receiver = ComponentNameRef TagNameXRef
-            ReceiverRef = ComponentNameRef TagNameXRef
-            LocalCall = LocalAccessor Args
-
-            Args = "(" Rvalue* ")"
-
-            DefToken = "def"
-            SignatureToken = "signature"
-            ComponentNameDef = ComponentName
-            ComponentNameRef = ComponentName
+ChildrenSection
+  = "children" Child+ -- op
+  | "children"           -- empty
+  
+ConnectionsSection
+  = "connections" Operation -- op
+  | "connections"           -- empty
 
 
-	      ArgNameRef = LocalNameRef
-              LocalNameDef = ident
-              LocalNameRef = ArgsKW | ident
-              NetNameDef = ident
-              NetNameRef = ident
-              FunctionNameRef = ident
-              TagNameDef = TagName
-              TagNameRef = TagName
-              TagNameXRef = TagName
-	      OwnTag = TagNameRef
+Operation
+ = ident "⤶" ident           Operation?             -- CreateAndSetTempFromArgs
+ | ident "⥀" ident            Operation?              -- SetTempFromOwn
+ | ident "⇐" Constant        Operation?             -- SetOwnFromConstant
+ | "Inject" ComponentName PortName ident Operation? -- InjectFromTemp
+ | ident "⇐" "?data"         Operation?             -- SetOwnFromMessageData
+ | "Conclude"                Operation?             -- Conclude
+ | "Pass"                    Operation?             -- Pass
+ | "Return" ident+           Operation?             -- ReturnOwnVariables
+ | "〔self〕" PortName NetName ComponentName PortName Operation? -- SelfConnection
+ | ComponentName PortName NetName ComponentName PortName Operation? -- ChildConnection
+ | ComponentName PortName NetName "〔self〕" PortName Operation? -- ChildToSelfConnection
+ | ident "." ident "(" ")"       Operation?         -- CallPredicateOfTempWithNoArgs
+ | "Send" PortName Constant      Operation?         -- SendConstant
+ | "[" "@" ident "." ident "(" ")" CondClause+ "]" Operation? -- ConditionalMethod
+ | "[" "@" ident "(" ")" CondClause+ "]" Operation?     -- ConditionalFunction
+ | "@" ident "(" ")"             Operation?         -- CallExternalPredicateNoArgs
+ | "Send" PortName "?data"       Operation?         -- SendMessageData
 
-                ComponentName = "〔" #identIncludingSpaces "〕"
-                TagName = "«" #identIncludingSpaces "»"
-                Yes = "Yes"
-                No = "No"
-                Trigger = "Trigger"
-                ArgsKW = "Args"
-                MessageData = "?data"
-                MessageEtag = "?etag"
 
-                BuiltinConstant = Yes | No | Trigger | MessageData | MessageEtag
+Child = ChildSelfExternalFunction | ChildComponent
+ChildSelfExternalFunction = "〔self〕" "λ" ident
+ChildComponent = ComponentName ComponentName
+
+
+
+Handler = Operation? "⎡" HandlerClause+ "⎦" Operation?
+
+
+CondClause = "|" Constant ":" Operation
+HandlerClause = "•" PortName ":" Operation
+Constant = "Yes" | "No" | "Trigger" | "None"
+
+
+
+  ComponentName = "〔" identany+ "〕"
+  PortName = TagName
+  TagName = "«" identany+ "»"
+  NetName = ident
+  TempName = ident
+
+
+
 
                     keyword
                       = "id"
@@ -186,13 +163,14 @@ ConnectionsSection = "connections" Connection*
                       | "inputs"
                       | "outputs"
                       | "nets"
-                      | "locals"
+                      | "own"
                       | "initially"
                       | "handler"
                       | "finally"
                       | "children"
                       | "connections"
                       | "Conclude"
+                      | "Pass"
                       | "Return"
                       | "Send"
                       | "Inject"
@@ -206,17 +184,20 @@ ConnectionsSection = "connections" Connection*
                       | "messageetag"
 
   ExternalCode = "{" #(uriChar+) "}"
-  uriChar = ~"}" any
+  uriChar 
+    = "{" #(uriChar+) "}" -- nested
+    | ~"{" ~"}" any       -- char
 
   identIncludingSpaces = ~separator identCharIncludingSpace+
   identCharIncludingSpace = ~separator ~nl any
   ident
-    = "⟨" identIncludingSpaces "⟩"          -- bracketed
-    | identFirst identRest*  -- raw
+    = "⟨" identIncludingSpaces "⟩" -- bracketed
+    | identFirst identRest*        -- raw
   identFirst = ~space ~digit ~separator ~keyword any
-  identRest = ~space ~digit ~separator ~keyword ("0" .. "9" | identFirst)
+  identRest = ~space ~digit identany
+  identany = ~separator ~keyword ("0" .. "9" | identFirst)
   nl = "\n"
-  separator = ")" | "]" | "(" | "[" | "{" | "}"
+  separator = ")" | "]" | "(" | "[" | "]" | "{" | "}"
             | "⇐" | "≡"
             | "«" | "»"
             | "|" | "." | "∞" | "⤶"

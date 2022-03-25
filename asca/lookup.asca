@@ -42,10 +42,10 @@ def 〔scroll through atoms〕
   inputs «name» «advance»
   outputs «EOF» «try 1 name match»
   nets
-  locals
+  own
   initially
     atom-memory ⤶ atom-memory
-    [atom-memory.eof? ()
+    [@atom-memory.eof? ()
       | Yes : Send «EOF» No
       | No  : Pass
     ]
@@ -57,7 +57,7 @@ def 〔scroll through atoms〕
           Conclude
       • «advance» :
           atom-memory.advanceToNextAtom ()
-          [ ◦atom-memory.eof? ()
+          [@atom-memory.eof? ()
             | Yes : Send «EOF» No
             | No  : Send «try 1 name match» Trigger
           ]
@@ -72,7 +72,7 @@ def 〔match single atom name〕
   inputs «name» «advance»
   outputs «EOF» «try 1 name match»
   nets
-  locals
+  own
   initially
   handler
     ⎡
@@ -93,7 +93,7 @@ def 〔unsuccessful〕
   inputs «conclude»
   outputs «found»
   nets
-  locals
+  own
   initially
   handler
     ⎡
@@ -110,7 +110,7 @@ def 〔successful〕
   inputs «conclude»
   outputs «found» «answer»
   nets
-  locals
+  own
   initially
   handler
     ⎡

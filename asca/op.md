@@ -26,9 +26,10 @@ Using Ohm-JS:
 ```
 Operation
  = ident "⤶" ident                                 -- CreateAndSetTempFromArgs
- | ident "⇐ Constant                                -- SetOwnFromConstant
+ | ident "⇐" Constant                               -- SetOwnFromConstant
+ | ident "⥀" ident                                  -- SetTempFromOwn
  | "Inject" ComponentName PortName ident            -- InjectFromTemp
- | ident "⇐" "?data"`                               -- SetOwnFromMessageData
+ | ident "⇐" "?data"                                -- SetOwnFromMessageData
  | "Conclude"                                       -- Conclude
  | "Return" ident+                                  -- ReturnOwnVariables
  | "〔self〕" PortName NetName ComponentName PortName -- SelfConnection
