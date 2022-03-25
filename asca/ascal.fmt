@@ -44,7 +44,7 @@ Operation [op] = [[\n${op}]]
 
 Op_CreateAndSetTempFromArgs [idleft kop idright @op] = [[(let ((${support.makeLispName (idleft)} ($?field ($?field $context '$args) '${support.makeLispName (idright)})))\n${op})]]
 
-Op_SetOwnFromConstant [idleft kop idright @op] = [[($!local ${idleft} ${support.makeLispName (idright)})${op}]]
+Op_SetOwnFromConstant [idleft kop idright @op] = [[($!local $context ${idleft} ${support.makeLispName (idright)})${op}]]
 
 Op_InjectFromTemp [kinject c p id @op] = [[($inject '(${c} . ${p}) ${support.makeLispName(id)} $context nil)${op}]]
 
@@ -66,11 +66,12 @@ Op_ChildConnection [c1 p1 n c2 p2 @op] = [[((${c1} . ${p1}) . ((${c2} . ${p2})))
 
 Op_ChildToSelfConnection [c1 p1 n kself p2 @op] = [[((${c1} . ${p1}) . (("$self" . ${p2})))${op}]]
 
-Op_CallPredicateOfTempWithArgs [id1 kdot id2 klp @args krp @op] = [[(aaa ${support.makeLispName (id2)} ${support.makeLispName (id1)} ${args})${op}]]
+Op_CallPredicateOfTempWithArgs [id1 kdot id2 klp @args krp @op] = [[(${support.makeLispName (id2)} ${support.makeLispName (id1)} ${args})${op}]]
 Op_CallPredicateOfTempWithNoArgs [id1 kdot id2 klp krp @op] = [[(${support.makeLispName (id2)} ${support.makeLispName (id1)})${op}]]
 
-Op_SendConstant [ksend p c @op] = [[($send '(${support.getPrototypeName ()} ${p}) ${c})${op}]]
-Op_SendVerbatim [ksend p id @op] = [[($send '(${support.getPrototypeName ()} ${p}) ${support.decodeVerbatim (id)}${op}]]
+Op_SendConstant [ksend p c @op] = [[($send '(${support.getPrototypeName ()} ${p}) ${c} $context $message)${op}]]
+Op_SendCallMethodWithNoArgs [ksend p kat id1 kdot method  klp krp @op] = [[($send '(${support.getPrototypeName ()} ${p}) (${support.makeLispName (method)} ${support.makeLispName (id1)}) $context $message)${op}]]
+Op_SendVerbatim [ksend p id @op] = [[($send '(${support.getPrototypeName ()} ${p} $context $message) ${support.decodeVerbatim (id)})${op}]]
 
 Op_ConditionalMethodWithArgs [kleft kat id1 kdot id2 klp @args krp @clause kright @op]
   = [[(let (($pred (${support.makeLispName (id2)} ${support.makeLispName (id1)} ${args})))\n(cond ${clause})${op})]]
@@ -128,7 +129,7 @@ uriChar [c] = [[${c}]]
   identIncludingSpaces [@cs] = [["${support.mangle (cs)}"]]
   identCharIncludingSpace [c] = [[${c}]]
   ident_bracketed [left compoundident right] = [["${support.mangle (compoundident)}"]]
-  ident_verbatim [s] = [[${support.decode (s)}]]
+  ident_verbatim [s] = [[${support.decodeVerbatim (s)}]]
   ident_raw [identfirst @identrest] = [["${support.mangle (identfirst + identrest)}"]]
   identFirst [c] = [[${c}]]
   identRest [c] = [[${c}]]

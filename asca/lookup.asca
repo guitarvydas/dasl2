@@ -77,8 +77,8 @@ def 〔match single atom name〕
   handler
     atom-memory ⤶ atom-memory
    ⎡
-      • «go» :[ @atom-memory.⟨match string⟩(?edata) 
-                | Yes: Send «ok» Trigger
+      • «go» :[ @atom-memory.⟨match string⟩(?data) 
+                | Yes: Send «ok» @atom-memory.current-atom-index ()
                 |    : Send «mismatch» Trigger
 	      ]
       •      : Pass

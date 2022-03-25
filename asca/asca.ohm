@@ -134,6 +134,7 @@ Op
  | ident "." ident "(" ")"       Operation?         -- CallPredicateOfTempWithNoArgs
  | "Send" PortName verbatimident  Operation?        -- SendVerbatim
  | "Send" PortName Constant      Operation?         -- SendConstant
+ | "Send" PortName "@" ident "." ident "(" ")"  Operation?  -- SendCallMethodWithNoArgs
  | "[" "@" ident "." ident "(" Arg+ ")" CondClause+ "]" Operation? -- ConditionalMethodWithArgs
  | "[" "@" ident "." ident "(" ")" CondClause+ "]" Operation? -- ConditionalMethod
  | "[" "@" ident "(" Arg+ ")" CondClause+ "]" Operation?     -- ConditionalFunctionWithArgs
@@ -152,8 +153,8 @@ ChildComponent = ComponentName ComponentName
 
 AnonymousHandlerFunction = Operation
 Handler
-  = "⎡" HandlerClauseWithDefault+ "⎦"    -- withDefault
-  | "⎡" HandlerClauseWithoutDefault+ "⎦" -- withoutDefault
+  = "⎡" HandlerClauseWithoutDefault+ "⎦"  -- withoutDefault
+  | "⎡" HandlerClauseWithDefault+ "⎦"     -- withDefault
 
 
 CondClause = CondClauseWithTest | DefaultCondClause
