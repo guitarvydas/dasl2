@@ -4,7 +4,7 @@ def 〔lookup〕
   inputs «name»
   outputs «found» «answer»
   nets ⇒₁ ⇒₂ ⇒₃ ⇒₄ ⇒₅ ⇒₆ ⇒₇ ⇒₈
-  locals found answer name
+  own found answer name
   initially
     name ≡ ⤶name
     answer ⇐ No

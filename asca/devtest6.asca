@@ -4,7 +4,7 @@ def [devtest6]
   inputs «conclude»
   outputs «found» «answer long name»
   nets
-  locals
+  own
   initially
     name ⇐ Args.name
   handler

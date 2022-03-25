@@ -4,7 +4,7 @@ def [devtest5]
   inputs
   outputs
   nets
-  locals
+  own
   initially
           Send «found» Yes
   handler

@@ -97,8 +97,8 @@ for line in sys.stdin:
         printkw ("outputs", line)
     elif (re.search (r'"token":"ident".+"content":"nets"',line)):
         printkw ("nets", line)
-    elif (re.search (r'"token":"ident".+"content":"locals"',line)):
-        printkw ("locals", line)
+    elif (re.search (r'"token":"ident".+"content":"own"',line)):
+        printkw ("own", line)
     elif (re.search (r'"token":"ident".+"content":"initially"',line)):
         printkw ("initially", line)
     elif (re.search (r'"token":"ident".+"content":"handler"',line)):

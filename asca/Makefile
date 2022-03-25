@@ -4,14 +4,14 @@ dev: tr
 ## target=devtest0
 #target=devtest2
 ##target=devtest3
-#target=devtest4
+target=devtest4
 #target=devtest5
 #target=devtest6
 #target=devtest7
 #target=devtest8
 #target=devtest9
 #target=devtest10
-target=lookup
+#target=lookup
 
 tr:
 	@echo

@@ -4,7 +4,7 @@ def [successful]
   inputs «conclude»
   outputs «found» «answer»
   nets
-  locals
+  own
   initially
   handler
     [
