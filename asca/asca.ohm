@@ -148,9 +148,9 @@ Constant = "Yes" | "No" | "Trigger" | "None"
 
 
 
-  ComponentName = "〔" identany+ "〕"
+  ComponentName = "〔" identIncludingSpaces+ "〕"
   PortName = TagName
-  TagName = "«" identany+ "»"
+  TagName = "«" identIncludingSpaces+ "»"
   NetName = ident
   TempName = ident
 
@@ -194,8 +194,7 @@ Constant = "Yes" | "No" | "Trigger" | "None"
     = "⟨" identIncludingSpaces "⟩" -- bracketed
     | identFirst identRest*        -- raw
   identFirst = ~space ~digit ~separator ~keyword any
-  identRest = ~space ~digit identany
-  identany = ~separator ~keyword ("0" .. "9" | identFirst)
+  identRest = ~space ~digit ~separator ~keyword ("0" .. "9" | identFirst)
   nl = "\n"
   separator = ")" | "]" | "(" | "[" | "]" | "{" | "}"
             | "⇐" | "≡"

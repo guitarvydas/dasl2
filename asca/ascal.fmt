@@ -86,7 +86,6 @@ uriChar [c] = [[${c}]]
   ident_raw [identfirst @identrest] = [["${support.mangle (identfirst + identrest)}"]]
   identFirst [c] = [[${c}]]
   identRest [c] = [[${c}]]
-  identany [c] = [[${c}]]
   nl [c] = [[${c}]]
 
   separator [c] = [[${c}]]
