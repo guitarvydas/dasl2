@@ -48,6 +48,8 @@ Op_SetOwnFromConstant [idleft kop idright @op] = [[($!local ${idleft} ${support.
 
 Op_InjectFromTemp [kinject c p id @op] = [[($inject '(${c} . ${p}) ${support.makeLispName(id)} $context nil)${op}]]
 
+Op_SetOwnFromVerbatim [idleft kop vi @op] = [[($!local $context ${idleft} (?data-from-message ${support.makeLispName (vi)}))${op}]]
+
 Op_SetOwnFromMessageData [idleft kop idright @op] = [[($!local $context ${idleft} (?data-from-message ${support.makeLispName (idright)}))${op}]]
 
 Op_SetOwnFromMessageEtag [idleft kop idright @op] = [[($!local $context ${idleft} (?etag-from-message ${support.makeLispName (idright)}))${op}]]
@@ -68,6 +70,7 @@ Op_CallPredicateOfTempWithArgs [id1 kdot id2 klp @args krp @op] = [[(aaa ${suppo
 Op_CallPredicateOfTempWithNoArgs [id1 kdot id2 klp krp @op] = [[(${support.makeLispName (id2)} ${support.makeLispName (id1)})${op}]]
 
 Op_SendConstant [ksend p c @op] = [[($send '(${support.getPrototypeName ()} ${p}) ${c})${op}]]
+Op_SendVerbatim [ksend p id @op] = [[($send '(${support.getPrototypeName ()} ${p}) ${id})${op}]]
 
 Op_ConditionalMethodWithArgs [kleft kat id1 kdot id2 klp @args krp @clause kright @op]
   = [[(let (($pred (${support.makeLispName (id2)} ${support.makeLispName (id1)} ${args})))\n(cond ${clause})${op})]]
@@ -125,7 +128,7 @@ uriChar [c] = [[${c}]]
   identIncludingSpaces [@cs] = [["${support.mangle (cs)}"]]
   identCharIncludingSpace [c] = [[${c}]]
   ident_bracketed [left compoundident right] = [["${support.mangle (compoundident)}"]]
-  ident_verbatim [kverbatim s] = [[${support.decode (s)}]]
+  ident_verbatim [s] = [[${support.decode (s)}]]
   ident_raw [identfirst @identrest] = [["${support.mangle (identfirst + identrest)}"]]
   identFirst [c] = [[${c}]]
   identRest [c] = [[${c}]]
@@ -210,3 +213,5 @@ NetNameListItem [L] = [[${L} ]]
 TempNameListItem [L] = [[${L} ]]
 ReturnItem [id] = [[\n($?local $context ${id})]]
 Arg [id] = [[${support.makeLispName (id)} ]]
+
+verbatimident [k id] = [[${k}${id}]]

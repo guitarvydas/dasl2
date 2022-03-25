@@ -121,6 +121,7 @@ Op
  | ident "⥀" ident            Operation?            -- SetTempFromLookup
  | ident "⇐" Constant        Operation?             -- SetOwnFromConstant
  | "Inject" ComponentName PortName ident Operation? -- InjectFromTemp
+ | ident "⇐" verbatimident   Operation?             -- SetOwnFromVerbatim
  | ident "⇐" "?data"         Operation?             -- SetOwnFromMessageData
  | ident "⇐" "?etag"         Operation?             -- SetOwnFromMessageEtag
  | "Conclude"                Operation?             -- Conclude
@@ -131,6 +132,7 @@ Op
  | ComponentName PortName NetName "〔self〕" PortName Operation? -- ChildToSelfConnection
  | ident "." ident "(" Arg+ ")"  Operation?         -- CallPredicateOfTempWithArgs
  | ident "." ident "(" ")"       Operation?         -- CallPredicateOfTempWithNoArgs
+ | "Send" PortName verbatimident  Operation?        -- SendVerbatim
  | "Send" PortName Constant      Operation?         -- SendConstant
  | "[" "@" ident "." ident "(" Arg+ ")" CondClause+ "]" Operation? -- ConditionalMethodWithArgs
  | "[" "@" ident "." ident "(" ")" CondClause+ "]" Operation? -- ConditionalMethod
@@ -221,10 +223,11 @@ Arg = ident
   identCharIncludingSpace = ~separator ~nl any
   ident
     = "⟨" identIncludingSpaces "⟩" -- bracketed
-    | "◻" ident                    -- verbatim
+    | verbatimident                    -- verbatim
     | identFirst identRest*        -- raw
   identFirst = ~space ~digit ~separator ~keyword any
   identRest = ~space ~separator ~keyword ("0" .. "9" | identFirst)
+  verbatimident = "◻" ident
   nl = "\n"
   separator = ")" | "]" | "(" | "[" | "]" | "{" | "}"
             | "⇐" | "≡"
