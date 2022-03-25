@@ -87,11 +87,11 @@ Signature = SignatureTopLevel NameSection EtagsSection
 DefTopLevel = "def" ComponentName
 SignatureTopLevel = "signature" ComponentName
 NameSection = "id" ComponentName
-EtagsSection = "etags" TagName*
-InputsSection = "inputs" TagName*
-OutputsSection = "outputs" TagName*
-NetsSection = "nets" NetName*
-OwnSection = "own" TempName*
+EtagsSection = "etags" TagNameListItem*
+InputsSection = "inputs" TagNameListItem*
+OutputsSection = "outputs" TagNameListItem*
+NetsSection = "nets" NetNameListItem*
+OwnSection = "own" TempNameListItem*
 
 InitiallySection
   = "initially" Operation -- op
@@ -153,6 +153,10 @@ Constant = "Yes" | "No" | "Trigger" | "None"
   TagName = "«" identIncludingSpaces+ "»"
   NetName = ident
   TempName = ident
+
+TagNameListItem = TagName
+NetNameListItem = ident
+TempNameListItem = ident
 
 
 
