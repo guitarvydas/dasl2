@@ -9,7 +9,7 @@ def 〔lookup〕
     name ⤶ name
     answer ⇐ No
     found ⇐ No
-    Inject 〔scroll through atoms〕«name» ◦name
+    Inject 〔scroll through atoms〕«name» name
   handler
     ⎡
       • «found» :

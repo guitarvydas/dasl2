@@ -1,0 +1,40 @@
+(defparameter *lookup*
+`(
+(name . "lookup")
+(etags . ("name" "found" "answer" ))
+($args . nil)
+(inputs . ("name" ))
+(outputs . ("found" "answer" ))
+(nets . ("⇒₁" "⇒₂" "⇒₃" "⇒₄" "⇒₅" "⇒₆" "⇒₇" "⇒₈" ))
+(locals . ("found" "answer" "name" ))
+(initially . 
+,(lambda ($context) 
+(let ((name ($?field ($?field $context '$args) 'name)))
+
+($!local "answer" No)
+($!local "found" No)
+($inject '("scroll through atoms" . "name") name))))
+(handler . 
+,(lambda ($context $message) ⎡•"found":
+($!local $context "found" (?data-from-message ?data))
+($dispatch-conclude $context)•"answer":
+($!local $context "answer" (?data-from-message ?data))⎦))
+(finally . 
+,(lambda ($context) 
+(values "found""answer")))
+(children . 〔self〕λ"lookup""scroll through atoms""scroll through atoms""match single atom name""match single atom name""unsuccessful""unsuccessful""successful""successful")
+(connections . (
+〔self〕"name""⇒₁""scroll through atoms""name"
+"scroll through atoms""EOF""⇒₂""unsuccessful""conclude"
+"scroll through atoms""try 1 name match""⇒₃""match single atom name""go"
+"match single atom name""mismatch""⇒₄""scroll through atoms""advance"
+"match single atom name""ok""⇒₅""successful""conclude"
+"unsuccessful""found""⇒₆""self""found"
+"successful""found""⇒₇""self""found"
+"successful""answer""⇒₈""self""answer"))))
+
+(defparameter *lookup-signature*
+(name . "lookup")
+(etags . ("name" "found" "answer" ))
+(inputs . ("name" ))
+(outputs . ("found" "answer" )))

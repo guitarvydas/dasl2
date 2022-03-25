@@ -1,24 +1,43 @@
-def [successful]
-  id [successful]
-  etags «conclude» «found» «answer»
-  inputs «conclude»
+def 〔lookup〕
+  id 〔lookup〕
+  etags «name» «found» «answer»
+  inputs «name»
   outputs «found» «answer»
-  nets
-  own
+  nets ⇒₁ ⇒₂ ⇒₃ ⇒₄ ⇒₅ ⇒₆ ⇒₇ ⇒₈
+  own found answer name
   initially
+    name ⤶ name
+    answer ⇐ No
+    found ⇐ No
+    Inject 〔scroll through atoms〕«name» name
   handler
-    [
-      | «conclude» :
-          Send «answer» ?data
-          Send «found» Yes
-    ]
+    ⎡
+      • «found» :
+          found ⇐ ?data
+          Conclude
+      • «answer» :
+          answer ⇐ ?data
+    ⎦
   finally
+      Return found answer
   children
+    〔self〕 λlookup
+    〔scroll through atoms〕 〔scroll through atoms〕
+    〔match single atom name〕 〔match single atom name〕
+    〔unsuccessful〕 〔unsuccessful〕
+    〔successful〕 〔successful〕
   connections
+    〔self〕«name» ⇒₁ 〔scroll through atoms〕«name»
+    〔scroll through atoms〕«EOF» ⇒₂ 〔unsuccessful〕«conclude»
+    〔scroll through atoms〕«try 1 name match» ⇒₃ 〔match single atom name〕«go» 
+    〔match single atom name〕«mismatch» ⇒₄ 〔scroll through atoms〕«advance» 
+    〔match single atom name〕«ok» ⇒₅ 〔successful〕«conclude» 
+    〔unsuccessful〕«found» ⇒₆ 〔self〕«found» 
+    〔successful〕«found» ⇒₇ 〔self〕«found»
+    〔successful〕«answer» ⇒₈ 〔self〕«answer»
 
-
-signature [successful]
-  id [successful]
-  etags «conclude» «found» «answer»
-  inputs «conclude»
+signature 〔lookup〕
+  id 〔lookup〕
+  etags «name» «found» «answer»
+  inputs «name»
   outputs «found» «answer»

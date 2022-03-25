@@ -94,14 +94,14 @@ NetsSection = "nets" NetNameListItem*
 OwnSection = "own" TempNameListItem*
 
 InitiallySection
-  = "initially" Operation -- op
+  = "initially" AnonymousFunction -- op
   | "initially"           -- empty
   
 HandlerSection
-  = "handler" Handler -- op
+  = "handler" AnonymousHandlerFunction -- op
   | "handler"         -- empty
 FinallySection
-  = "finally" Operation -- op
+  = "finally" AnonymousFunction -- op
   | "finally"           -- empty
 
 ChildrenSection
@@ -113,6 +113,7 @@ ConnectionsSection
   | "connections"           -- empty
 
 
+AnonymousFunction = Operation
 Operation = Op
 Op
  = ident "⤶" ident           Operation?             -- CreateAndSetTempFromArgs
@@ -120,6 +121,7 @@ Op
  | ident "⇐" Constant        Operation?             -- SetOwnFromConstant
  | "Inject" ComponentName PortName ident Operation? -- InjectFromTemp
  | ident "⇐" "?data"         Operation?             -- SetOwnFromMessageData
+ | ident "⇐" "?etag"         Operation?             -- SetOwnFromMessageEtag
  | "Conclude"                Operation?             -- Conclude
  | "Pass"                    Operation?             -- Pass
  | "Return" ident+           Operation?             -- ReturnOwnVariables
@@ -140,6 +142,7 @@ ChildComponent = ComponentName ComponentName
 
 
 
+AnonymousHandlerFunction = Handler
 Handler = Operation? "⎡" HandlerClause+ "⎦" Operation?
 
 
