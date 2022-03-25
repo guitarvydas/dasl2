@@ -54,9 +54,13 @@ Op_Conclude [k @op] = [[($dispatch-conclude $context)${op}]]
 Op_Pass [k @op] = [[nil${op}]]
 
 Op_ReturnOwnVariables [k @ids @op] = [[(values ${ids})${op}]]
-Op_SelfConnection [k p n c p2 @op] = [[${k}${p}${n}${c}${p2}${op}]]
-Op_ChildConnection [c1 p1 n c2 p2 @op] = [[${c1}${p1}${n}${c2}${p2}${op}]]
-Op_ChildToSelfConnection [c1 p1 kself c2 p2 @op] = [[${c1}${p1}${kself}${c2}${p2}${op}]]
+
+Op_SelfConnection [k p n c p2 @op] = [[(("$self" . ${p}) . ((${c} . ${p2})))${op}]]
+
+Op_ChildConnection [c1 p1 n c2 p2 @op] = [[((${c1} . ${p1}) . ((${c2} . ${p2})))${op}]]
+
+Op_ChildToSelfConnection [c1 p1 n kself p2 @op] = [[((${c1} . ${p1}) . (("$self" . ${p2})))${op}]]
+
 Op_CallPredicateOfTempWithNoArgs [id1 kdot id2 klp krp @op] = [[${id1}${kdot}${id2}${klp}${krp}${op}]]
 Op_SendConstant [ksend p c @op] = [[${ksend}${p}${c}${op}]]
 Op_ConditionalMethod [kleft kat id1 kdot kid2 klp krp @clause kright @op] = [[${kleft}${kat}${id1}${kdot}${kid2}${klp}${krp}${clause}${kright}${op}]]
@@ -66,8 +70,8 @@ Op_SendMessageData [ksend p kdata @op] = [[${ksend}${p}${kdata}${op}]]
 Op_SetTempFromOwn [idleft kop idright @op] = [[${idleft}${kop}${idright}${op}]]
 
 Child [c] = [[${c}]]
-ChildSelfExternalFunction [kself klambda id] = [[${kself}${klambda}${id}]]
-ChildComponent [c1 c2] = [[${c1}${c2}]]
+ChildSelfExternalFunction [kself klambda id] = [[\n("$self" . ${id})]]
+ChildComponent [c1 c2] = [[\n(${c1} . ${c2})]]
 
 
 

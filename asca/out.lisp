@@ -24,16 +24,21 @@
 (values 
 ($?local $context "found")
 ($?local $context "answer"))))
-(children . 〔self〕λ"lookup""scroll through atoms""scroll through atoms""match single atom name""match single atom name""unsuccessful""unsuccessful""successful""successful")
+(children . 
+("$self" . "lookup")
+("scroll through atoms" . "scroll through atoms")
+("match single atom name" . "match single atom name")
+("unsuccessful" . "unsuccessful")
+("successful" . "successful"))
 (connections . (
-〔self〕"name""⇒₁""scroll through atoms""name"
-"scroll through atoms""EOF""⇒₂""unsuccessful""conclude"
-"scroll through atoms""try 1 name match""⇒₃""match single atom name""go"
-"match single atom name""mismatch""⇒₄""scroll through atoms""advance"
-"match single atom name""ok""⇒₅""successful""conclude"
-"unsuccessful""found""⇒₆""self""found"
-"successful""found""⇒₇""self""found"
-"successful""answer""⇒₈""self""answer"))))
+(("$self" . "name") . (("scroll through atoms" . "name")))
+(("scroll through atoms" . "EOF") . (("unsuccessful" . "conclude")))
+(("scroll through atoms" . "try 1 name match") . (("match single atom name" . "go")))
+(("match single atom name" . "mismatch") . (("scroll through atoms" . "advance")))
+(("match single atom name" . "ok") . (("successful" . "conclude")))
+(("unsuccessful" . "found") . (("self" . "found")))
+(("successful" . "found") . (("self" . "found")))
+(("successful" . "answer") . (("self" . "answer")))))))
 
 (defparameter *lookup-signature*
 (name . "lookup")
