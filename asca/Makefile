@@ -1,7 +1,6 @@
 dev: tr
 
-target=devtest
-#target=lookup
+target=lookup
 
 tr:
 	@echo
