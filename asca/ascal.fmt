@@ -1,7 +1,7 @@
 
 Main [x] = [[${x}]]
 
-ASCScript [asc sig] = [[${asc]${sig}]]
+ASCScript [asc sig] = [[${asc}${sig}]]
 
 ASCComponent [ DefSection NameSection EtagsSection InputsSection OutputsSection NetsSection LocalsSection InitiallySection HandlerSection FinallySection ChildrenSection ConnectionsSection] =
   {{ support.pushPrototypeName (_DefSection._glue ()); }}
@@ -48,10 +48,10 @@ Operation_ChildConnection [c1 p1 n c2 p2 @op] = [[${c1}${p1}${n}${c2}${p2}${op}]
 Operation_ChildToSelfConnection [c1 p1 kself c2 p2 @op] = [[${c1}${p1}${kself}${c2}${p2}${op}]]
 Operation_CallPredicateOfTempWithNoArgs [id1 kdot id2 klp krp @op] = [[${id1}${kdot}${id2}${klp}${krp}${op}]]
 Operation_SendConstant [ksend p c @op] = [[${ksend}${p}${c}${op}]]
-Operation_ConditionalMethod [kleft kat id1 kdot kid2 klp krp @op] = [[${kleft}${kat}${id1}${kdot}${kid2}${klp}${krp}${op}]]
-Operation_ConditionalFunction [kleft kat id1 klp krp = [[${kleft}${kat}${id1}${klp}${krp}${op}]]
-Operation_CallExternalPredicateNoArgs [kat id klp krp] = [[${kat}${id}${klp}${krp}]]
-Operation_SendMessageData [ksend p kdata] = [[${ksend}${p}${kdata}]]
+Operation_ConditionalMethod [kleft kat id1 kdot kid2 klp krp @clause kright @op] = [[${kleft}${kat}${id1}${kdot}${kid2}${klp}${krp}${clause}${kright}${op}]]
+Operation_ConditionalFunction [kleft kat id1 klp krp @clause kright @op] = [[${kleft}${kat}${id1}${klp}${krp}${clause}${kright}${op}]]
+Operation_CallExternalPredicateNoArgs [kat id klp krp @op] = [[${kat}${id}${klp}${krp}${op}]]
+Operation_SendMessageData [ksend p kdata @op] = [[${ksend}${p}${kdata}${op}]]
 
 Child [c] = [[${c}]]
 ChildSelfExternalFunction [kself klambda id] = [[${kself}${klambda}${id}]]
@@ -86,7 +86,7 @@ uriChar [c] = [[${c}]]
   ident_raw [identfirst @identrest] = [["${support.mangle (identfirst + identrest)}"]]
   identFirst [c] = [[${c}]]
   identRest [c] = [[${c}]]
-  identAny [c] = [[${c}]]
+  identany [c] = [[${c}]]
   nl [c] = [[${c}]]
 
   separator [c] = [[${c}]]
@@ -163,4 +163,3 @@ uriChar [c] = [[${c}]]
   lineNumber [left @ds right] = [[${left}${ds}${right}]]
   space [c] = [[${c}]]
 
-ReceiverRef [component tag] = [['(${component} . ${tag})]]

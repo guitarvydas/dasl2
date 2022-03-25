@@ -83,7 +83,7 @@ for line in sys.stdin:
     elif (re.search (r'"token":"lex".+"content":"%E2%97%8E"',line)):
         printkw ("own", line)
 
-elif (re.search (r'"token":"ident".+"content":"def"',line)):
+    elif (re.search (r'"token":"ident".+"content":"def"',line)):
         printkw ("def", line)
     elif (re.search (r'"token":"ident".+"content":"etags"',line)):
         printkw ("etags", line)
