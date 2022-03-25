@@ -220,6 +220,7 @@ Arg = ident
   identCharIncludingSpace = ~separator ~nl any
   ident
     = "⟨" identIncludingSpaces "⟩" -- bracketed
+    | "◻" ident                    -- verbatim
     | identFirst identRest*        -- raw
   identFirst = ~space ~digit ~separator ~keyword any
   identRest = ~space ~separator ~keyword ("0" .. "9" | identFirst)
