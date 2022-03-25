@@ -16,7 +16,7 @@
 
 (cond 
 ((string= "go" (?etag-from-message $message)) 
-(let (($pred (match-string- atom-memory (?data-from-message $message) )))
+(let (($pred (match-string atom-memory (?data-from-message-$message) )))
 (cond 
 ((equal t $pred)
 ($send '("match single atom name" "ok") t))
