@@ -1,0 +1,27 @@
+shape - rect, ellipse, text, line
+color - green, yellow, none
+connected - a connected-to b
+
+inside - text inside
+
+
+rule = a b c
+
+rule = a @left-of b @left-of c
+
+Component = @rect Name
+
+InputPort = @shape=ellipse @color=green PortName
+
+PortName[Port] = @shape=text @inside<Port> @intersects<Port> string
+
+Connection[A,B] = OutputPort(A) InputPort(B)
+
+Component<c> = Container<c> | Leaf<c>
+
+Container<self> = Rect<self> InputPort+ OutputPort+ ComponentName Child<self>+ Connection<self>+
+
+Leaf<self> = Rect<self> InputPort<self>+ OutputPort<self>+ SyncCode ComponentName
+
+
+Child<c,self> = Component<self> Bigger<c,self> Contains<c,self> ComponentName<self>

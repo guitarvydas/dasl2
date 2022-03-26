@@ -118,7 +118,7 @@ AnonymousFunction = Operation
 Operation = Op
 Op
  = ident "⤶" ident           Operation?             -- CreateAndSetTempFromArgs
- | ident "⥀" ident            Operation?            -- SetTempFromLookup
+ | ident "⥀" ident            Operation?            -- CreateAndSetTempFromLookup
  | ident "⇐" Constant        Operation?             -- SetOwnFromConstant
  | "Inject" ComponentName PortName ident Operation? -- InjectFromTemp
  | ident "⇐" verbatimident   Operation?             -- SetOwnFromVerbatim
@@ -127,9 +127,9 @@ Op
  | "Conclude"                Operation?             -- Conclude
  | "Pass"                    Operation?             -- Pass
  | "Return" ReturnItem+           Operation?             -- ReturnOwnVariables
- | "〔self〕" PortName NetName ComponentName PortName Operation? -- SelfConnection
+ | "〔$self〕" PortName NetName ComponentName PortName Operation? -- SelfConnection
  | ComponentName PortName NetName ComponentName PortName Operation? -- ChildConnection
- | ComponentName PortName NetName "〔self〕" PortName Operation? -- ChildToSelfConnection
+ | ComponentName PortName NetName "〔$self〕" PortName Operation? -- ChildToSelfConnection
  | ident "." ident "(" Arg+ ")"  Operation?         -- CallPredicateOfTempWithArgs
  | ident "." ident "(" ")"       Operation?         -- CallPredicateOfTempWithNoArgs
  | "Send" PortName verbatimident  Operation?        -- SendVerbatim
@@ -146,7 +146,7 @@ Op
 
 
 Child = ChildSelfExternalFunction | ChildComponent
-ChildSelfExternalFunction = "〔self〕" "λ" ident
+ChildSelfExternalFunction = "〔$self〕" "λ" ident
 ChildComponent = ComponentName ComponentName
 
 
@@ -239,6 +239,7 @@ Arg = ident
             | "⟨" | "⟩"
             | "〔" | "〕"
             | "⎡" | "⎦" | "•"
+	    | "λ"
 
   lineNumber = "〖" digit+ "〗"
   space += lineNumber
