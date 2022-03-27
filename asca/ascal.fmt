@@ -8,7 +8,7 @@ ASCComponent [ DefSection NameSection EtagsSection InputsSection OutputsSection 
 [[(defparameter *${support.makeLispName (DefSection)}*\n\`(${NameSection}${EtagsSection}\n($args . nil)${InputsSection}${OutputsSection}${NetsSection}${LocalsSection}${InitiallySection}${HandlerSection}${FinallySection}${ChildrenSection}${ConnectionsSection}))\n${support.popPrototypeName ()}]]
 
 Signature [ Signature NameSection EtagsSection InputsSection OutputsSection] 
-    = [[\n(defparameter *${support.makeLispName (Signature)}-signature*${NameSection}${EtagsSection}${InputsSection}${OutputsSection})]]
+    = [[\n(defparameter *${support.makeLispName (Signature)}-signature*\n\`(${NameSection}${EtagsSection}${InputsSection}${OutputsSection}))]]
 
 DefTopLevel [ kDef ComponentNameDef] = [[${ComponentNameDef}]]
 SignatureTopLevel [ kSig ComponentNameDef] = [[${ComponentNameDef}]]

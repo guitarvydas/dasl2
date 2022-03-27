@@ -161,27 +161,32 @@ nil))
 (connections . nil)))
 
 (defparameter *lookup-signature*
+`(
 (name . "lookup")
 (etags . ("name" "found" "answer" ))
 (inputs . ("name" ))
-(outputs . ("found" "answer" )))
+(outputs . ("found" "answer" ))))
 (defparameter *scroll-through-atoms-signature*
+`(
 (name . "scroll through atoms")
 (etags . ("name" "advance" "EOF" "try 1 name match" ))
 (inputs . ("name" "advance" ))
-(outputs . ("EOF" "try 1 name match" )))
+(outputs . ("EOF" "try 1 name match" ))))
 (defparameter *match-single-atom-name-signature*
+`(
 (name . "match single atom name")
 (etags . ("name" "advance" "EOF" "try 1 name match" ))
 (inputs . ("name" "advance" ))
-(outputs . ("EOF" "try 1 name match" )))
+(outputs . ("EOF" "try 1 name match" ))))
 (defparameter *unsuccessful-signature*
+`(
 (name . "unsuccessful")
 (etags . ("conclude" "found" ))
 (inputs . ("conclude" ))
-(outputs . ("found" )))
+(outputs . ("found" ))))
 (defparameter *successful-signature*
+`(
 (name . "successful")
 (etags . ("conclude" "found" "answer" ))
 (inputs . ("conclude" ))
-(outputs . ("found" "answer" )))
+(outputs . ("found" "answer" ))))
