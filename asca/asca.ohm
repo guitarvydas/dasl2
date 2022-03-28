@@ -135,13 +135,13 @@ Op
  | "Send" PortName verbatimident  Operation?        -- SendVerbatim
  | "Send" PortName Constant      Operation?         -- SendConstant
  | "Send" PortName "@" ident "." ident "(" ")"  Operation?  -- SendCallMethodWithNoArgs
+ | "Send" PortName "?data"       Operation?         -- SendMessageData
  | "[" "@" ident "." ident "(" Arg+ ")" CondClause+ "]" Operation? -- ConditionalMethodWithArgs
  | "[" "@" ident "." ident "(" ")" CondClause+ "]" Operation? -- ConditionalMethod
  | "[" "@" ident "(" Arg+ ")" CondClause+ "]" Operation?     -- ConditionalFunctionWithArgs
  | "[" "@" ident "(" ")" CondClause+ "]" Operation?     -- ConditionalFunction
  | "@" ident "(" Arg+ ")"        Operation?         -- CallExternalPredicateWithArgs
  | "@" ident "(" ")"             Operation?         -- CallExternalPredicateNoArgs
- | "Send" PortName "?data"       Operation?         -- SendMessageData
  | Handler                       Operation?         -- handler
 
 
