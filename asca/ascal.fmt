@@ -212,6 +212,7 @@ uriChar [c] = [[${c}]]
   space [c] = [[${c}]]
 
 TagNameListItem [id] = [[${id} ]]
+TagNameDestructuringListItem [id] = [[${id} ]]
 NetNameListItem [L] = [[${L} ]]
 TempNameListItem [L] = [[${L} ]]
 ReturnItem [id] = [[\n($?local $context ${id})]]

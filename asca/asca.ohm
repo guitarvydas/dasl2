@@ -88,7 +88,7 @@ Signature = SignatureTopLevel NameSection EtagsSection
 DefTopLevel = "def" ComponentName
 SignatureTopLevel = "signature" ComponentName
 NameSection = "id" ComponentName
-EtagsSection = "etags" TagNameListItem*
+EtagsSection = "etags" TagNameDestructuringListItem*
 InputsSection = "inputs" TagNameListItem*
 OutputsSection = "outputs" TagNameListItem*
 NetsSection = "nets" NetNameListItem*
@@ -181,6 +181,7 @@ Constant
   TempName = ident
 
 TagNameListItem = TagName
+TagNameDestructuringListItem = TagName
 NetNameListItem = ident
 TempNameListItem = ident
 ReturnItem = ident
