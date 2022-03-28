@@ -90,6 +90,7 @@
   (loop
     while ($dispatch-continue? $context)
     do (progn
+         (dump-queues $context 0)
          (try-all-components-once $context)
          )))
 

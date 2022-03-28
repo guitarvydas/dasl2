@@ -5,7 +5,7 @@
     ($args . nil)
     (inputs . ("name" ))
     (outputs . ("found" "answer" ))
-    (nets . ("ââ" "ââ" "ââ" "ââ" "ââ" "ââ" "ââ" "ââ" ))
+    (nets . ("⇒₁" "⇒₂" "⇒₃" "⇒₄" "⇒₅" "⇒₆" "⇒₇" "⇒₈" ))
     (locals . ("found" "answer" "name" ))
     (initially . 
                ,(lambda ($context) 

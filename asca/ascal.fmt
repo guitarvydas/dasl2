@@ -71,9 +71,9 @@ Op_ChildToSelfConnection [c1 p1 n kself p2 @op] = [[((${c1} . ${p1}) . (("$self"
 Op_CallPredicateOfTempWithArgs [id1 kdot id2 klp @args krp @op] = [[(${support.makeLispName (id2)} ${support.makeLispName (id1)} ${args})${op}]]
 Op_CallPredicateOfTempWithNoArgs [id1 kdot id2 klp krp @op] = [[(${support.makeLispName (id2)} ${support.makeLispName (id1)})${op}]]
 
-Op_SendConstant [ksend p c @op] = [[($send '(${support.getPrototypeName ()} ${p}) ${c} $context $message)${op}]]
-Op_SendCallMethodWithNoArgs [ksend p kat id1 kdot method  klp krp @op] = [[($send '(${support.getPrototypeName ()} ${p}) (${support.makeLispName (method)} ${support.makeLispName (id1)}) $context $message)${op}]]
-Op_SendVerbatim [ksend p id @op] = [[($send '(${support.getPrototypeName ()} ${p} $context $message) ${support.decodeVerbatim (id)})${op}]]
+Op_SendConstant [ksend p c @op] = [[($send '(${support.getPrototypeName ()} . ${p}) ${c} $context $message)${op}]]
+Op_SendCallMethodWithNoArgs [ksend p kat id1 kdot method  klp krp @op] = [[($send '(${support.getPrototypeName ()}. ${p}) (${support.makeLispName (method)} ${support.makeLispName (id1)}) $context $message)${op}]]
+Op_SendVerbatim [ksend p id @op] = [[($send '(${support.getPrototypeName ()} . ${p}) ${support.decodeVerbatim (id)} $context $message)${op}]]
 
 Op_ConditionalMethodWithArgs [kleft kat id1 kdot id2 klp @args krp @clause kright @op]
   = [[(let (($pred (${support.makeLispName (id2)} ${support.makeLispName (id1)} ${args})))\n(cond ${clause})${op})]]
@@ -88,7 +88,7 @@ Op_CallExternalPredicateWithArgs [kat id klp @args krp @op] = [[(${support.makeL
 Op_CallExternalPredicateNoArgs [kat id klp krp @op] = [[(ccc ${support.makeLispName (id)})${op}]]
 
 Op_SendMessageData [ksend p data @op]
- = [[($send '(${support.getPrototypeName ()} ${p}) (?edata-from-message ${data}))${op}]]
+ = [[($send '(${support.getPrototypeName ()} . ${p}) $context $message (?edata-from-message ${data}))${op}]]
 
 Op_handler [h @op] = [[${h}${op}]]
 
