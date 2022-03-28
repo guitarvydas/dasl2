@@ -18,5 +18,5 @@ tr:
 	./rmws.bash </tmp/$(target).asc-tr >/tmp/$(target).asc-no-ws
 	./untokenize.bash </tmp/$(target).asc-no-ws >/tmp/$(target).ascu
 	#cat /tmp/$(target).ascu
-	./ascal.bash </tmp/$(target).ascu >out.lisp
-	cat out.lisp
+	./ascal.bash </tmp/$(target).ascu >$(target)asc.lisp
+	cat $(target)asc.lisp

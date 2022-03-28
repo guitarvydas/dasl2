@@ -80,7 +80,7 @@ def 〔match single atom name〕
       • «go» :[ @atom-memory.⟨match string⟩(?data) 
                 | Yes: Send «ok» @atom-memory.current-atom-index ()
                 |    : Send «mismatch» Trigger
-	      ]
+              ]
       •      : Pass
    ⎦
    Send «mismatch» Trigger
