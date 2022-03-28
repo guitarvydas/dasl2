@@ -1,0 +1,2 @@
+(defpackage lookupasc
+  (:use :cl))

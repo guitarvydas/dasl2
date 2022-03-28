@@ -28,7 +28,7 @@ HandlerSection_empty [k]  = [[\n(handler . nil)]]
 FinallySection_op [k op]  = [[\n(finally . ${op})]]
 FinallySection_empty [k]  = [[\n(finally . nil)]]
 
-ChildrenSection_op [k @op] = [[\n(children . ${op})]]
+ChildrenSection_op [k @op] = [[\n(children . (${op}))]]
 ChildrenSection_empty [k] = [[\n(children . nil)]]
   
 ConnectionsSection_op [k op] = [[\n(connections . (${op}))]]
