@@ -11,8 +11,8 @@
 ,(lambda ($context) 
 (let ((name ($?field ($?field $context '$args) 'name)))
 
-($!local $context "answer" nil)
-($!local $context "found" nil)
+($!local $context "answer" $no)
+($!local $context "found" $no)
 ($inject '("scroll through atoms" . "name") name $context nil))))
 (handler . 
 ,(lambda ($context $message)
@@ -28,8 +28,8 @@
 (finally . 
 ,(lambda ($context) 
 (values 
-($?local $context "found")
-($?local $context "answer"))))
+($?local $context "answer")
+($?local $context "found"))))
 (children . (
 ("$self" . "lookup")
 ("scroll through atoms" . "scroll through atoms")
@@ -60,14 +60,14 @@
 
 (let (($pred (?eof atom-memory)))
 (cond 
-((equal t $pred)
-($send '("scroll through atoms" . "EOF") nil $context $message))
-((equal nil $pred)
+((equal $yes $pred)
+($send '("scroll through atoms" . "EOF") $no $context $message))
+((equal $no $pred)
 nil))))))
 (handler . 
 ,(lambda ($context $message)
 
-(let ((atom-memory ($?field ($?field $context '$args) 'atom-memory)))
+(let ((atom-memory ($?field ($?field-recursive $context '$args) 'atom-memory)))
 
 
 (cond 
@@ -78,8 +78,8 @@ nil))))))
 (@advance-to-next-atom atom-memory)
 (let (($pred (?eof atom-memory)))
 (cond 
-((equal t $pred)
-($send '("scroll through atoms" . "EOF") nil $context $message))
+((equal $yes $pred)
+($send '("scroll through atoms" . "EOF") $no $context $message))
 (t 
 ($send '("scroll through atoms" . "try 1 name match") t $context $message)))))
 (t (error-unhandled-message $context $message))))))
@@ -92,7 +92,7 @@ nil))))))
 (etags . (("go" ("go")) ("mismatch" ("mismatch")) ("ok" ("ok")) ))
 ($args . nil)
 (inputs . ("go" ))
-(outputs . ("mimatch" "ok" ))
+(outputs . ("mismatch" "ok" ))
 (nets . ())
 (locals . ())
 (initially . nil)
@@ -104,15 +104,13 @@ nil))))))
 
 (cond 
 ((string= "go" (?etag-from-message $message)) 
-(let (($pred (match-string atom-memory (?data-from-message $message) )))
+(let (($pred (?match-string atom-memory (?data-from-message $message) )))
 (cond 
-((equal t $pred)
+((equal $yes $pred)
 ($send '("match single atom name". "ok") (current-atom-index atom-memory) $context $message))
 (t 
 ($send '("match single atom name" . "mismatch") t $context $message)))))
-(t 
-nil))
-($send '("match single atom name" . "mismatch") t $context $message))))
+(t (error-unhandled-message $context $message))))))
 (finally . nil)
 (children . nil)
 (connections . nil)))
@@ -132,7 +130,7 @@ nil))
 
 (cond 
 ((string= "conclude" (?etag-from-message $message)) 
-($send '("unsuccessful" . "found") nil $context $message))
+($send '("unsuccessful" . "found") $no $context $message))
 (t (error-unhandled-message $context $message)))))
 (finally . nil)
 (children . nil)
@@ -154,7 +152,7 @@ nil))
 (cond 
 ((string= "conclude" (?etag-from-message $message)) 
 ($send '("successful" . "answer") (?data-from-message $message) $context $message)
-($send '("successful" . "found") t $context $message))
+($send '("successful" . "found") $yes $context $message))
 (t (error-unhandled-message $context $message)))))
 (finally . nil)
 (children . nil)
@@ -177,7 +175,7 @@ nil))
 (name . "match single atom name")
 (etags . (("go" ("go")) ("mismatch" ("mismatch")) ("ok" ("ok")) ))
 (inputs . ("go" ))
-(outputs . ("mimatch" "ok" ))))
+(outputs . ("mismatch" "ok" ))))
 (defparameter *unsuccessful-signature*
 `(
 (name . "unsuccessful")

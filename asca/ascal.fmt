@@ -109,8 +109,8 @@ Handler_withDefault [left @h right] = [[\n(cond ${h})]]
 MessageHandlerClause [k portname kcolon op] = [[\n((string= ${portname} (?etag-from-message $message)) ${op})]]
 DefaultHandlerClause [k kcolon op] = [[\n(t ${op})]]
 
-Constant_yes [k] = [[t]]
-Constant_no [k] = [[nil]]
+Constant_yes [k] = [[$yes]]
+Constant_no [k] = [[$no]]
 Constant_trigger [k] = [[t]]
 Constant_none [k] = [[nil]]
 

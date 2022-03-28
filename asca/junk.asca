@@ -1,0 +1,4 @@
+(if (?match-string atom-memory (?data-from-message $message))
+    ($send '("match single atom name" . "ok") (current-atom-index atom-memory) $context $message)
+)
+($send '("match single atom name" . "mismatch") t $context $message))

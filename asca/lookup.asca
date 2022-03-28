@@ -19,7 +19,7 @@ def 〔lookup〕
           answer ⇐ ?data
     ⎦
   finally
-      Return found answer
+      Return answer found
   children
     〔$self〕 λlookup
     〔scroll through atoms〕 〔scroll through atoms〕
@@ -50,7 +50,7 @@ def 〔scroll through atoms〕
       | No  : Pass
     ]
   handler
-    atom-memory ⤶ atom-memory
+    atom-memory ⥀ atom-memory
     ⎡
       • «name» :
           Send «try 1 name match» Trigger
@@ -70,20 +70,18 @@ def 〔match single atom name〕
   id 〔match single atom name〕
   etags «go» «mismatch» «ok»
   inputs «go»
-  outputs «mimatch» «ok»
+  outputs «mismatch» «ok»
   nets
   own
   initially
   handler
     atom-memory ⤶ atom-memory
    ⎡
-      • «go» :[ @atom-memory.⟨match string⟩(?data) 
+      • «go» :[ @atom-memory.⟨?match string⟩(?data) 
                 | Yes: Send «ok» @atom-memory.current-atom-index ()
                 |    : Send «mismatch» Trigger
               ]
-      •      : Pass
    ⎦
-   Send «mismatch» Trigger
   finally
   children
   connections
@@ -139,7 +137,7 @@ signature 〔match single atom name〕
   id 〔match single atom name〕
   etags «go» «mismatch» «ok»
   inputs «go»
-  outputs «mimatch» «ok»
+  outputs «mismatch» «ok»
 signature 〔unsuccessful〕
   id 〔unsuccessful〕
   etags «conclude» «found»
