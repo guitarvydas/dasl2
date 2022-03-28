@@ -9,11 +9,10 @@
 (locals . (("found" ("found")) ("answer" ("answer")) ("name-to-be-matched" ("name-to-be-matched")) ))
 (initially . 
 ,(lambda ($context) 
-(let ((name ($?field ($?field $context '$args) 'name)))
-
+($!local $context "name-to-be-matched" ($?field ($?field-recursive $context '$args) '⤽name))
 ($!local $context "answer" $no)
 ($!local $context "found" $no)
-($inject '("scroll through atoms" . "name") name $context nil))))
+($inject '("scroll through atoms" . "name") name $context nil)))
 (handler . 
 ,(lambda ($context $message)
 

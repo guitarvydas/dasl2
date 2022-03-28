@@ -9,7 +9,7 @@
     (locals . (("found" ("found")) ("answer" ("answer")) ("name-to-be-matched" ("name-to-be-matched")) ))
     (initially . 
 	       ,(lambda ($context) 
-		  (let ((name-to-be-matched ($?field ($?field $context '$args) 'name)))
+		  (let ((name-to-be-matched ($?field ($?field-recursive $context '$args) 'name)))
 
 		    ($!local $context "answer" $no)
 		    ($!local $context "found" $no)
@@ -72,7 +72,7 @@
 
 		  (cond 
 		    ((string= "name" (?etag-from-message $message)) 
-		     ($send '("scroll through atoms" . "try 1 name match") (?data-from-message $message) $context $message)
+		     ($send '("scroll through atoms" . "try 1 name match") t $context $message)
 		     ($dispatch-conclude $context))
 		    ((string= "advance" (?etag-from-message $message)) 
 		     (@advance-to-next-atom atom-memory)

@@ -42,11 +42,13 @@ AnonymousFunction [opr] = [[\n,(lambda ($context) ${opr})]]
 
 Operation [op] = [[\n${op}]]
 
-Op_CreateAndSetTempFromArgs [idleft kop idright @op] = [[(let ((${support.makeLispName (idleft)} ($?field ($?field $context '$args) '${support.makeLispName (idright)})))\n${op})]]
+Op_CreateAndSetTempFromArgs [idleft kop idright @op] = [[(let ((${support.makeLispName (idleft)} ($?field ($?field-recursive $context '$args) '${support.makeLispName (idright)})))\n${op})]]
 
 Op_CreateAndSetTempFromLookup [idleft kop idright @op] = [[(let ((${support.makeLispName (idleft)} ($?field ($?field-recursive $context '$args) '${support.makeLispName (idright)})))\n${op})]]
 
 Op_SetOwnFromConstant [idleft kop idright @op] = [[($!local $context ${idleft} ${support.makeLispName (idright)})${op}]]
+
+Op_SetOwnFromArgs [idleft kop idright @op] = [[($!local $context ${idleft} ($?field ($?field-recursive $context '$args) '${support.makeLispName (idright)}))${op}]]
 
 Op_InjectFromTemp [kinject c p id @op] = [[($inject '(${c} . ${p}) ${support.makeLispName(id)} $context nil)${op}]]
 

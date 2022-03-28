@@ -49,6 +49,6 @@ terminatorOrWsnlOrEnd = terminator | eolOrEnd
 wsOrEnd = ws | end
 
 lexical = "∞" | "λ" | "." | "(" | ")" | "[" | "]" | "«" | "»"
-  | "|" | "=" | "⟨" | "⟩" | "⤶" | "⥀" | "◎" | "◦"
+  | "|" | "=" | "⟨" | "⟩" | "⤶" | "⥀" | "◎" | "◦" | "⤽"
 
 }

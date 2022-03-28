@@ -6,7 +6,7 @@ def 〔lookup〕
   nets ⇒₁ ⇒₂ ⇒₃ ⇒₄ ⇒₅ ⇒₆ ⇒₇ ⇒₈
   own found answer name-to-be-matched
   initially
-    name ⤶ name
+    name-to-be-matched ⤽ name
     answer ⇐ No
     found ⇐ No
     Inject 〔scroll through atoms〕«name» name
