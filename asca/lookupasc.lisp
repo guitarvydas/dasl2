@@ -6,7 +6,7 @@
 (inputs . ("name" ))
 (outputs . ("found" "answer" ))
 (nets . ("⇒₁" "⇒₂" "⇒₃" "⇒₄" "⇒₅" "⇒₆" "⇒₇" "⇒₈" ))
-(locals . ("found" "answer" "name" ))
+(locals . (("found" ("found")) ("answer" ("answer")) ("name" ("name")) ))
 (initially . 
 ,(lambda ($context) 
 (let ((name ($?field ($?field $context '$args) 'name)))
@@ -175,9 +175,9 @@ nil))
 (defparameter *match-single-atom-name-signature*
 `(
 (name . "match single atom name")
-(etags . (("name" ("name")) ("advance" ("advance")) ("EOF" ("EOF")) ("try 1 name match" ("try 1 name match")) ))
-(inputs . ("name" "advance" ))
-(outputs . ("EOF" "try 1 name match" ))))
+(etags . (("go" ("go")) ("mismatch" ("mismatch")) ("ok" ("ok")) ))
+(inputs . ("go" ))
+(outputs . ("mimatch" "ok" ))))
 (defparameter *unsuccessful-signature*
 `(
 (name . "unsuccessful")

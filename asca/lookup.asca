@@ -137,9 +137,9 @@ signature 〔scroll through atoms〕
   outputs «EOF» «try 1 name match»
 signature 〔match single atom name〕
   id 〔match single atom name〕
-  etags «name» «advance» «EOF» «try 1 name match»
-  inputs «name» «advance»
-  outputs «EOF» «try 1 name match»
+  etags «go» «mismatch» «ok»
+  inputs «go»
+  outputs «mimatch» «ok»
 signature 〔unsuccessful〕
   id 〔unsuccessful〕
   etags «conclude» «found»
