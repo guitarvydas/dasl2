@@ -1,7 +1,7 @@
 (defparameter *lookup*
 `(
 (name . "lookup")
-(etags . ("name" "found" "answer" ))
+(etags . (("name" ("name")) ("found" ("found")) ("answer" ("answer")) ))
 ($args . nil)
 (inputs . ("name" ))
 (outputs . ("found" "answer" ))
@@ -48,7 +48,7 @@
 (defparameter *scroll-through-atoms*
 `(
 (name . "scroll through atoms")
-(etags . ("name" "advance" "EOF" "try 1 name match" ))
+(etags . (("name" ("name")) ("advance" ("advance")) ("EOF" ("EOF")) ("try 1 name match" ("try 1 name match")) ))
 ($args . nil)
 (inputs . ("name" "advance" ))
 (outputs . ("EOF" "try 1 name match" ))
@@ -89,7 +89,7 @@ nil))))))
 (defparameter *match-single-atom-name*
 `(
 (name . "match single atom name")
-(etags . ("go" "mismatch" "ok" ))
+(etags . (("go" ("go")) ("mismatch" ("mismatch")) ("ok" ("ok")) ))
 ($args . nil)
 (inputs . ("go" ))
 (outputs . ("mimatch" "ok" ))
@@ -119,7 +119,7 @@ nil))
 (defparameter *unsuccessful*
 `(
 (name . "unsuccessful")
-(etags . ("conclude" "found" ))
+(etags . (("conclude" ("conclude")) ("found" ("found")) ))
 ($args . nil)
 (inputs . ("conclude" ))
 (outputs . ("found" ))
@@ -140,7 +140,7 @@ nil))
 (defparameter *successful*
 `(
 (name . "successful")
-(etags . ("conclude" "found" "answer" ))
+(etags . (("conclude" ("conclude")) ("found" ("found")) ("answer" ("answer")) ))
 ($args . nil)
 (inputs . ("conclude" ))
 (outputs . ("found" "answer" ))
@@ -163,30 +163,30 @@ nil))
 (defparameter *lookup-signature*
 `(
 (name . "lookup")
-(etags . ("name" "found" "answer" ))
+(etags . (("name" ("name")) ("found" ("found")) ("answer" ("answer")) ))
 (inputs . ("name" ))
 (outputs . ("found" "answer" ))))
 (defparameter *scroll-through-atoms-signature*
 `(
 (name . "scroll through atoms")
-(etags . ("name" "advance" "EOF" "try 1 name match" ))
+(etags . (("name" ("name")) ("advance" ("advance")) ("EOF" ("EOF")) ("try 1 name match" ("try 1 name match")) ))
 (inputs . ("name" "advance" ))
 (outputs . ("EOF" "try 1 name match" ))))
 (defparameter *match-single-atom-name-signature*
 `(
 (name . "match single atom name")
-(etags . ("name" "advance" "EOF" "try 1 name match" ))
+(etags . (("name" ("name")) ("advance" ("advance")) ("EOF" ("EOF")) ("try 1 name match" ("try 1 name match")) ))
 (inputs . ("name" "advance" ))
 (outputs . ("EOF" "try 1 name match" ))))
 (defparameter *unsuccessful-signature*
 `(
 (name . "unsuccessful")
-(etags . ("conclude" "found" ))
+(etags . (("conclude" ("conclude")) ("found" ("found")) ))
 (inputs . ("conclude" ))
 (outputs . ("found" ))))
 (defparameter *successful-signature*
 `(
 (name . "successful")
-(etags . ("conclude" "found" "answer" ))
+(etags . (("conclude" ("conclude")) ("found" ("found")) ("answer" ("answer")) ))
 (inputs . ("conclude" ))
 (outputs . ("found" "answer" ))))

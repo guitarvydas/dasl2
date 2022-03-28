@@ -92,7 +92,7 @@ EtagsSection = "etags" TagNameDestructuringListItem*
 InputsSection = "inputs" TagNameListItem*
 OutputsSection = "outputs" TagNameListItem*
 NetsSection = "nets" NetNameListItem*
-OwnSection = "own" TempNameListItem*
+OwnSection = "own" TempNameDestructuringListItem*
 
 InitiallySection
   = "initially" AnonymousFunction -- op
@@ -183,7 +183,7 @@ Constant
 TagNameListItem = TagName
 TagNameDestructuringListItem = TagName
 NetNameListItem = ident
-TempNameListItem = ident
+TempNameDestructuringListItem = ident
 ReturnItem = ident
 Arg = ident
 
