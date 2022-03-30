@@ -117,9 +117,7 @@ ConnectionsSection
 AnonymousFunction = Operation
 Operation = Op
 Op
- = ident "⤶" ident           Operation?             -- CreateAndSetTempFromArgs
- | ident "⥀" ident            Operation?            -- CreateAndSetTempFromLookup
- | ident "⤽" ident           Operation?             -- SetOwnFromArgs
+ = ident "⥀" ident            Operation?            -- CreateAndSetTempFromLookup
  | ident "⇐" Constant        Operation?             -- SetOwnFromConstant
  | "Inject" ComponentName PortName ident Operation? -- InjectFromTemp
  | ident "⇐" verbatimident   Operation?             -- SetOwnFromVerbatim

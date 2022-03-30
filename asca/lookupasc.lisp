@@ -51,7 +51,7 @@
 
 (cond 
 ((string= "name" (?etag-from-message $message)) 
-(let ((atom-memory ($?field ($?field-recursive $context '$args) 'atom-memory)))
+(let ((atom-memory ($?local $context 'atom-memory)))
 
 (let (($pred (?eof atom-memory)))
 (cond 
@@ -87,9 +87,9 @@
 
 (cond 
 ((string= "go" (?etag-from-message $message)) 
-(let ((atom-memory ($?field ($?field-recursive $context '$args) 'atom-memory)))
+(let ((atom-memory ($?local $context 'atom-memory)))
 
-(let ((name-to-be-matched ($?field ($?field-recursive $context '$args) 'atom-memory)))
+(let ((name-to-be-matched ($?local $context 'atom-memory)))
 
 (let (($pred (?match-string atom-memory "name-to-be-matched" )))
 (cond 
