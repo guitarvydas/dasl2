@@ -6,10 +6,6 @@ def 〔lookup〕
   nets ⇒₁ ⇒₂ ⇒₃ ⇒₄ ⇒₅ ⇒₆ ⇒₇ ⇒₈
   own found answer name-to-be-matched
   initially
-    name-to-be-matched ⤽ name
-    answer ⇐ No
-    found ⇐ No
-    Inject 〔scroll through atoms〕«name» name
   handler
     ⎡
       • «found» :
@@ -19,7 +15,6 @@ def 〔lookup〕
           answer ⇐ ?data
     ⎦
   finally
-      Return answer found
   children
     〔$self〕 λlookup
     〔scroll through atoms〕 〔scroll through atoms〕
@@ -44,17 +39,14 @@ def 〔scroll through atoms〕
   nets
   own
   initially
-    atom-memory ⥀ atom-memory
-    [@atom-memory.?eof ()
-      | Yes : Send «EOF» No
-      | No  : Pass
-    ]
   handler
-    atom-memory ⥀ atom-memory
     ⎡
       • «name» :
-          Send «try 1 name match» Trigger
-          Conclude
+          atom-memory ⥀ atom-memory
+	  [@atom-memory.?eof ()
+	    | Yes : Send «EOF» No
+	    | No  : Send «try 1 name match» Trigger
+	  ]
       • «advance» :
           atom-memory.@advance-to-next-atom ()
           [@atom-memory.?eof ()
@@ -75,12 +67,13 @@ def 〔match single atom name〕
   own
   initially
   handler
-    atom-memory ⥀ atom-memory
    ⎡
-      • «go» :[ @atom-memory.⟨?match string⟩(?data) 
-                | Yes: Send «ok» @atom-memory.current-atom-index ()
-                |    : Send «mismatch» Trigger
-              ]
+      • «go» : atom-memory ⥀ atom-memory
+               name-to-be-matched ⥀ atom-memory
+               [ @atom-memory.⟨?match string⟩(name-to-be-matched) 
+                 | Yes: Send «ok» @atom-memory.current-atom-index ()
+                 |    : Send «mismatch» Trigger
+               ]
    ⎦
   finally
   children
