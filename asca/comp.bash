@@ -13,5 +13,5 @@ echo
 echo
 sed -E -e '/;.*$/d' -e '/\(etags /d' -e 's/[ 	]+/ /g' -e '/\(\$debug /d' <${pdir}/proto.lisp >/tmp/proto.lisp
 sed -E -e '/\(nets /d' -e '/\(\$args /d' -e '/\(etags /d' -e 's/[ 	]+/ /g' <${thisdir}/lookupasc.lisp >/tmp/lookupasc.lisp
-diff -E -b -w -B -W 160 -d -C 0 /tmp/lookupasc.lisp /tmp/proto.lisp
+diff -E -b -w -B -W 160 -d -C 0 /tmp/proto.lisp /tmp/lookupasc.lisp
 exit 0

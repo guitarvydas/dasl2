@@ -48,6 +48,7 @@ def 〔scroll through atoms〕
 	    | No  : Send «try 1 name match» Trigger
 	  ]
       • «advance» :
+          atom-memory ⥀ atom-memory
           atom-memory.@advance-to-next-atom ()
           [@atom-memory.?eof ()
             | Yes : Send «EOF» No
