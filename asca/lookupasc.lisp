@@ -93,7 +93,7 @@
 
 (let ((s ($?local $context 'name-to-be-matched)))
 
-(let (($pred (?match-string atom-memory "s" )))
+(let (($pred (?match-string atom-memory s )))
 (cond 
 ((equal $yes $pred)
 ($send '("match single atom name". "ok") (current-atom-index atom-memory) $context $message))
