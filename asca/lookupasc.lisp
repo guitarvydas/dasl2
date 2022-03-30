@@ -91,9 +91,9 @@
 ((string= "go" (?etag-from-message $message)) 
 (let ((atom-memory ($?local $context 'atom-memory)))
 
-(let ((name-to-be-matched ($?local $context 'atom-memory)))
+(let ((s ($?local $context 'name-to-be-matched)))
 
-(let (($pred (?match-string atom-memory "name-to-be-matched" )))
+(let (($pred (?match-string atom-memory "s" )))
 (cond 
 ((equal $yes $pred)
 ($send '("match single atom name". "ok") (current-atom-index atom-memory) $context $message))

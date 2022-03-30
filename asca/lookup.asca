@@ -70,8 +70,8 @@ def 〔match single atom name〕
   handler
    ⎡
       • «go» : atom-memory ⥀ atom-memory
-               name-to-be-matched ⥀ name-to-be-matched
-               [ @atom-memory.⟨?match string⟩(name-to-be-matched) 
+               s ⥀ name-to-be-matched
+               [ @atom-memory.⟨?match string⟩(s) 
                  | Yes: Send «ok» @atom-memory.current-atom-index ()
                  |    : Send «mismatch» Trigger
                ]
